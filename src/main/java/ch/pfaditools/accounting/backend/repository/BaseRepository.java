@@ -14,4 +14,6 @@ public interface BaseRepository<T extends AbstractEntity, F extends AbstractFilt
     public Optional<T> findOne(F filter, HasLoadType loadType);
 
     public Page<T> findAll(F filter, Pageable pageable, HasLoadType loadType);
+
+    Optional<T> findById(Long id, HasLoadType loadType);
 }

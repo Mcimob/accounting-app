@@ -36,6 +36,13 @@ public class BaseRepositoryImpl<T extends AbstractEntity, F extends AbstractFilt
         return Optional.ofNullable(result);
     }
 
+    public Optional<T> findById(Long id, HasLoadType loadType) {
+        Specification<T> specification = Specification.where((root, query, cb) -> cb.equal(root.get("id"), id));
+        TypedQuery<T> query = createQueryWithEntityGraph(specification, loadType.getName(), Sort.unsorted());
+        T result = query.getSingleResult();
+        return Optional.ofNullable(result);
+    }
+
     @Override
     public Page<T> findAll(F filter, Pageable pageable, HasLoadType loadType) {
         Specification<T> specification = filter.getSpecification();
