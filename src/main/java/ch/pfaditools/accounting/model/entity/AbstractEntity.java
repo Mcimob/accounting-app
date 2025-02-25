@@ -24,6 +24,8 @@ public abstract class AbstractEntity implements Serializable {
     @Column
     private LocalDateTime updatedDateTime;
 
+    @Version
+    int version;
 
     public Long getId() {
         return id;
@@ -63,6 +65,10 @@ public abstract class AbstractEntity implements Serializable {
 
     public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
         this.updatedDateTime = updatedDateTime;
+    }
+
+    public int getVersion() {
+        return version;
     }
 
     public String getLatestUpdatedUser() {
