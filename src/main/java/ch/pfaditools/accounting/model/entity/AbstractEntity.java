@@ -87,4 +87,16 @@ public abstract class AbstractEntity implements Serializable {
             updatedDateTime = LocalDateTime.now();
         }
     }
+
+    @Override
+    public String toString() {
+        return "AbstractEntity{" +
+                "id=" + id +
+                ", createdUser='" + createdUser + '\'' +
+                ", createdDateTime=" + createdDateTime +
+                ", updatedUser='" + updatedUser + '\'' +
+                ", updatedDateTime=" + updatedDateTime +
+                ", version=" + version +
+                '}';
+    }
 }
