@@ -15,7 +15,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
     public static final String ERROR_GENERAL = "service.base.error.general";
 
-    public static final String ERROR_NULL = "service.base.error.load";
+    public static final String ERROR_NULL = "service.base.error.null";
 
     public static final String ERROR_VERSION = "service.base.error.version";
 
@@ -67,7 +67,18 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
     @Override
     public ServiceResponse<Page<T>> fetch(Pageable pageable, F filter) {
-        return fetch(pageable, filter, null);
+        ServiceResponse<Page<T>> response = new ServiceResponse<>();
+        if (handleNullCheck(response, pageable, filter)) {
+            return response;
+        }
+
+        try {
+            Page<T> result = dao.fetch(pageable, filter);
+            response.setEntity(result);
+            return response;
+        } catch (DaoException e) {
+            return handleException(e, "Error fetching entities");
+        }
     }
 
     @Override
@@ -88,7 +99,18 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
     @Override
     public ServiceResponse<T> fetchOne(F filter) {
-        return fetchOne(filter, null);
+        ServiceResponse<T> response = new ServiceResponse<>();
+        if (handleNullCheck(response, filter)) {
+            return response;
+        }
+
+        try {
+            Optional<T> result = dao.fetchOne(filter);
+            result.ifPresentOrElse(response::setEntity, () -> response.addErrorMessage("Entity not found"));
+            return response;
+        } catch (DaoException e) {
+            return handleException(e, "Error fetching entity");
+        }
     }
 
     @Override
@@ -109,7 +131,18 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
     @Override
     public ServiceResponse<T> fetchById(Long id) {
-        return fetchById(id, null);
+        ServiceResponse<T> response = new ServiceResponse<>();
+        if (handleNullCheck(response, id)) {
+            return response;
+        }
+
+        try {
+            Optional<T> result = dao.fetchById(id);
+            result.ifPresentOrElse(response::setEntity, () -> response.addErrorMessage("Entity not found"));
+            return response;
+        } catch (DaoException e) {
+            return handleException(e, "Error fetching entity by ID");
+        }
     }
 
     @Override

@@ -10,32 +10,32 @@ import org.springframework.data.domain.Pageable;
 
 public interface BaseService<T extends AbstractEntity, F extends AbstractFilter<T>> extends HasLogger {
 
-    ServiceResponse<Page<T>> fetch(Pageable pageable, F filter, HasLoadType loadType) throws DaoException;
+    ServiceResponse<Page<T>> fetch(Pageable pageable, F filter, HasLoadType loadType);
 
-    ServiceResponse<Page<T>> fetch(Pageable pageable, F filter) throws DaoException;
+    ServiceResponse<Page<T>> fetch(Pageable pageable, F filter);
 
-    ServiceResponse<T> fetchOne(F filter, HasLoadType loadType) throws DaoException;
+    ServiceResponse<T> fetchOne(F filter, HasLoadType loadType);
 
-    ServiceResponse<T> fetchOne(F filter) throws DaoException;
+    ServiceResponse<T> fetchOne(F filter);
 
-    ServiceResponse<T> fetchById(Long id, HasLoadType loadType) throws DaoException;
+    ServiceResponse<T> fetchById(Long id, HasLoadType loadType);
 
-    ServiceResponse<T> fetchById(Long id) throws DaoException;
+    ServiceResponse<T> fetchById(Long id);
 
-    ServiceResponse<Boolean> exists(F filter) throws DaoException;
+    ServiceResponse<Boolean> exists(F filter);
 
-    ServiceResponse<Boolean> existsById(Long id) throws DaoException;
+    ServiceResponse<Boolean> existsById(Long id);
 
-    ServiceResponse<Long> count(F filter) throws DaoException;
+    ServiceResponse<Long> count(F filter);
 
-    ServiceResponse<T> save(T entity) throws DaoException;
+    ServiceResponse<T> save(T entity);
 
-    ServiceResponse<Page<T>> saveAll(Iterable<T> entities) throws DaoException;
+    ServiceResponse<Page<T>> saveAll(Iterable<T> entities);
 
-    ServiceResponse<T> delete(T entity) throws DaoException;
+    ServiceResponse<T> delete(T entity);
 
-    ServiceResponse<T> deleteById(Long id) throws DaoException;
+    ServiceResponse<T> deleteById(Long id);
 
-    ServiceResponse<T> deleteAll(Iterable<T> entities) throws DaoException;
+    ServiceResponse<T> deleteAll(Iterable<T> entities);
 
 }
