@@ -19,7 +19,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
     public static final String ERROR_VERSION = "service.base.error.version";
 
-    private final BaseDao<T, F> dao;
+    protected final BaseDao<T, F> dao;
 
     public BaseServiceImpl(BaseDao<T, F> dao) {
         this.dao = dao;

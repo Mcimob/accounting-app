@@ -5,6 +5,7 @@ import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.filter.AbstractFilter;
 import ch.pfaditools.accounting.model.loadtype.BaseLoadType;
 import ch.pfaditools.accounting.model.loadtype.HasLoadType;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import org.springframework.dao.DataAccessException;
@@ -42,6 +43,8 @@ public class BaseDaoImpl<T extends AbstractEntity, F extends AbstractFilter<T>> 
     public Optional<T> fetchOne(F filter, HasLoadType loadType) throws DaoException {
         try {
             return repository.findOne(filter, loadType);
+        } catch (NoResultException e) {
+            return Optional.empty();
         } catch (DataAccessException | PersistenceException e) {
             throw new DaoException("Error fetching single entity", e);
         }
