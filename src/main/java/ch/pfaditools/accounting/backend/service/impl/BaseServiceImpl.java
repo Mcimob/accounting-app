@@ -1,8 +1,10 @@
-package ch.pfaditools.accounting.backend.service;
+package ch.pfaditools.accounting.backend.service.impl;
 
 import ch.pfaditools.accounting.backend.dao.BaseDao;
-import ch.pfaditools.accounting.backend.dao.DaoException;
-import ch.pfaditools.accounting.backend.dao.VersioningDaoException;
+import ch.pfaditools.accounting.backend.dao.exception.DaoException;
+import ch.pfaditools.accounting.backend.dao.exception.VersioningDaoException;
+import ch.pfaditools.accounting.backend.service.BaseService;
+import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.filter.AbstractFilter;
 import ch.pfaditools.accounting.model.loadtype.HasLoadType;

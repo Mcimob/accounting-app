@@ -1,7 +1,8 @@
-package ch.pfaditools.accounting.backend.service;
+package ch.pfaditools.accounting.backend.service.impl;
 
 import ch.pfaditools.accounting.backend.dao.BaseDao;
-import ch.pfaditools.accounting.backend.dao.DaoException;
+import ch.pfaditools.accounting.backend.dao.exception.DaoException;
+import ch.pfaditools.accounting.backend.service.UserService;
 import ch.pfaditools.accounting.model.entity.UserEntity;
 import ch.pfaditools.accounting.model.filter.UserEntityFilter;
 import org.springframework.security.core.userdetails.UserDetails;

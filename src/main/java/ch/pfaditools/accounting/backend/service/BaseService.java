@@ -1,6 +1,5 @@
 package ch.pfaditools.accounting.backend.service;
 
-import ch.pfaditools.accounting.backend.dao.DaoException;
 import ch.pfaditools.accounting.logger.HasLogger;
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.filter.AbstractFilter;
