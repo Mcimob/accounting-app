@@ -5,11 +5,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "user_entity")
+@Table(name = "user")
 public class UserEntity extends AbstractEntity implements UserDetails {
 
     @Column(nullable = false, unique = true)
@@ -23,6 +25,9 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     private Set<String> roles = new HashSet<>();
+
+    @ManyToOne
+    private GroupEntity group;
 
     public Set<String> getRoles() {
         return roles;
@@ -61,6 +66,14 @@ public class UserEntity extends AbstractEntity implements UserDetails {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public GroupEntity getGroup() {
+        return group;
+    }
+
+    public void setGroup(GroupEntity group) {
+        this.group = group;
     }
 
     @Override
