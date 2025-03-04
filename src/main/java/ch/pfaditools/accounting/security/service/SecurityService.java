@@ -30,7 +30,7 @@ public class SecurityService implements AuthenticationProvider {
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-            throw new org.springframework.security.core.AuthenticationException("Invalid username or password") {};
+            throw new AuthenticationException("Invalid username or password") {};
         }
 
         return new UsernamePasswordAuthenticationToken(

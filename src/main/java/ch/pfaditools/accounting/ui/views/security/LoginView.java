@@ -1,4 +1,4 @@
-package ch.pfaditools.accounting.ui.views;
+package ch.pfaditools.accounting.ui.views.security;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.LoginForm;

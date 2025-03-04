@@ -1,4 +1,4 @@
-package ch.pfaditools.accounting.views;
+package ch.pfaditools.accounting.ui;
 
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * The main view is a top-level placeholder for other views.
  */
-@Layout
-@AnonymousAllowed
 public class MainLayout extends AppLayout {
 
     private H1 viewTitle;

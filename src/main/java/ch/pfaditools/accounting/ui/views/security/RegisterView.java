@@ -1,4 +1,4 @@
-package ch.pfaditools.accounting.ui.views;
+package ch.pfaditools.accounting.ui.views.security;
 
 import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.backend.service.UserService;
