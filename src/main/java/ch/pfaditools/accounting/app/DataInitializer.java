@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
+
 @Configuration
 public class DataInitializer {
 
@@ -20,9 +22,6 @@ public class DataInitializer {
 
     @Value("${admin.password}")
     private String adminPassword;
-
-    @Value("${admin.role}")
-    private String adminRole;
 
     @Bean
     CommandLineRunner init(UserService userService, PasswordEncoder passwordEncoder) {
@@ -35,7 +34,7 @@ public class DataInitializer {
                 UserEntity admin = new UserEntity();
                 admin.setUsername(adminUsername);
                 admin.setPassword(passwordEncoder.encode(adminPassword));
-                admin.setRoles(Set.of(adminRole));
+                admin.setRoles(Set.of(ROLE_ADMIN));
                 admin.updateCreateModifyFields("INIT");
                 userService.save(admin);
 
