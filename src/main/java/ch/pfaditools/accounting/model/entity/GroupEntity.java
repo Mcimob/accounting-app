@@ -71,7 +71,6 @@ public class GroupEntity extends AbstractEntity {
     public String toString() {
         return "GroupEntity{" +
                 "name='" + name + '\'' +
-                ", users=" + users +
                 '}' + super.toString();
     }
 }

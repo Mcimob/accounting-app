@@ -47,6 +47,13 @@ public abstract class AbstractEntity implements Serializable {
         return createdDateTime;
     }
 
+    public String getCreatedDateTimeString() {
+        if (createdDateTime == null) {
+            return "";
+        }
+        return createdDateTime.toString();
+    }
+
     public void setCreatedDateTime(LocalDateTime createdDateTime) {
         this.createdDateTime = createdDateTime;
     }
@@ -61,6 +68,13 @@ public abstract class AbstractEntity implements Serializable {
 
     public LocalDateTime getUpdatedDateTime() {
         return updatedDateTime;
+    }
+
+    public String getUpdatedDateTimeString() {
+        if (updatedDateTime == null) {
+            return "";
+        }
+        return updatedDateTime.toString();
     }
 
     public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
