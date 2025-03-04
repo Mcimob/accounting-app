@@ -5,8 +5,28 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class GroupEntityFilter extends AbstractFilter<GroupEntity> {
 
+    private String name;
+
     @Override
     public Specification<GroupEntity> getSpecification() {
-        return Specification.where(null);
+        Specification<GroupEntity> specification = Specification.where(null);
+
+        if (name != null) {
+            specification = specification.and(hasName(name));
+        }
+
+        return specification;
+    }
+
+    private Specification<GroupEntity> hasName(String name) {
+        return (root, query, cb) -> cb.equal(root.get("name"), name);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
