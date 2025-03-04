@@ -3,9 +3,8 @@ package ch.pfaditools.accounting.ui.views.security;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import jakarta.annotation.security.PermitAll;
+import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,8 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
 
 @Route(ROUTE_LOGIN)
-@PageTitle("Login | MyApp")
-@PermitAll
+@AnonymousAllowed
 public class LoginView extends VerticalLayout {
 
     public LoginView() {

@@ -16,14 +16,15 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
-import com.vaadin.flow.router.Layout;
-import com.vaadin.flow.server.auth.AnonymousAllowed;
+import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.server.menu.MenuEntry;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+
 import java.util.List;
 
-import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGOUT;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -47,7 +48,16 @@ public class MainLayout extends AppLayout {
 
         Button logoutButton = new Button();
         logoutButton.setIcon(VaadinIcon.EXIT_O.create());
-        logoutButton.addClickListener(e -> UI.getCurrent().getPage().setLocation(ROUTE_LOGOUT));
+        logoutButton.addClickListener(e -> {
+            SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+            logoutHandler.logout(
+                    VaadinServletRequest.getCurrent().getHttpServletRequest(),
+                    null,
+                    null
+            );
+
+            UI.getCurrent().getPage().setLocation(ROUTE_LOGIN); // Redirect to login page after logout
+        });
         logoutButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         HorizontalLayout leftLayout = new HorizontalLayout(toggle, viewTitle);
