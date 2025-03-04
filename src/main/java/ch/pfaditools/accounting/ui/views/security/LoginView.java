@@ -10,7 +10,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-@Route("login")
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
+
+@Route(ROUTE_LOGIN)
 @PageTitle("Login | MyApp")
 @PermitAll
 public class LoginView extends VerticalLayout {

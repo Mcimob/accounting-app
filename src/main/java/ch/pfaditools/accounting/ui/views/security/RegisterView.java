@@ -19,7 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
-@Route("register")
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
+
+@Route(ROUTE_REGISTER)
 @PageTitle("Register | MyApp")
 @PermitAll
 public class RegisterView extends VerticalLayout {
