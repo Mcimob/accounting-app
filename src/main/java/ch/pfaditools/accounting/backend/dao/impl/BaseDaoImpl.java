@@ -12,6 +12,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -46,7 +47,7 @@ public class BaseDaoImpl<T extends AbstractEntity, F extends AbstractFilter<T>> 
     public Optional<T> fetchOne(F filter, HasLoadType loadType) throws DaoException {
         try {
             return repository.findOne(filter, loadType);
-        } catch (NoResultException e) {
+        } catch (EmptyResultDataAccessException | NoResultException e) {
             return Optional.empty();
         } catch (DataAccessException | PersistenceException e) {
             throw new DaoException("Error fetching single entity", e);

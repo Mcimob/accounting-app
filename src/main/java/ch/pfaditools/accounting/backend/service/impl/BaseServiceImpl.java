@@ -92,7 +92,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             Optional<T> result = dao.fetchOne(filter, loadType);
-            result.ifPresentOrElse(response::setEntity, () -> response.addErrorMessage("Entity not found"));
+            result.ifPresent(response::setEntity);
             return response;
         } catch (DaoException e) {
             return handleException(e, "Error fetching entity");
@@ -108,7 +108,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             Optional<T> result = dao.fetchOne(filter);
-            result.ifPresentOrElse(response::setEntity, () -> response.addErrorMessage("Entity not found"));
+            result.ifPresent(response::setEntity);
             return response;
         } catch (DaoException e) {
             return handleException(e, "Error fetching entity");
