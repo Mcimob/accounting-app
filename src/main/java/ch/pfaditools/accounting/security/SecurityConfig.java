@@ -12,6 +12,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGOUT;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -40,12 +43,12 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             ).authenticationProvider(securityService)
             .formLogin(form -> form
-                .loginPage("/login")
+                .loginPage("/" + ROUTE_LOGIN)
                 .defaultSuccessUrl("/", true)
                 .permitAll()
             )
             .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
+                .logoutSuccessUrl("/" + ROUTE_LOGIN + "?" + ROUTE_LOGOUT)
                 .permitAll()
             )
             .csrf(AbstractHttpConfigurer::disable);
