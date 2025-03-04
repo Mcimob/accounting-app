@@ -19,6 +19,10 @@ public class GroupEntity extends AbstractEntity {
     @OneToMany(mappedBy = "group")
     private Set<UserEntity> users = new HashSet<>();
 
+    private String groupCode;
+
+    private String groupAdminCode;
+
     public String getName() {
         return name;
     }
@@ -33,6 +37,22 @@ public class GroupEntity extends AbstractEntity {
 
     public void setUsers(Set<UserEntity> users) {
         this.users = users;
+    }
+
+    public String getGroupCode() {
+        return groupCode;
+    }
+
+    public void setGroupCode(String groupCode) {
+        this.groupCode = groupCode;
+    }
+
+    public String getGroupAdminCode() {
+        return groupAdminCode;
+    }
+
+    public void setGroupAdminCode(String groupAdminCode) {
+        this.groupAdminCode = groupAdminCode;
     }
 
     @Override
