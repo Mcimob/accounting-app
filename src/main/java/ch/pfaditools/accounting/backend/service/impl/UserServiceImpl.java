@@ -1,6 +1,6 @@
 package ch.pfaditools.accounting.backend.service.impl;
 
-import ch.pfaditools.accounting.backend.dao.BaseDao;
+import ch.pfaditools.accounting.backend.dao.UserDao;
 import ch.pfaditools.accounting.backend.dao.exception.DaoException;
 import ch.pfaditools.accounting.backend.service.UserService;
 import ch.pfaditools.accounting.model.entity.UserEntity;
@@ -14,7 +14,7 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserEntity, UserEntityFilter> implements UserService {
 
-    public UserServiceImpl(BaseDao<UserEntity, UserEntityFilter> dao) {
+    public UserServiceImpl(UserDao dao) {
         super(dao);
     }
 

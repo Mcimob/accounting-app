@@ -34,7 +34,7 @@ public class SecurityService implements AuthenticationProvider {
         }
 
         return new UsernamePasswordAuthenticationToken(
-            user.getUsername(),
+            user,
             user.getPassword(),
             user.getAuthorities()
         );

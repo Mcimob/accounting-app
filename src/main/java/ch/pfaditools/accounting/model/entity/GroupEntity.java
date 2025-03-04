@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
-@Table(name = "group")
+@Table(name = "group_entity")
 public class GroupEntity extends AbstractEntity {
 
     @Column(nullable = false)
