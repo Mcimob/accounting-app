@@ -1,6 +1,9 @@
 package ch.pfaditools.accounting.ui;
 
-public class ViewConstants {
+public final class ViewConstants {
+
+    private ViewConstants() {
+    }
 
     public static final String ROUTE_LOGIN = "login";
     public static final String ROUTE_REGISTER = "register";

@@ -38,8 +38,12 @@ public class UserWithCodeAndGroup {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         UserWithCodeAndGroup that = (UserWithCodeAndGroup) o;
         return Objects.equals(code, that.code);
     }

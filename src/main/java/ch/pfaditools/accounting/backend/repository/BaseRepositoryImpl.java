@@ -19,7 +19,8 @@ import java.util.List;
 import java.util.Optional;
 
 @NoRepositoryBean
-public class BaseRepositoryImpl<T extends AbstractEntity, F extends AbstractFilter<T>> extends SimpleJpaRepository<T, Long> implements BaseRepository<T, F> {
+public class BaseRepositoryImpl<T extends AbstractEntity, F extends AbstractFilter<T>>
+        extends SimpleJpaRepository<T, Long> implements BaseRepository<T, F> {
 
     private final EntityManager em;
 
@@ -61,7 +62,8 @@ public class BaseRepositoryImpl<T extends AbstractEntity, F extends AbstractFilt
         return new PageImpl<>(query.getResultList(), pageable, totalRows);
     }
 
-    private TypedQuery<T> createQueryWithEntityGraph(Specification<T> specification, String entityGraphName, Sort sort) {
+    private TypedQuery<T> createQueryWithEntityGraph(
+            Specification<T> specification, String entityGraphName, Sort sort) {
         TypedQuery<T> query = getQuery(specification, sort);
         if (entityGraphName != null) {
             EntityGraph<?> entityGraph = em.getEntityGraph(entityGraphName);

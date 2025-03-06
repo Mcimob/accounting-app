@@ -86,7 +86,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
     @Override
     public ServiceResponse<T> fetchOne(F filter, HasLoadType loadType) {
         ServiceResponse<T> response = new ServiceResponse<>();
-        if (handleNullCheck(response, filter,loadType)) {
+        if (handleNullCheck(response, filter, loadType)) {
             return response;
         }
 

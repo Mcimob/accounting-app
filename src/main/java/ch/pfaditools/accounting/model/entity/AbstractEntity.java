@@ -1,9 +1,15 @@
 package ch.pfaditools.accounting.model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Version;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
@@ -25,7 +31,7 @@ public abstract class AbstractEntity implements Serializable {
     private LocalDateTime updatedDateTime;
 
     @Version
-    int version;
+    private int version;
 
     public Long getId() {
         return id;
@@ -92,6 +98,32 @@ public abstract class AbstractEntity implements Serializable {
         return createdUser;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof AbstractEntity that)) {
+            return false;
+        }
+        return version == that.version
+                && Objects.equals(id, that.id)
+                && Objects.equals(createdUser, that.createdUser)
+                && Objects.equals(createdDateTime, that.createdDateTime)
+                && Objects.equals(updatedUser, that.updatedUser)
+                && Objects.equals(updatedDateTime, that.updatedDateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id,
+                createdUser,
+                createdDateTime,
+                updatedUser,
+                updatedDateTime,
+                version);
+    }
+
     public void updateCreateModifyFields(String username) {
         if (id == null) {
             createdUser = username;
@@ -104,13 +136,14 @@ public abstract class AbstractEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "AbstractEntity{" +
-                "id=" + id +
-                ", createdUser='" + createdUser + '\'' +
-                ", createdDateTime=" + createdDateTime +
-                ", updatedUser='" + updatedUser + '\'' +
-                ", updatedDateTime=" + updatedDateTime +
-                ", version=" + version +
-                '}';
+        return "AbstractEntity{"
+                + "id=" + id
+                + ", createdUser='" + createdUser + '\''
+                + ", createdDateTime=" + createdDateTime
+                + ", updatedUser='" + updatedUser + '\''
+                + ", updatedDateTime=" + updatedDateTime
+                + ", version=" + version
+                + '}';
     }
+
 }

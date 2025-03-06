@@ -6,8 +6,10 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 
 public interface HasNotification {
 
+    int DEFAULT_SHOW_TIME = 5_000;
+
     default void showInfoNotification(String message) {
-        Notification.show(message, 5000, Notification.Position.BOTTOM_START);
+        Notification.show(message, DEFAULT_SHOW_TIME, Notification.Position.BOTTOM_START);
     }
 
     default void showWarningNotification(String message) {

@@ -30,7 +30,7 @@ public class SecurityService implements AuthenticationProvider {
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
-            throw new AuthenticationException("Invalid username or password") {};
+            throw new AuthenticationException("Invalid username or password") { };
         }
 
         return new UsernamePasswordAuthenticationToken(

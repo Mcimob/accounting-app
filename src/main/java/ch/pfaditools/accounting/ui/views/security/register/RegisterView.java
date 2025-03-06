@@ -98,12 +98,14 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
 
         UserEntity newUser = userWithCodeAndGroup.getUser();
 
-        boolean matchesGroupAdminCode = passwordEncoder.matches(userWithCodeAndGroup.getCode(), group.get().getGroupAdminCode());
-        boolean matchesGroupUserCode = passwordEncoder.matches(userWithCodeAndGroup.getCode(), group.get().getGroupCode());
+        boolean matchesGroupAdminCode = passwordEncoder.matches(
+                userWithCodeAndGroup.getCode(), group.get().getGroupAdminCode());
+        boolean matchesGroupUserCode = passwordEncoder.matches(
+                userWithCodeAndGroup.getCode(), group.get().getGroupCode());
 
         if (matchesGroupAdminCode) {
             newUser.getRoles().add(ROLE_GROUP_ADMIN);
-        } else if(matchesGroupUserCode) {
+        } else if (matchesGroupUserCode) {
             newUser.getRoles().add(ROLE_USER);
         } else {
             showWarningNotification("Invalid group code");
@@ -125,7 +127,7 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
 
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
         newUser.updateCreateModifyFields("REGISTER");
-        ServiceResponse<UserEntity> saveResponse = userService.save( newUser);
+        ServiceResponse<UserEntity> saveResponse = userService.save(newUser);
         if (saveResponse.hasErrorMessages()) {
             saveResponse.getErrorMessages().forEach(this::showErrorNotification);
         } else {
@@ -150,6 +152,13 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
         Button registerButton = new Button("Register", this::registerUser);
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        return new Div(new FormLayout(usernameField, passwordField, confirmPasswordField, groupField, codeField), registerButton);
+        return new Div(
+                new FormLayout(
+                        usernameField,
+                        passwordField,
+                        confirmPasswordField,
+                        groupField,
+                        codeField),
+                registerButton);
     }
 }

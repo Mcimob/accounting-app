@@ -7,7 +7,7 @@ import ch.pfaditools.accounting.model.filter.GroupEntityFilter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GroupDaoImpl extends BaseDaoImpl<GroupEntity, GroupEntityFilter>implements GroupDao {
+public class GroupDaoImpl extends BaseDaoImpl<GroupEntity, GroupEntityFilter> implements GroupDao {
 
     public GroupDaoImpl(GroupRepository repository) {
         super(repository);

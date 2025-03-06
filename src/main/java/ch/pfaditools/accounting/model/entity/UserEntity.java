@@ -1,6 +1,13 @@
 package ch.pfaditools.accounting.model.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +33,35 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     private Set<String> roles = new HashSet<>();
 
-    @ManyToOne
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof UserEntity that)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        return Objects.equals(username, that.username)
+                && Objects.equals(displayName, that.displayName)
+                && Objects.equals(password, that.password)
+                && Objects.equals(roles, that.roles)
+                && Objects.equals(group, that.group);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(),
+                username,
+                displayName,
+                password,
+                roles,
+                group);
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
     private GroupEntity group;
 
     public Set<String> getRoles() {
@@ -77,23 +112,14 @@ public class UserEntity extends AbstractEntity implements UserDetails {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
-        return super.equals(that) && Objects.equals(username, that.username) && Objects.equals(password, that.password) && Objects.equals(roles, that.roles);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), username, password, roles);
-    }
-
-    @Override
     public String toString() {
-        return "UserEntity{" +
-                "username='" + username + '\'' +
-                ", roles='" + roles + '\'' +
-                "} " + super.toString();
+        return "UserEntity{"
+                + "roles=" + roles
+                + ", username='" + username + '\''
+                + ", displayName='" + displayName + '\''
+                + ", password='" + password + '\''
+                + ", group=" + group
+                + "} " + super.toString();
     }
+
 }

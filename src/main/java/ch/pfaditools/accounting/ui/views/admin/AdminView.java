@@ -42,16 +42,17 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
 @RolesAllowed(ROLE_ADMIN)
 public class AdminView extends VerticalLayout implements HasNotification, HasLogger {
 
+    public static final int CODE_LENGTH = 24;
     private final GroupService groupService;
     private final PasswordEncoder passwordEncoder;
 
-    Grid<GroupEntity> groupGrid = new Grid<>();
-    Binder<GroupEntity> groupBinder = new Binder<>();
+    private final Grid<GroupEntity> groupGrid = new Grid<>();
+    private final Binder<GroupEntity> groupBinder = new Binder<>();
 
-    TextField nameField = new TextField("Name");
-    TextField latestUpdatedUserField = new TextField("Latest updated user");
-    TextField createdDateTimeField = new TextField("Created date");
-    TextField updatedDateTimeField = new TextField("Updated date");
+    private final TextField nameField = new TextField("Name");
+    private final TextField latestUpdatedUserField = new TextField("Latest updated user");
+    private final TextField createdDateTimeField = new TextField("Created date");
+    private final TextField updatedDateTimeField = new TextField("Updated date");
 
     public AdminView(GroupService groupService, PasswordEncoder passwordEncoder) {
         this.groupService = groupService;
@@ -101,8 +102,9 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
         return button;
     }
 
-    private void onAddCodeButtonClicked(GroupEntity group, BiConsumer<GroupEntity, String> setter, String topText, String centerText) {
-        String code = RandomStringUtils.secure().nextAlphanumeric(24);
+    private void onAddCodeButtonClicked(
+            GroupEntity group, BiConsumer<GroupEntity, String> setter, String topText, String centerText) {
+        String code = RandomStringUtils.secure().nextAlphanumeric(CODE_LENGTH);
         String encodedCode = passwordEncoder.encode(code);
         setter.accept(group, encodedCode);
         ServiceResponse<GroupEntity> saveResponse = groupService.save(group);

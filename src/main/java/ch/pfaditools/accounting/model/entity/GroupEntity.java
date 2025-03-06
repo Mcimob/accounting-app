@@ -57,20 +57,33 @@ public class GroupEntity extends AbstractEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        GroupEntity that = (GroupEntity) o;
-        return super.equals(that) && Objects.equals(name, that.name);
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof GroupEntity that)) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        return Objects.equals(name, that.name)
+                && Objects.equals(groupCode, that.groupCode)
+                && Objects.equals(groupAdminCode, that.groupAdminCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), name);
+        return Objects.hash(super.hashCode(),
+                name,
+                groupCode,
+                groupAdminCode);
     }
 
     @Override
     public String toString() {
-        return "GroupEntity{" +
-                "name='" + name + '\'' +
-                '}' + super.toString();
+        return "GroupEntity{"
+                + "name='" + name + '\''
+                + "} " + super.toString();
     }
+
 }

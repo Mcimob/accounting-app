@@ -22,7 +22,9 @@ public class CustomRepositoryFactory extends JpaRepositoryFactory {
                 (Class<?>) information.getDomainType()
         );
 
-        return new BaseRepositoryImpl<>((JpaEntityInformation<? extends AbstractEntity, ?>) entityInformation, entityManager);
+        return new BaseRepositoryImpl<>(
+                (JpaEntityInformation<? extends AbstractEntity, ?>) entityInformation,
+                entityManager);
     }
 
     @Override
