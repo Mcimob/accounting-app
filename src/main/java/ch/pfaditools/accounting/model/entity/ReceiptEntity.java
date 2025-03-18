@@ -3,6 +3,7 @@ package ch.pfaditools.accounting.model.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -12,6 +13,8 @@ import java.util.Objects;
 @Entity
 @Table(name = "receipt_entity")
 public class ReceiptEntity extends AbstractEntity {
+
+    public static final float CENTS_PER_CURRENCY = 100f;
 
     @Column(nullable = false)
     private String name;
@@ -26,6 +29,9 @@ public class ReceiptEntity extends AbstractEntity {
 
     @OneToOne(fetch = FetchType.EAGER)
     private FileEntity file;
+
+    @ManyToOne(optional = false)
+    private GroupEntity group;
 
     public String getName() {
         return name;
@@ -55,6 +61,10 @@ public class ReceiptEntity extends AbstractEntity {
         return amount;
     }
 
+    public String getAmountString() {
+        return "CHF %.2f".formatted(amount / CENTS_PER_CURRENCY);
+    }
+
     public void setAmount(double amount) {
         this.amount = amount;
     }
@@ -65,6 +75,14 @@ public class ReceiptEntity extends AbstractEntity {
 
     public void setPaidOutAt(LocalDateTime paidOutAt) {
         this.paidOutAt = paidOutAt;
+    }
+
+    public GroupEntity getGroup() {
+        return group;
+    }
+
+    public void setGroup(GroupEntity group) {
+        this.group = group;
     }
 
     @Override
