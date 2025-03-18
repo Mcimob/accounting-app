@@ -28,6 +28,7 @@ public class DataInitializer {
         return args -> {
             UserEntityFilter filter = new UserEntityFilter();
             filter.setUsername(adminUsername);
+            filter.setExactMatch(true);
             ServiceResponse<UserEntity> response = userService.fetchOne(filter);
 
             if (response.getEntity().isEmpty()) {
