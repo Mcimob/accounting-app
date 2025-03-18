@@ -1,5 +1,6 @@
 package ch.pfaditools.accounting.ui;
 
+import ch.pfaditools.accounting.security.SecurityUtils;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -9,7 +10,6 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.SvgIcon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,13 +18,13 @@ import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.server.menu.MenuConfiguration;
-import com.vaadin.flow.server.menu.MenuEntry;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-import java.util.List;
-
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -86,14 +86,10 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        List<MenuEntry> menuEntries = MenuConfiguration.getMenuEntries();
-        menuEntries.forEach(entry -> {
-            if (entry.icon() != null) {
-                nav.addItem(new SideNavItem(entry.title(), entry.path(), new SvgIcon(entry.icon())));
-            } else {
-                nav.addItem(new SideNavItem(entry.title(), entry.path()));
-            }
-        });
+        if (SecurityUtils.isUserInRole(ROLE_ADMIN)) {
+            nav.addItem(new SideNavItem("Admin", ROUTE_ADMIN, VaadinIcon.COGS.create()));
+        }
+        nav.addItem(new SideNavItem("Receipt Overview", ROUTE_RECEIPT_OVERVIEW, VaadinIcon.RECORDS.create()));
 
         return nav;
     }

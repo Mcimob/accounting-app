@@ -27,4 +27,8 @@ public final class SecurityUtils {
     public static GroupEntity getAuthenticatedUserGroup() {
         return Optional.ofNullable(getCurrentUser()).map(UserEntity::getGroup).orElse(null);
     }
+
+    public static boolean isUserInRole(String role) {
+        return getCurrentUser().getRoles().contains(role);
+    }
 }
