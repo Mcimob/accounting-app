@@ -5,7 +5,6 @@ import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.logger.HasLogger;
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.entity.GroupEntity;
-import ch.pfaditools.accounting.model.filter.GroupEntityFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.views.HasNotification;
@@ -27,9 +26,6 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -44,6 +40,7 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
 
     public static final int CODE_LENGTH = 24;
     private final GroupService groupService;
+    private final GroupProvider groupProvider;
     private final PasswordEncoder passwordEncoder;
 
     private final Grid<GroupEntity> groupGrid = new Grid<>();
@@ -54,11 +51,11 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
     private final TextField createdDateTimeField = new TextField("Created date");
     private final TextField updatedDateTimeField = new TextField("Updated date");
 
-    public AdminView(GroupService groupService, PasswordEncoder passwordEncoder) {
+    public AdminView(GroupService groupService, GroupProvider groupProvider, PasswordEncoder passwordEncoder) {
         this.groupService = groupService;
+        this.groupProvider = groupProvider;
         this.passwordEncoder = passwordEncoder;
         setupBinder();
-        updateGridItems();
         render();
     }
 
@@ -75,6 +72,7 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
             Optional<GroupEntity> group = event.getFirstSelectedItem();
             group.ifPresentOrElse(groupBinder::readBean, () -> groupBinder.readBean(new GroupEntity()));
         });
+        groupGrid.setItems(groupProvider);
         return groupGrid;
     }
 
@@ -112,6 +110,8 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
             saveResponse.getErrorMessages().forEach(this::showErrorNotification);
             return;
         }
+
+        groupProvider.refreshAll();
 
         Dialog dialog = new Dialog();
 
@@ -170,7 +170,7 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
             return;
         }
         groupBinder.readBean(new GroupEntity());
-        updateGridItems();
+        groupProvider.refreshAll();
     }
 
     private void onDeleteButtonClicked(ClickEvent<Button> clickEvent) {
@@ -184,7 +184,7 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
             response.getErrorMessages().forEach(this::showErrorNotification);
         }
 
-        updateGridItems();
+        groupProvider.refreshAll();
     }
 
     private void render() {
@@ -193,17 +193,6 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
         add(createGrid());
         add(createForm());
         add(createButtons());
-    }
-
-    private void updateGridItems() {
-        ServiceResponse<Page<GroupEntity>> response = groupService.fetch(Pageable.unpaged(), new GroupEntityFilter());
-        if (response.hasErrorMessages()) {
-            response.getErrorMessages().forEach(this::showErrorNotification);
-            return;
-        }
-
-        response.getEntity().map(Slice::getContent)
-                .ifPresent(groupGrid::setItems);
     }
 
     private void setupBinder() {
