@@ -18,7 +18,7 @@ public abstract class AbstractFilter<T extends AbstractEntity> implements Serial
     }
 
     private Specification<T> isCreatedByUser() {
-        return (root, query, cb) -> cb.equal(root.get("createdByUser"), createdByUser);
+        return (root, query, cb) -> cb.equal(root.get("createdUser"), createdByUser);
     }
 
     public void setCreatedByUser(String createdByUser) {
