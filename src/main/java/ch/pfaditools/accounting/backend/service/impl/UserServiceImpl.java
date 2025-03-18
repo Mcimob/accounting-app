@@ -14,8 +14,11 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl extends BaseServiceImpl<UserEntity, UserEntityFilter> implements UserService {
 
+    private final UserDao dao;
+
     public UserServiceImpl(UserDao dao) {
         super(dao);
+        this.dao = dao;
     }
 
     @Override

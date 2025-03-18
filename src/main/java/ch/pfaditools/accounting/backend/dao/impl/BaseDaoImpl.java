@@ -17,7 +17,6 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -102,7 +101,6 @@ public class BaseDaoImpl<T extends AbstractEntity, F extends AbstractFilter<T>> 
     }
 
     @Override
-    @Transactional
     public Optional<T> save(T entity) throws DaoException {
         try {
             return Optional.of(repository.save(entity));
@@ -134,7 +132,6 @@ public class BaseDaoImpl<T extends AbstractEntity, F extends AbstractFilter<T>> 
     }
 
     @Override
-    @Transactional
     public void deleteById(Long id) throws DaoException {
         try {
             repository.deleteById(id);

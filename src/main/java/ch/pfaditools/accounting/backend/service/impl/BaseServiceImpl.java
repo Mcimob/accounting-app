@@ -21,7 +21,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
     public static final String ERROR_VERSION = "service.base.error.version";
 
-    protected final BaseDao<T, F> dao;
+    private final BaseDao<T, F> dao;
 
     public BaseServiceImpl(BaseDao<T, F> dao) {
         this.dao = dao;
@@ -197,7 +197,6 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
         ServiceResponse<T> response = new ServiceResponse<>();
         if (handleNullCheck(response, entity)) {
             return response;
-
         }
 
         try {
