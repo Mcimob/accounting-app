@@ -67,6 +67,7 @@ public class ReceiptOverView extends AbstractView implements HasLogger, HasNotif
         } else {
             filter.setGroup(SecurityUtils.getAuthenticatedUserGroup());
         }
+        refreshFilter();
     }
 
     private Component createAddButton() {
@@ -84,6 +85,9 @@ public class ReceiptOverView extends AbstractView implements HasLogger, HasNotif
            filter.setCreatedByUser(Optional.ofNullable(event.getValue()).map(UserEntity::getUsername).orElse(null));
             refreshFilter();
         });
+        if (SecurityUtils.isUserInRole(ROLE_USER)) {
+            userCbx.setVisible(false);
+        }
         unpaidCheck.addValueChangeListener(event -> {
             filter.setNotPaidBefore(Boolean.TRUE.equals(event.getValue()) ? LocalDateTime.now() : null);
             refreshFilter();
