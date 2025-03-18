@@ -8,7 +8,9 @@ import ch.pfaditools.accounting.model.entity.FileEntity;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.views.AbstractView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
+import com.vaadin.componentfactory.pdfviewer.PdfViewer;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -17,6 +19,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -40,7 +43,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 
 @Route(value = ROUTE_EDIT_RECEIPT, layout = MainLayout.class)
 @PermitAll
-public class EditReceiptView extends VerticalLayout implements HasLogger, HasNotification, HasUrlParameter<String> {
+public class EditReceiptView extends AbstractView implements HasLogger, HasNotification, HasUrlParameter<String> {
 
     private final transient FileService fileService;
     private final transient ReceiptService receiptService;
@@ -51,7 +54,7 @@ public class EditReceiptView extends VerticalLayout implements HasLogger, HasNot
 
     private final FileBuffer buffer = new FileBuffer();
     private final Upload upload = new Upload(buffer);
-    private final Image image = new Image();
+    private final Div mediaDiv = new Div();
 
     private final Button deleteButton = new Button("Delete");
     private final Button saveButton = new Button("Save");
@@ -70,7 +73,7 @@ public class EditReceiptView extends VerticalLayout implements HasLogger, HasNot
     }
 
     private Component createForm() {
-        VerticalLayout uploadLayout = new VerticalLayout(upload, image);
+        VerticalLayout uploadLayout = new VerticalLayout(upload, mediaDiv);
         FormLayout layout = new FormLayout(nameField, amountField, descriptionField, uploadLayout);
 
         layout.setResponsiveSteps(
@@ -82,7 +85,7 @@ public class EditReceiptView extends VerticalLayout implements HasLogger, HasNot
 
     private Component createButtonsBar() {
         HorizontalLayout buttonsBar = new HorizontalLayout(deleteButton, saveButton);
-        buttonsBar.setJustifyContentMode(JustifyContentMode.BETWEEN);
+        buttonsBar.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         buttonsBar.setWidthFull();
 
         deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
@@ -136,7 +139,9 @@ public class EditReceiptView extends VerticalLayout implements HasLogger, HasNot
         }
 
         receipt.updateCreateModifyFields(SecurityUtils.getAuthenticatedUsername());
-        receipt.setGroup(SecurityUtils.getAuthenticatedUserGroup());
+        if (SecurityUtils.getAuthenticatedUserGroup() != null) {
+            receipt.setGroup(SecurityUtils.getAuthenticatedUserGroup());
+        }
         ServiceResponse<ReceiptEntity> response = receiptService.save(receipt);
         if (response.hasErrorMessages()) {
             response.getErrorMessages().forEach(this::showErrorNotification);
@@ -179,21 +184,46 @@ public class EditReceiptView extends VerticalLayout implements HasLogger, HasNot
             uploadedFile.setFileName(fileName);
             uploadedFile.setMimeType(mimeType);
 
-            image.setSrc(new StreamResource(fileName, buffer::getInputStream));
+            setMedia(new StreamResource(fileName, buffer::getInputStream), mimeType);
         });
         upload.setAcceptedFileTypes(".pdf", ".png", ".jpg", ".jpeg");
     }
 
     protected void render() {
-        removeAll();
+        super.render();
         add(createForm());
         add(createButtonsBar());
     }
 
     private void setupLayout() {
         addClassName(VIEW_WIDE);
-        image.setWidthFull();
+        mediaDiv.setWidthFull();
         upload.setWidthFull();
+    }
+
+    private void setMedia(StreamResource resource, String mimeType) {
+        mediaDiv.removeAll();
+        Component media = switch (mimeType) {
+            case "image/jpeg", "image/png" -> createImageComponent(resource);
+            case "application/pdf" -> createPdfComponent(resource);
+            default -> throw new IllegalArgumentException("Unsupported MIME type: " + mimeType);
+        };
+        mediaDiv.add(media);
+    }
+
+    private Component createImageComponent(StreamResource resource) {
+        Image image = new Image();
+        image.setSrc(resource);
+        image.setMaxWidth("100%");
+        image.setMaxHeight("100%");
+        return image;
+    }
+
+    private Component createPdfComponent(StreamResource resource) {
+        PdfViewer pdfViewer = new PdfViewer();
+        pdfViewer.setSrc(resource);
+        pdfViewer.setAddDownloadButton(false);
+        return pdfViewer;
     }
 
     @Override
@@ -217,9 +247,10 @@ public class EditReceiptView extends VerticalLayout implements HasLogger, HasNot
             receipt = receiptOptional.get();
             binder.readBean(receipt);
             ServiceResponse<InputStream> contentResponse = fileService.getFileContent(receipt.getFile());
-            contentResponse.getEntity().ifPresentOrElse(stream -> {
-                image.setSrc(new StreamResource(receipt.getFile().getFileName(), () -> stream));
-            }, () -> {
+            contentResponse.getEntity().ifPresentOrElse(stream ->
+                setMedia(new StreamResource(
+                        receipt.getFile().getFileName(), () -> stream), receipt.getFile().getMimeType()),
+                    () -> {
             });
         }, () -> receipt = new ReceiptEntity());
         render();

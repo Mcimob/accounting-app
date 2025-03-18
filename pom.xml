@@ -93,6 +93,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.vaadin.addons.componentfactory</groupId>
+            <artifactId>vcf-pdf-viewer</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>

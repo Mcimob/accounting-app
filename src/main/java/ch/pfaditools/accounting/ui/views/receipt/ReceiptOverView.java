@@ -51,7 +51,7 @@ public class ReceiptOverView extends AbstractView implements HasLogger, HasNotif
 
     public ReceiptOverView(UserService userService, ReceiptProvider receiptProvider) {
         this.userService = userService;
-        filterDataProvider = receiptProvider.withConfigurableFilter();
+        this.filterDataProvider = receiptProvider.withConfigurableFilter();
         setupLayout();
         setupFilter();
         render();
