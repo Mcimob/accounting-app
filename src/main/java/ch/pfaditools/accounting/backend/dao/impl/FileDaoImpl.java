@@ -35,7 +35,7 @@ public class FileDaoImpl extends BaseDaoImpl<FileEntity, FileEntityFilter> imple
     @Override
     public Optional<InputStream> getFileContent(FileEntity fileEntity) throws DaoException {
         try {
-            return Optional.of(contentRepository.getContent(fileEntity));
+            return Optional.ofNullable(contentRepository.getContent(fileEntity));
         } catch (StoreAccessException e) {
             throw new ContentDaoException("Error while fetching file content", e);
         }

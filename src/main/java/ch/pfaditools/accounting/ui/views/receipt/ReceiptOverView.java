@@ -115,7 +115,7 @@ public class ReceiptOverView extends AbstractView implements HasLogger, HasNotif
 
         HorizontalLayout middleLayout = new HorizontalLayout();
         middleLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        middleLayout.add(title, new Span(receipt.getAmountString()));
+        middleLayout.add(title, new Span("CHF " + receipt.getAmountString()));
         middleLayout.setWidthFull();
 
         HorizontalLayout bottomLayout = new HorizontalLayout();

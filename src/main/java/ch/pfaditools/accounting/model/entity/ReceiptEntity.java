@@ -62,11 +62,15 @@ public class ReceiptEntity extends AbstractEntity {
     }
 
     public String getAmountString() {
-        return "CHF %.2f".formatted(amount / CENTS_PER_CURRENCY);
+        return "%.2f".formatted(amount / CENTS_PER_CURRENCY);
     }
 
     public void setAmount(double amount) {
         this.amount = amount;
+    }
+
+    public void setAmountString(String amount) {
+        this.amount = (Float.parseFloat(amount) * CENTS_PER_CURRENCY);
     }
 
     public LocalDateTime getPaidOutAt() {
