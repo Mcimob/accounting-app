@@ -9,7 +9,7 @@ public class GroupEntityFilter extends AbstractFilter<GroupEntity> {
 
     @Override
     public Specification<GroupEntity> getSpecification() {
-        Specification<GroupEntity> specification = Specification.where(null);
+        Specification<GroupEntity> specification = super.getSpecification();
 
         if (name != null) {
             specification = specification.and(hasName(name));

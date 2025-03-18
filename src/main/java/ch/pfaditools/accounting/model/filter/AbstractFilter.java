@@ -7,6 +7,21 @@ import java.io.Serializable;
 
 public abstract class AbstractFilter<T extends AbstractEntity> implements Serializable {
 
-    public abstract Specification<T> getSpecification();
+    private String createdByUser;
 
+    public Specification<T> getSpecification() {
+        Specification<T> spec = Specification.where(null);
+        if (createdByUser != null) {
+            spec = spec.and(isCreatedByUser());
+        }
+        return spec;
+    }
+
+    private Specification<T> isCreatedByUser() {
+        return (root, query, cb) -> cb.equal(root.get("createdByUser"), createdByUser);
+    }
+
+    public void setCreatedByUser(String createdByUser) {
+        this.createdByUser = createdByUser;
+    }
 }
