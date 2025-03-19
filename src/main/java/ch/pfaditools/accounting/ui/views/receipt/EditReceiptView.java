@@ -74,7 +74,8 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
     private Component createForm() {
         VerticalLayout uploadLayout = new VerticalLayout(upload, mediaDiv);
         FormLayout layout = new FormLayout(nameField, amountField, descriptionField, uploadLayout);
-
+        layout.setColspan(descriptionField, 2);
+        layout.setColspan(uploadLayout, 2);
         layout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("500px", 2));

@@ -107,7 +107,6 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
                             QueryParameters.of("receiptId", receipt.getId().toString())));
         });
         grid.setItems(filterDataProvider);
-        grid.setHeightFull();
         grid.setWidthFull();
         return grid;
     }

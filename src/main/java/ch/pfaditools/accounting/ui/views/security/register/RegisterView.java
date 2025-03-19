@@ -15,9 +15,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
@@ -30,6 +29,8 @@ import java.util.Optional;
 
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER;
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_CONTENT_MATCH_WIDTH;
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_WIDTH_NARROW;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
 
 @Route(ROUTE_REGISTER)
@@ -152,13 +153,14 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
         Button registerButton = new Button("Register", this::registerUser);
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        return new Div(
-                new FormLayout(
-                        usernameField,
-                        passwordField,
-                        confirmPasswordField,
-                        groupField,
-                        codeField),
+        VerticalLayout layout = new VerticalLayout(
+                usernameField,
+                passwordField,
+                confirmPasswordField,
+                groupField,
+                codeField,
                 registerButton);
+        layout.addClassNames(STYLE_CONTENT_MATCH_WIDTH, STYLE_WIDTH_NARROW);
+        return layout;
     }
 }

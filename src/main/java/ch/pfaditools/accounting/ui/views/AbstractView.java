@@ -3,7 +3,9 @@ package ch.pfaditools.accounting.ui.views;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.dom.Style;
+
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_CENTER;
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_COLUMN;
 
 public abstract class AbstractView extends Div {
 
@@ -22,7 +24,6 @@ public abstract class AbstractView extends Div {
     protected void render() {
         removeAll();
         super.add(layout);
-        layout.getStyle().setDisplay(Style.Display.FLEX);
-        layout.getStyle().setFlexDirection(Style.FlexDirection.COLUMN);
+        layout.addClassNames(STYLE_FLEX_COLUMN, STYLE_FLEX_CENTER);
     }
 }
