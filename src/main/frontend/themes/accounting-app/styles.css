@@ -19,11 +19,11 @@ vaadin-combo-box-item:hover {
 }
 
 .view {
-    width: 100%;
-    min-height: calc(100% - 2rem);
+    min-width: calc(100% - 1rem);
+    min-height: calc(100% - 1rem);
     display: grid;
     place-items: center;
-    padding-block: 1rem;
+    padding: .5rem;
     background-color: var(--clr-bg);
     & > * {
         max-width: 800px;
