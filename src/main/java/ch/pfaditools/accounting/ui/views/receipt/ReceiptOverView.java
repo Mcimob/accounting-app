@@ -8,7 +8,7 @@ import ch.pfaditools.accounting.model.filter.ReceiptEntityFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
-import ch.pfaditools.accounting.ui.views.AbstractView;
+import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -38,7 +38,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
 @Route(value = ROUTE_RECEIPT_OVERVIEW, layout = MainLayout.class)
 @PermitAll
-public class ReceiptOverView extends AbstractView implements HasLogger, HasNotification {
+public class ReceiptOverView extends AbstractNarrowView implements HasLogger, HasNotification {
 
     private final transient UserService userService;
     private final ConfigurableFilterDataProvider<ReceiptEntity, Void, ReceiptEntityFilter> filterDataProvider;
@@ -108,6 +108,7 @@ public class ReceiptOverView extends AbstractView implements HasLogger, HasNotif
         });
         grid.setItems(filterDataProvider);
         grid.setHeightFull();
+        grid.setWidthFull();
         return grid;
     }
 

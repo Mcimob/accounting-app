@@ -8,7 +8,7 @@ import ch.pfaditools.accounting.model.entity.FileEntity;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
-import ch.pfaditools.accounting.ui.views.AbstractView;
+import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
 import com.vaadin.componentfactory.pdfviewer.PdfViewer;
 import com.vaadin.flow.component.ClickEvent;
@@ -38,12 +38,11 @@ import jakarta.annotation.security.PermitAll;
 import java.io.InputStream;
 import java.util.Optional;
 
-import static ch.pfaditools.accounting.ui.DesignConstants.VIEW_WIDE;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 
 @Route(value = ROUTE_EDIT_RECEIPT, layout = MainLayout.class)
 @PermitAll
-public class EditReceiptView extends AbstractView implements HasLogger, HasNotification, HasUrlParameter<String> {
+public class EditReceiptView extends AbstractNarrowView implements HasLogger, HasNotification, HasUrlParameter<String> {
 
     private final transient FileService fileService;
     private final transient ReceiptService receiptService;
@@ -196,7 +195,6 @@ public class EditReceiptView extends AbstractView implements HasLogger, HasNotif
     }
 
     private void setupLayout() {
-        addClassName(VIEW_WIDE);
         mediaDiv.setWidthFull();
         upload.setWidthFull();
     }

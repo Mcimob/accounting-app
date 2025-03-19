@@ -7,6 +7,7 @@ import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.entity.GroupEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.views.AbstractWideView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -19,7 +20,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
@@ -36,7 +36,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
 
 @Route(value = ROUTE_ADMIN, layout = MainLayout.class)
 @RolesAllowed(ROLE_ADMIN)
-public class AdminView extends VerticalLayout implements HasNotification, HasLogger {
+public class AdminView extends AbstractWideView implements HasNotification, HasLogger {
 
     public static final int CODE_LENGTH = 24;
     private final GroupService groupService;
@@ -187,8 +187,9 @@ public class AdminView extends VerticalLayout implements HasNotification, HasLog
         groupProvider.refreshAll();
     }
 
-    private void render() {
-        removeAll();
+    @Override
+    protected void render() {
+        super.render();
         add(new H1("Admin View"));
         add(createGrid());
         add(createForm());

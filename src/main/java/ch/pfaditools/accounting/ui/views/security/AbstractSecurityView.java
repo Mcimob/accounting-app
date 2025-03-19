@@ -1,22 +1,16 @@
 package ch.pfaditools.accounting.ui.views.security;
 
+import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public abstract class AbstractSecurityView extends VerticalLayout {
+public abstract class AbstractSecurityView extends AbstractNarrowView {
 
     private final VerticalLayout layout = new VerticalLayout();
 
     public AbstractSecurityView() {
-        setupStyles();
         render();
         setupBinder();
-    }
-
-    private void setupStyles() {
-        setAlignItems(Alignment.CENTER);
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setSizeFull();
     }
 
     private Component createLayout() {
@@ -25,8 +19,9 @@ public abstract class AbstractSecurityView extends VerticalLayout {
         return layout;
     }
 
-    private void render() {
-        removeAll();
+    @Override
+    protected void render() {
+        super.render();
         add(createLayout());
         layout.add(createHeader(), createContent());
     }
