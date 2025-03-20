@@ -21,7 +21,7 @@ import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN_STRING;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
@@ -86,7 +86,7 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        if (SecurityUtils.isUserInRole(ROLE_ADMIN)) {
+        if (SecurityUtils.isUserInRole(ROLE_ADMIN_STRING)) {
             nav.addItem(new SideNavItem("Admin", ROUTE_ADMIN, VaadinIcon.COGS.create()));
         }
         nav.addItem(new SideNavItem("Receipt Overview", ROUTE_RECEIPT_OVERVIEW, VaadinIcon.RECORDS.create()));

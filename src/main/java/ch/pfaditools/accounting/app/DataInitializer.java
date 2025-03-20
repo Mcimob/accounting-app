@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
-import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN_STRING;
 
 @Configuration
 public class DataInitializer {
@@ -35,7 +35,7 @@ public class DataInitializer {
                 UserEntity admin = new UserEntity();
                 admin.setUsername(adminUsername);
                 admin.setPassword(passwordEncoder.encode(adminPassword));
-                admin.setRoles(Set.of(ROLE_ADMIN));
+                admin.setRoles(Set.of(ROLE_ADMIN_STRING));
                 admin.updateCreateModifyFields("INIT");
                 userService.save(admin);
 

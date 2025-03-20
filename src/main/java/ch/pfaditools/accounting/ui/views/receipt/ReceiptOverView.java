@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
-import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER_STRING;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
@@ -62,7 +62,7 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
     }
 
     private void setupFilter() {
-        if (Objects.requireNonNull(SecurityUtils.getCurrentUser()).getRoles().contains(ROLE_USER)) {
+        if (Objects.requireNonNull(SecurityUtils.getCurrentUser()).getRoles().contains(ROLE_USER_STRING)) {
             filter.setCreatedByUser(SecurityUtils.getAuthenticatedUsername());
         } else {
             filter.setGroup(SecurityUtils.getAuthenticatedUserGroup());
@@ -85,7 +85,7 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
            filter.setCreatedByUser(Optional.ofNullable(event.getValue()).map(UserEntity::getUsername).orElse(null));
             refreshFilter();
         });
-        if (SecurityUtils.isUserInRole(ROLE_USER)) {
+        if (SecurityUtils.isUserInRole(ROLE_USER_STRING)) {
             userCbx.setVisible(false);
         }
         unpaidCheck.addValueChangeListener(event -> {

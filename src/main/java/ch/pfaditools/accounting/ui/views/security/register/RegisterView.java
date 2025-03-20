@@ -27,8 +27,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
-import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
-import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN_STRING;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER_STRING;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_CONTENT_MATCH_WIDTH;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_WIDTH_NARROW;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
@@ -105,9 +105,9 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
                 userWithCodeAndGroup.getCode(), group.get().getGroupCode());
 
         if (matchesGroupAdminCode) {
-            newUser.getRoles().add(ROLE_GROUP_ADMIN);
+            newUser.getRoles().add(ROLE_GROUP_ADMIN_STRING);
         } else if (matchesGroupUserCode) {
-            newUser.getRoles().add(ROLE_USER);
+            newUser.getRoles().add(ROLE_USER_STRING);
         } else {
             showWarningNotification("Invalid group code");
             return;
