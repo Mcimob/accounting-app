@@ -16,10 +16,9 @@ import java.util.Optional;
 public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<T>> implements BaseService<T, F> {
 
     public static final String ERROR_GENERAL = "service.base.error.general";
-
     public static final String ERROR_NULL = "service.base.error.null";
-
     public static final String ERROR_VERSION = "service.base.error.version";
+    public static final String ERROR_ENTITY_NOT_FOUND = "service.base.error.entityNotFound";
 
     private final BaseDao<T, F> dao;
 
@@ -124,7 +123,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             Optional<T> result = dao.fetchById(id, loadType);
-            result.ifPresentOrElse(response::setEntity, () -> response.addErrorMessage("Entity not found"));
+            result.ifPresentOrElse(response::setEntity, () -> response.addErrorMessage(ERROR_ENTITY_NOT_FOUND));
             return response;
         } catch (DaoException e) {
             return handleException(e, "Error fetching entity by ID");
@@ -140,7 +139,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             Optional<T> result = dao.fetchById(id);
-            result.ifPresentOrElse(response::setEntity, () -> response.addErrorMessage("Entity not found"));
+            result.ifPresentOrElse(response::setEntity, () -> response.addErrorMessage(ERROR_ENTITY_NOT_FOUND));
             return response;
         } catch (DaoException e) {
             return handleException(e, "Error fetching entity by ID");

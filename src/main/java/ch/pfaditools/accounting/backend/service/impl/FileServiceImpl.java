@@ -32,7 +32,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileEntity, FileEntityFilte
             response.setEntity(dao.saveWithFile(fileEntity, file).orElse(null));
             return response;
         } catch (ContentDaoException e) {
-            response.addErrorMessage("service.file.saveWithFile.error");
+            response.addErrorMessage("service.file.error.saveWithFile");
             return response;
         } catch (DaoException e) {
             return handleException(e, "Error saving entity with file");
