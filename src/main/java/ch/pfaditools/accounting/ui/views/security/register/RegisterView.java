@@ -87,7 +87,7 @@ public class RegisterView extends AbstractNarrowView implements HasLogger, HasNo
         try {
             binder.writeBean(userWithCodeAndGroup);
         } catch (ValidationException e) {
-            logInfo("Validation failed for some fields", e);
+            getLogger().info("Validation failed for some fields", e);
             return;
         }
 

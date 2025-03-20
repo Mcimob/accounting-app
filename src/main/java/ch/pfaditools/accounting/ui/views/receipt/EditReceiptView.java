@@ -119,7 +119,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
         try {
             binder.writeBean(receipt);
         } catch (ValidationException e) {
-            logWarning("Validation failed for saving receipt", e);
+            getLogger().warn("Validation failed for saving receipt", e);
             return;
         }
         if (receipt.getFile() == null && uploadedFile == null) {
@@ -235,7 +235,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
             try {
                 id = Long.parseLong(receiptId);
             } catch (NumberFormatException e) {
-                logInfo("Invalid receipt ID: " + receiptId);
+                getLogger().info("Invalid receipt ID: {}", receiptId);
                 UI.getCurrent().getPage().getHistory().back();
                 return;
             }

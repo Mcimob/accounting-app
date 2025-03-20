@@ -29,7 +29,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserEntity, UserEntityFilte
             Optional<UserEntity> user = dao.fetchOne(filter);
             return user.orElseThrow(() -> new UsernameNotFoundException("User %s not found".formatted(username)));
         } catch (DaoException e) {
-            logWarning("User %s not found".formatted(username), e);
+            getLogger().warn("User %s not found".formatted(username), e);
             throw new UsernameNotFoundException("User %s not found".formatted(username));
         }
     }

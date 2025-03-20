@@ -29,7 +29,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
     protected <R> ServiceResponse<R> handleException(Exception e, String message) {
         ServiceResponse<R> response = new ServiceResponse<>();
-        logSevere(message, e);
+        getLogger().error(message, e);
         response.addErrorMessage(ERROR_GENERAL);
         return response;
     }
@@ -37,7 +37,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
     protected <R> boolean handleNullCheck(ServiceResponse<R> response, Object... objects) {
         for (Object object : objects) {
             if (object == null) {
-                logWarning("A null object was passed to a service method");
+                getLogger().warn("A null object was passed to a service method");
                 response.addErrorMessage(ERROR_NULL);
                 return true;
             }
@@ -46,7 +46,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
     }
 
     protected <R> ServiceResponse<R> handleVersioningException(VersioningDaoException e, ServiceResponse<R> response) {
-        logWarning("An exception occurred while saving: ", e);
+        getLogger().warn("An exception occurred while saving: ", e);
         response.addErrorMessage(ERROR_VERSION);
         return response;
     }

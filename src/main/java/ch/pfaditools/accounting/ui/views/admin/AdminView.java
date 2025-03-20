@@ -173,7 +173,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
         try {
             groupBinder.writeBean(groupToSave);
         } catch (ValidationException e) {
-            logInfo("Validation failed", e);
+            getLogger().info("Validation failed", e);
             return;
         }
         groupToSave.updateCreateModifyFields(SecurityUtils.getAuthenticatedUsername());
