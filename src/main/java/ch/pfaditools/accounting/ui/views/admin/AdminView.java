@@ -190,7 +190,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
     private void onDeleteButtonClicked(ClickEvent<Button> clickEvent) {
         Optional<GroupEntity> groupToRemove = groupGrid.getSelectedItems().stream().findFirst();
         if (groupToRemove.isEmpty()) {
-            showWarningNotification(getTranslation("view.admin.notification.noGroupSelected"));
+            showWarningNotification("view.admin.notification.noGroupSelected");
             return;
         }
         ServiceResponse<GroupEntity> response = groupService.delete(groupToRemove.get());

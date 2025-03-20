@@ -123,7 +123,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
             return;
         }
         if (receipt.getFile() == null && uploadedFile == null) {
-            showErrorNotification(getTranslation("view.editReceipt.notification.fileRequired"));
+            showErrorNotification("view.editReceipt.notification.fileRequired");
             return;
         }
 

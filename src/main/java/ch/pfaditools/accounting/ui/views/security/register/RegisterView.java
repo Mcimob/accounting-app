@@ -112,7 +112,7 @@ public class RegisterView extends AbstractNarrowView implements HasLogger, HasNo
         } else if (matchesGroupUserCode) {
             newUser.getRoles().add(ROLE_USER_STRING);
         } else {
-            showWarningNotification(getTranslation("view.register.notification.invalidCode"));
+            showWarningNotification("view.register.notification.invalidCode");
             return;
         }
         newUser.setGroup(group.get());
@@ -125,7 +125,7 @@ public class RegisterView extends AbstractNarrowView implements HasLogger, HasNo
             return;
         }
         if (userResponse.getEntity().isPresent()) {
-            showWarningNotification(getTranslation("view.register.notification.userExists"));
+            showWarningNotification("view.register.notification.userExists");
             return;
         }
 
@@ -135,7 +135,7 @@ public class RegisterView extends AbstractNarrowView implements HasLogger, HasNo
         if (saveResponse.hasErrorMessages()) {
             saveResponse.getErrorMessages().forEach(this::showErrorNotification);
         } else {
-            showSuccessNotification(getTranslation("view.register.notification.success"));
+            showSuccessNotification("view.register.notification.success");
             UI.getCurrent().navigate(ROUTE_LOGIN);
         }
     }
