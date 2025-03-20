@@ -8,6 +8,7 @@ import ch.pfaditools.accounting.model.entity.FileEntity;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.components.CustomUpload;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
 import com.vaadin.componentfactory.pdfviewer.PdfViewer;
@@ -24,11 +25,11 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
@@ -42,21 +43,22 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 
 @Route(value = ROUTE_EDIT_RECEIPT, layout = MainLayout.class)
 @PermitAll
-public class EditReceiptView extends AbstractNarrowView implements HasLogger, HasNotification, HasUrlParameter<String> {
+public class EditReceiptView extends AbstractNarrowView implements HasLogger, HasNotification, HasUrlParameter<String>,
+        HasDynamicTitle {
 
     private final transient FileService fileService;
     private final transient ReceiptService receiptService;
 
-    private final TextField nameField = new TextField("Name");
-    private final TextField amountField = new TextField("Amount");
-    private final TextArea descriptionField = new TextArea("Description");
+    private final TextField titleField = new TextField(getTranslation("entity.receipt.title"));
+    private final TextField amountField = new TextField(getTranslation("entity.receipt.amount"));
+    private final TextArea descriptionField = new TextArea(getTranslation("entity.receipt.description"));
 
     private final FileBuffer buffer = new FileBuffer();
-    private final Upload upload = new Upload(buffer);
+    private final CustomUpload upload = new CustomUpload(buffer);
     private final Div mediaDiv = new Div();
 
-    private final Button deleteButton = new Button("Delete");
-    private final Button saveButton = new Button("Save");
+    private final Button deleteButton = new Button(getTranslation("view.general.delete"));
+    private final Button saveButton = new Button(getTranslation("view.general.save"));
 
     private final Binder<ReceiptEntity> binder = new Binder<>();
     private ReceiptEntity receipt;
@@ -73,7 +75,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
 
     private Component createForm() {
         VerticalLayout uploadLayout = new VerticalLayout(upload, mediaDiv);
-        FormLayout layout = new FormLayout(nameField, amountField, descriptionField, uploadLayout);
+        FormLayout layout = new FormLayout(titleField, amountField, descriptionField, uploadLayout);
         layout.setColspan(descriptionField, 2);
         layout.setColspan(uploadLayout, 2);
         layout.setResponsiveSteps(
@@ -97,7 +99,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
     private void setupBinder() {
         amountField.setPattern("[0-9]+\\.[0-9]{2}");
         amountField.setPrefixComponent(new Div("CHF"));
-        binder.forField(nameField)
+        binder.forField(titleField)
                 .asRequired()
                 .bind(ReceiptEntity::getName, ReceiptEntity::setName);
         binder.forField(descriptionField)
@@ -121,7 +123,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
             return;
         }
         if (receipt.getFile() == null && uploadedFile == null) {
-            showErrorNotification("A file is required");
+            showErrorNotification(getTranslation("view.editReceipt.notification.fileRequired"));
             return;
         }
 
@@ -187,6 +189,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
             setMedia(new StreamResource(fileName, buffer::getInputStream), mimeType);
         });
         upload.setAcceptedFileTypes(".pdf", ".png", ".jpg", ".jpeg");
+
     }
 
     protected void render() {
@@ -253,5 +256,10 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
             });
         }, () -> receipt = new ReceiptEntity());
         render();
+    }
+
+    @Override
+    public String getPageTitle() {
+        return getTranslation("view.editReceipt.title");
     }
 }

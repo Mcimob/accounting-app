@@ -23,6 +23,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -36,7 +37,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
 
 @Route(value = ROUTE_ADMIN, layout = MainLayout.class)
 @RolesAllowed(ROLE_ADMIN)
-public class AdminView extends AbstractWideView implements HasNotification, HasLogger {
+public class AdminView extends AbstractWideView implements HasNotification, HasLogger, HasDynamicTitle {
 
     public static final int CODE_LENGTH = 24;
     private final GroupService groupService;
@@ -46,10 +47,12 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
     private final Grid<GroupEntity> groupGrid = new Grid<>();
     private final Binder<GroupEntity> groupBinder = new Binder<>();
 
-    private final TextField nameField = new TextField("Name");
-    private final TextField latestUpdatedUserField = new TextField("Latest updated user");
-    private final TextField createdDateTimeField = new TextField("Created date");
-    private final TextField updatedDateTimeField = new TextField("Updated date");
+    private final TextField nameField = new TextField();
+    private final TextField latestUpdatedUserField = new TextField();
+    private final TextField createdDateTimeField = new TextField();
+    private final TextField updatedDateTimeField = new TextField();
+
+    private final Button removeButton = new Button();
 
     public AdminView(GroupService groupService, GroupProvider groupProvider, PasswordEncoder passwordEncoder) {
         this.groupService = groupService;
@@ -60,17 +63,24 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
     }
 
     private Component createGrid() {
-        groupGrid.addColumn(GroupEntity::getName).setHeader("Name");
-        groupGrid.addColumn(AbstractEntity::getLatestUpdatedUser).setHeader("Latest updated user");
-        groupGrid.addColumn(AbstractEntity::getCreatedDateTime).setHeader("Created date");
-        groupGrid.addColumn(AbstractEntity::getUpdatedDateTime).setHeader("Updated date");
-        groupGrid.addComponentColumn(this::createUserCodeButton).setHeader("Generate User-Code");
-        groupGrid.addComponentColumn(this::createGroupAdminCodeButton).setHeader("Generate Group-Admin-Code");
+        groupGrid.addColumn(GroupEntity::getName)
+                .setHeader(getTranslation("entity.group.name"));
+        groupGrid.addColumn(AbstractEntity::getLatestUpdatedUser)
+                .setHeader(getTranslation("entity.abstract.lastUpdatedUser"));
+        groupGrid.addColumn(AbstractEntity::getCreatedDateTime)
+                .setHeader(getTranslation("entity.abstract.createdDateTime"));
+        groupGrid.addColumn(AbstractEntity::getUpdatedDateTime)
+                .setHeader(getTranslation("entity.abstract.updatedDateTime"));
+        groupGrid.addComponentColumn(this::createUserCodeButton)
+                .setHeader(getTranslation("entity.group.userCode"));
+        groupGrid.addComponentColumn(this::createGroupAdminCodeButton)
+                .setHeader(getTranslation("entity.group.groupAdminCode"));
 
         groupGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
         groupGrid.addSelectionListener(event -> {
             Optional<GroupEntity> group = event.getFirstSelectedItem();
             group.ifPresentOrElse(groupBinder::readBean, () -> groupBinder.readBean(new GroupEntity()));
+            removeButton.setEnabled(group.isPresent());
         });
         groupGrid.setItems(groupProvider);
         return groupGrid;
@@ -83,8 +93,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
         button.addClickListener(event -> onAddCodeButtonClicked(
                 group,
                 GroupEntity::setGroupCode,
-                "User-Code generated",
-                "New user code was generated: "));
+                getTranslation("entity.group.userCode")));
         return button;
     }
 
@@ -95,13 +104,12 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
         button.addClickListener(event -> onAddCodeButtonClicked(
                 group,
                 GroupEntity::setGroupAdminCode,
-                "Group-Admin-Code generated",
-                "New Group-Admin-Code was generated: "));
+                getTranslation("entity.group.groupAdminCode")));
         return button;
     }
 
     private void onAddCodeButtonClicked(
-            GroupEntity group, BiConsumer<GroupEntity, String> setter, String topText, String centerText) {
+            GroupEntity group, BiConsumer<GroupEntity, String> setter, String codeText) {
         String code = RandomStringUtils.secure().nextAlphanumeric(CODE_LENGTH);
         String encodedCode = passwordEncoder.encode(code);
         setter.accept(group, encodedCode);
@@ -115,18 +123,23 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
 
         Dialog dialog = new Dialog();
 
-        Button closeButton = new Button("Close");
+        Button closeButton = new Button(getTranslation("view.general.close"));
         closeButton.addClickListener(click -> dialog.close());
         closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         dialog.getFooter().add(closeButton);
 
-        dialog.setTop(topText);
-        dialog.add(new Text(centerText + code));
+        dialog.setHeaderTitle(getTranslation("view.admin.codeDialogTitle", codeText));
+        dialog.add(new Text(getTranslation("view.admin.codeDialogText", codeText, code)));
 
         dialog.open();
     }
 
     private Component createForm() {
+        nameField.setLabel(getTranslation("entity.group.name"));
+        latestUpdatedUserField.setLabel(getTranslation(getTranslation("entity.abstract.lastUpdatedUser")));
+        createdDateTimeField.setLabel(getTranslation("entity.abstract.createdDateTime"));
+        updatedDateTimeField.setLabel(getTranslation("entity.abstract.updatedDateTime"));
+
         FormLayout formLayout = new FormLayout();
         formLayout.setResponsiveSteps(new FormLayout.ResponsiveStep("500px", 2));
 
@@ -136,14 +149,15 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
     }
 
     private Component createButtons() {
-        Button saveButton = new Button("Save");
-        Button removeButton = new Button("Remove");
+        Button saveButton = new Button(getTranslation("view.general.save"));
+        removeButton.setText(getTranslation("view.general.delete"));
 
         saveButton.addClickListener(this::onSaveButtonClicked);
         removeButton.addClickListener(this::onDeleteButtonClicked);
 
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         removeButton.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+        removeButton.setEnabled(false);
 
         return new HorizontalLayout(removeButton, saveButton);
     }
@@ -176,7 +190,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
     private void onDeleteButtonClicked(ClickEvent<Button> clickEvent) {
         Optional<GroupEntity> groupToRemove = groupGrid.getSelectedItems().stream().findFirst();
         if (groupToRemove.isEmpty()) {
-            showWarningNotification("No group selected");
+            showWarningNotification(getTranslation("view.admin.notification.noGroupSelected"));
             return;
         }
         ServiceResponse<GroupEntity> response = groupService.delete(groupToRemove.get());
@@ -190,7 +204,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
     @Override
     protected void render() {
         super.render();
-        add(new H1("Admin View"));
+        add(new H1(getTranslation("view.admin.title")));
         add(createGrid());
         add(createForm());
         add(createButtons());
@@ -198,7 +212,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
 
     private void setupBinder() {
         groupBinder.forField(nameField)
-                .asRequired()
+                .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.group.name")))
                 .bind(GroupEntity::getName, GroupEntity::setName);
         groupBinder.forField(latestUpdatedUserField)
                 .bindReadOnly(AbstractEntity::getLatestUpdatedUser);
@@ -206,5 +220,10 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
                 .bindReadOnly(AbstractEntity::getCreatedDateTimeString);
         groupBinder.forField(updatedDateTimeField)
                 .bindReadOnly(AbstractEntity::getUpdatedDateTimeString);
+    }
+
+    @Override
+    public String getPageTitle() {
+        return getTranslation("view.admin.title");
     }
 }

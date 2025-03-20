@@ -24,6 +24,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
@@ -38,13 +39,13 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
 @Route(value = ROUTE_RECEIPT_OVERVIEW, layout = MainLayout.class)
 @PermitAll
-public class ReceiptOverView extends AbstractNarrowView implements HasLogger, HasNotification {
+public class ReceiptOverView extends AbstractNarrowView implements HasLogger, HasNotification, HasDynamicTitle {
 
     private final transient UserService userService;
     private final ConfigurableFilterDataProvider<ReceiptEntity, Void, ReceiptEntityFilter> filterDataProvider;
 
-    private final ComboBox<UserEntity> userCbx = new ComboBox<>("Created by");
-    private final Checkbox unpaidCheck = new Checkbox("Unpaid");
+    private final ComboBox<UserEntity> userCbx = new ComboBox<>(getTranslation("entity.abstract.createdUser"));
+    private final Checkbox unpaidCheck = new Checkbox(getTranslation("view.receipt.unpaid"));
     private final Grid<ReceiptEntity> grid = new Grid<>();
 
     private final ReceiptEntityFilter filter = new ReceiptEntityFilter();
@@ -71,7 +72,7 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
     }
 
     private Component createAddButton() {
-        Button createButton = new Button("Add Receipt");
+        Button createButton = new Button(getTranslation("view.receipt.addReceipt"));
         createButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         createButton.addClickListener(click -> UI.getCurrent().navigate(ROUTE_EDIT_RECEIPT));
 
@@ -144,5 +145,10 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
         add(createAddButton());
         add(createSelectionBar());
         add(createGrid());
+    }
+
+    @Override
+    public String getPageTitle() {
+        return getTranslation("view.receipt.title");
     }
 }

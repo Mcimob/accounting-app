@@ -8,8 +8,8 @@ import ch.pfaditools.accounting.model.entity.GroupEntity;
 import ch.pfaditools.accounting.model.entity.UserEntity;
 import ch.pfaditools.accounting.model.filter.GroupEntityFilter;
 import ch.pfaditools.accounting.model.filter.UserEntityFilter;
+import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
-import ch.pfaditools.accounting.ui.views.security.AbstractSecurityView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -21,6 +21,7 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,11 +32,12 @@ import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADM
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER_STRING;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_CONTENT_MATCH_WIDTH;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_WIDTH_NARROW;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
 
 @Route(ROUTE_REGISTER)
 @AnonymousAllowed
-public class RegisterView extends AbstractSecurityView implements HasLogger, HasNotification {
+public class RegisterView extends AbstractNarrowView implements HasLogger, HasNotification, HasDynamicTitle {
 
     private final UserService userService;
     private final GroupService groupService;
@@ -43,11 +45,11 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
 
     private Binder<UserWithCodeAndGroup> binder;
 
-    private TextField usernameField;
-    private PasswordField passwordField;
-    private PasswordField confirmPasswordField;
-    private TextField groupField;
-    private PasswordField codeField;
+    private final TextField usernameField = new TextField();
+    private final PasswordField passwordField = new PasswordField();
+    private final PasswordField confirmPasswordField = new PasswordField();
+    private final TextField groupField = new TextField();
+    private final PasswordField codeField = new PasswordField();
 
     private final UserWithCodeAndGroup userWithCodeAndGroup = new UserWithCodeAndGroup();
 
@@ -56,25 +58,26 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
         this.userService = userService;
         this.groupService = groupService;
         this.passwordEncoder = passwordEncoder;
+        render();
+        setupBinder();
     }
 
-    @Override
-    protected void setupBinder() {
+    private void setupBinder() {
         binder = new Binder<>();
         binder.forField(usernameField)
-                .asRequired("Required")
+                .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.username")))
                 .bind(u -> u.getUser().getUsername(), (u, val) -> u.getUser().setUsername(val));
         binder.forField(passwordField)
-                .asRequired("Required")
+                .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.password")))
                 .bind(u -> u.getUser().getPassword(), (u, val) -> u.getUser().setPassword(val));
         binder.forField(confirmPasswordField)
-                .asRequired("Required")
+                .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.password")))
                 .bind(u -> u.getUser().getPassword(), (u, val) -> u.getUser().setPassword(val));
         binder.forField(groupField)
-                .asRequired("Required")
+                .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.group")))
                 .bind(UserWithCodeAndGroup::getGroupName, UserWithCodeAndGroup::setGroupName);
         binder.forField(codeField)
-                .asRequired("Required")
+                .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.code")))
                 .bind(UserWithCodeAndGroup::getCode, UserWithCodeAndGroup::setCode);
 
         binder.setBean(userWithCodeAndGroup);
@@ -109,7 +112,7 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
         } else if (matchesGroupUserCode) {
             newUser.getRoles().add(ROLE_USER_STRING);
         } else {
-            showWarningNotification("Invalid group code");
+            showWarningNotification(getTranslation("view.register.notification.invalidCode"));
             return;
         }
         newUser.setGroup(group.get());
@@ -122,7 +125,7 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
             return;
         }
         if (userResponse.getEntity().isPresent()) {
-            showWarningNotification("User already exists");
+            showWarningNotification(getTranslation("view.register.notification.userExists"));
             return;
         }
 
@@ -132,25 +135,23 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
         if (saveResponse.hasErrorMessages()) {
             saveResponse.getErrorMessages().forEach(this::showErrorNotification);
         } else {
-            showSuccessNotification("Registration successful! You can now log in");
-            UI.getCurrent().navigate("login");
+            showSuccessNotification(getTranslation("view.register.notification.success"));
+            UI.getCurrent().navigate(ROUTE_LOGIN);
         }
     }
 
-    @Override
-    protected Component createHeader() {
-        return new H1("Register");
+    private Component createHeader() {
+        return new H1(getTranslation("view.register.title"));
     }
 
-    @Override
-    protected Component createContent() {
-        usernameField = new TextField("Username");
-        passwordField = new PasswordField("Password");
-        confirmPasswordField = new PasswordField("Confirm Password");
-        groupField = new TextField("Group");
-        codeField = new PasswordField("Code");
+    private Component createContent() {
+        usernameField.setLabel(getTranslation("entity.user.username"));
+        passwordField.setLabel(getTranslation("entity.user.password"));
+        confirmPasswordField.setLabel(getTranslation("view.register.repeat", getTranslation("entity.user.password")));
+        groupField.setLabel(getTranslation("entity.user.group"));
+        codeField.setLabel(getTranslation("entity.user.code"));
 
-        Button registerButton = new Button("Register", this::registerUser);
+        Button registerButton = new Button(getTranslation("view.register.registerButton"), this::registerUser);
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         VerticalLayout layout = new VerticalLayout(
@@ -162,5 +163,16 @@ public class RegisterView extends AbstractSecurityView implements HasLogger, Has
                 registerButton);
         layout.addClassNames(STYLE_CONTENT_MATCH_WIDTH, STYLE_WIDTH_NARROW);
         return layout;
+    }
+
+    @Override
+    protected void render() {
+        super.render();
+        add(createHeader(), createContent());
+    }
+
+    @Override
+    public String getPageTitle() {
+        return getTranslation("view.register.title");
     }
 }
