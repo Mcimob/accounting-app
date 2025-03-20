@@ -7,7 +7,6 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -17,7 +16,6 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.server.VaadinServletRequest;
-import com.vaadin.flow.server.menu.MenuConfiguration;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
@@ -31,8 +29,6 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
  */
 public class MainLayout extends AppLayout {
 
-    private H1 viewTitle;
-
     public MainLayout() {
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -42,9 +38,6 @@ public class MainLayout extends AppLayout {
     private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
         toggle.setAriaLabel("Menu toggle");
-
-        viewTitle = new H1();
-        viewTitle.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
 
         Button logoutButton = new Button();
         logoutButton.setIcon(VaadinIcon.EXIT_O.create());
@@ -60,7 +53,7 @@ public class MainLayout extends AppLayout {
         });
         logoutButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        HorizontalLayout leftLayout = new HorizontalLayout(toggle, viewTitle);
+        HorizontalLayout leftLayout = new HorizontalLayout(toggle);
         leftLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
         HorizontalLayout rightLayout = new HorizontalLayout(logoutButton);
         rightLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
@@ -103,10 +96,5 @@ public class MainLayout extends AppLayout {
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
-        viewTitle.setText(getCurrentPageTitle());
-    }
-
-    private String getCurrentPageTitle() {
-        return MenuConfiguration.getPageHeader(getContent()).orElse("");
     }
 }
