@@ -115,7 +115,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
         setter.accept(group, encodedCode);
         ServiceResponse<GroupEntity> saveResponse = groupService.save(group);
         if (saveResponse.hasErrorMessages()) {
-            saveResponse.getErrorMessages().forEach(this::showErrorNotification);
+            showMessagesFromResponse(saveResponse);
             return;
         }
 
@@ -180,7 +180,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
 
         ServiceResponse<GroupEntity> saveResponse = groupService.save(groupToSave);
         if (saveResponse.hasErrorMessages()) {
-            saveResponse.getErrorMessages().forEach(this::showErrorNotification);
+            showMessagesFromResponse(saveResponse);
             return;
         }
         groupBinder.readBean(new GroupEntity());
@@ -195,7 +195,7 @@ public class AdminView extends AbstractWideView implements HasNotification, HasL
         }
         ServiceResponse<GroupEntity> response = groupService.delete(groupToRemove.get());
         if (response.hasErrorMessages()) {
-            response.getErrorMessages().forEach(this::showErrorNotification);
+            showMessagesFromResponse(response);
         }
 
         groupProvider.refreshAll();

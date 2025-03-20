@@ -96,7 +96,7 @@ public class RegisterView extends AbstractNarrowView implements HasLogger, HasNo
         ServiceResponse<GroupEntity> groupResponse = groupService.fetchOne(groupFilter);
         Optional<GroupEntity> group = groupResponse.getEntity();
         if (groupResponse.hasErrorMessages() || group.isEmpty()) {
-            groupResponse.getErrorMessages().forEach(this::showErrorNotification);
+            showMessagesFromResponse(groupResponse);
             return;
         }
 
@@ -121,7 +121,7 @@ public class RegisterView extends AbstractNarrowView implements HasLogger, HasNo
         userFilter.setUsername(newUser.getUsername());
         ServiceResponse<UserEntity> userResponse = userService.fetchOne(userFilter);
         if (userResponse.hasErrorMessages()) {
-            userResponse.getErrorMessages().forEach(this::showErrorNotification);
+            showMessagesFromResponse(userResponse);
             return;
         }
         if (userResponse.getEntity().isPresent()) {
@@ -133,7 +133,7 @@ public class RegisterView extends AbstractNarrowView implements HasLogger, HasNo
         newUser.updateCreateModifyFields("REGISTER");
         ServiceResponse<UserEntity> saveResponse = userService.save(newUser);
         if (saveResponse.hasErrorMessages()) {
-            saveResponse.getErrorMessages().forEach(this::showErrorNotification);
+            showMessagesFromResponse(saveResponse);
         } else {
             showSuccessNotification("view.register.notification.success");
             UI.getCurrent().navigate(ROUTE_LOGIN);

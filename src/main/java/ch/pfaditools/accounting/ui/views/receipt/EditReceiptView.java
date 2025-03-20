@@ -134,7 +134,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
             ServiceResponse<FileEntity> fileSaveResponse =
                     fileService.saveWithFile(uploadedFile, buffer.getInputStream());
             if (fileSaveResponse.hasErrorMessages()) {
-                fileSaveResponse.getErrorMessages().forEach(this::showErrorNotification);
+                showMessagesFromResponse(fileSaveResponse);
                 return;
             }
             fileSaveResponse.getEntity().ifPresent(receipt::setFile);
@@ -146,7 +146,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
         }
         ServiceResponse<ReceiptEntity> response = receiptService.save(receipt);
         if (response.hasErrorMessages()) {
-            response.getErrorMessages().forEach(this::showErrorNotification);
+            showMessagesFromResponse(response);
             return;
         }
         response.getInfoMessages().forEach(this::showSuccessNotification);
@@ -154,7 +154,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
         if (originalFile != null && uploadedFile != null) {
             ServiceResponse<FileEntity> deleteResponse = fileService.deleteFile(originalFile);
             if (deleteResponse.hasErrorMessages()) {
-                deleteResponse.getErrorMessages().forEach(this::showErrorNotification);
+                showMessagesFromResponse(deleteResponse);
             }
         }
 
@@ -169,7 +169,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
 
         ServiceResponse<ReceiptEntity> receiptResponse = receiptService.delete(receipt);
         if (receiptResponse.hasErrorMessages()) {
-            receiptResponse.getErrorMessages().forEach(this::showErrorNotification);
+            showMessagesFromResponse(receiptResponse);
             return;
         }
 
@@ -242,7 +242,7 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
             ServiceResponse<ReceiptEntity> response = receiptService.fetchById(id);
             Optional<ReceiptEntity> receiptOptional = response.getEntity();
             if (response.hasErrorMessages() || receiptOptional.isEmpty()) {
-                response.getErrorMessages().forEach(this::showErrorNotification);
+                showMessagesFromResponse(response);
                 UI.getCurrent().getPage().getHistory().back();
                 return;
             }

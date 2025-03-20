@@ -1,6 +1,7 @@
 package ch.pfaditools.accounting.ui.views;
 
 
+import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
@@ -29,6 +30,11 @@ public interface HasNotification {
         Notification notification = new Notification("", DEFAULT_SHOW_TIME, Notification.Position.BOTTOM_END);
         notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         setTextAndShow(notification, message, params);
+    }
+
+    default void showMessagesFromResponse(ServiceResponse<?> response) {
+        response.getErrorMessages().forEach(this::showErrorNotification);
+        response.getInfoMessages().forEach(this::showInfoNotification);
     }
 
     private void setTextAndShow(Notification notification, String message, Object... params) {
