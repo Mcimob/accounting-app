@@ -137,21 +137,6 @@
                             <file>${project.basedir}/eclipse-formatter.xml</file>
                         </eclipse>
                     </java>
-                    <!-- Uncomment to format TypeScript files 
-                        <typescript>
-                        <includes>
-                            <include>src/main/frontend/**/*.ts</include>
-                            <include>src/main/frontend/**/*.tsx</include>
-                        </includes>
-                        <excludes>
-                            <exclude>src/main/frontend/generated/**</exclude>
-                        </excludes>
-                        <prettier>
-                            <prettierVersion>3.3.3</prettierVersion>
-                            <configFile>.prettierrc.json</configFile>
-                        </prettier>
-                    </typescript>
-                -->
                 </configuration>
             </plugin>
             <plugin>
@@ -165,6 +150,22 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>checkstyle.xml</configLocation>
+                    <includeResources>false</includeResources>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -186,6 +187,9 @@
                     </exclusions>
                 </dependency>
             </dependencies>
+            <properties>
+                <spring.profiles.active>prod</spring.profiles.active>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -204,6 +208,24 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <spring.profiles.active>dev</spring.profiles.active>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>test</id>
+            <properties>
+                <spring.profiles.active>tst</spring.profiles.active>
+            </properties>
+        </profile>
+
 
         <profile>
             <id>it</id>
@@ -250,6 +272,5 @@
                 </plugins>
             </build>
         </profile>
-
     </profiles>
 </project>
