@@ -20,6 +20,9 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.data.domain.Page;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_PAYMENT;
@@ -48,26 +51,54 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
 
     private void setupReceiptCbx() {
         provider.getFilter().setPaidOut(false);
-
         receiptCbx.setItems(provider);
         receiptCbx.setItemLabelGenerator(receipt -> "%s | CHF %s | %s".formatted(
                 receipt.getName(),
                 AmountUtil.fromAmount(receipt.getAmount()),
                 receipt.getCreatedUser()));
 
+        receiptCbx.setAutoExpand(MultiSelectComboBox.AutoExpandMode.VERTICAL);
+
         receiptCbx.addValueChangeListener(event -> {
-            amountField.setValue(AmountUtil.fromAmount(event.getValue().stream()
+            if (!event.isFromClient()) {
+                return;
+            }
+            Set<ReceiptEntity> newReceipts = event.getValue();
+            Set<ReceiptEntity> oldReceipts = event.getOldValue();
+            amountField.setValue(AmountUtil.fromAmount(newReceipts.stream()
                     .map(ReceiptEntity::getAmount)
                     .reduce(0D, Double::sum)));
-        });
-    }
 
-    @Override
-    protected boolean afterSave() {
-        entity.getReceipts().forEach(r -> r.setPayment(entity));
-        ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(entity.getReceipts());
-        showMessagesFromResponse(response);
-        return !response.hasErrorMessages();
+            if (oldEntity.getId() == null) {
+                return;
+            }
+
+            Set<ReceiptEntity> receiptsToRemove = new HashSet<>(oldReceipts);
+            receiptsToRemove.removeAll(newReceipts);
+
+            if (!receiptsToRemove.isEmpty()) {
+                receiptsToRemove.forEach(receipt -> receipt.setPayment(null));
+                ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(receiptsToRemove);
+                showMessagesFromResponse(response);
+                provider.refreshAll();
+                if (response.hasErrorMessages()) {
+                    receiptCbx.setValue(oldReceipts);
+                }
+            }
+
+            Set<ReceiptEntity> receiptsToAdd = new HashSet<>(newReceipts);
+            receiptsToAdd.removeAll(oldReceipts);
+            if (!receiptsToAdd.isEmpty()) {
+                receiptsToAdd.forEach(receipt -> receipt.setPayment(oldEntity));
+                ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(receiptsToAdd);
+                showMessagesFromResponse(response);
+                provider.refreshAll();
+                if (response.hasErrorMessages()) {
+                    receiptCbx.setValue(oldReceipts);
+                }
+            }
+
+        });
     }
 
     @Override
@@ -109,6 +140,11 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
                 new FormLayout.ResponsiveStep("500px", 2));
 
         return layout;
+    }
+
+    @Override
+    protected PaymentEntity copyEntity(PaymentEntity entity) {
+        return new PaymentEntity(entity);
     }
 
     @Override

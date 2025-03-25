@@ -35,7 +35,8 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
 
     protected final Binder<T> binder = new Binder<>();
 
-    protected T entity;
+    protected T oldEntity;
+    protected T newEntity;
 
     public AbstractEditEntityView(BaseService<T, F> service) {
         this.service = service;
@@ -68,7 +69,7 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
 
     private void onSaveButtonClick(ClickEvent<Button> event) {
         try {
-            binder.writeBean(entity);
+            binder.writeBean(newEntity);
         } catch (ValidationException e) {
             getLogger().warn("Validation failed for saving receipt", e);
             return;
@@ -77,8 +78,8 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
             return;
         }
 
-        entity.updateCreateModifyFields(SecurityUtils.getAuthenticatedUsername());
-        ServiceResponse<T> response = service.save(entity);
+        newEntity.updateCreateModifyFields(SecurityUtils.getAuthenticatedUsername());
+        ServiceResponse<T> response = service.save(newEntity);
         if (response.hasErrorMessages()) {
             showMessagesFromResponse(response);
             return;
@@ -92,12 +93,12 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
     }
 
     private void onDeleteButtonClick(ClickEvent<Button> event) {
-        if (entity.getId() == null) {
+        if (newEntity.getId() == null) {
             UI.getCurrent().getPage().getHistory().back();
             return;
         }
 
-        ServiceResponse<T> receiptResponse = service.delete(entity);
+        ServiceResponse<T> receiptResponse = service.delete(newEntity);
         if (receiptResponse.hasErrorMessages()) {
             showMessagesFromResponse(receiptResponse);
             return;
@@ -144,12 +145,18 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
                 UI.getCurrent().getPage().getHistory().back();
                 return;
             }
-            entity = entityOptional.get();
-            binder.readBean(entity);
+            oldEntity = entityOptional.get();
+            newEntity = copyEntity(entityOptional.get());
+            binder.readBean(oldEntity);
             afterNavigation();
-        }, () -> entity = createEntity());
+        }, () -> {
+            oldEntity = createEntity();
+            newEntity = createEntity();
+        });
         render();
     }
+
+    protected abstract T copyEntity(T entity);
 
     protected abstract T createEntity();
 

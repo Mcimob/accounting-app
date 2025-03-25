@@ -14,6 +14,18 @@ import java.util.Objects;
 @Table(name = "receipt_entity")
 public class ReceiptEntity extends AbstractEntity {
 
+    public ReceiptEntity() { }
+
+    public ReceiptEntity(ReceiptEntity entity) {
+        super(entity);
+        this.name = entity.getName();
+        this.description = entity.getDescription();
+        this.amount = entity.getAmount();
+        this.file = entity.getFile();
+        this.payment = entity.getPayment();
+        this.group = entity.getGroup();
+    }
+
     @Column(nullable = false)
     private String name;
 

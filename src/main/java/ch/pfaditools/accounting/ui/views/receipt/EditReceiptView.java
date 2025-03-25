@@ -66,6 +66,11 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
     }
 
     @Override
+    protected ReceiptEntity copyEntity(ReceiptEntity entity) {
+        return new ReceiptEntity(entity);
+    }
+
+    @Override
     protected void setupBinder() {
         binder.forField(titleField)
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.receipt.title")))
@@ -83,12 +88,12 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
 
     @Override
     protected boolean beforeSave() {
-        if (entity.getFile() == null && uploadedFile == null) {
+        if (oldEntity.getFile() == null && uploadedFile == null) {
             showErrorNotification("view.editReceipt.notification.fileRequired");
             return false;
         }
 
-        originalFile = entity.getFile();
+        originalFile = oldEntity.getFile();
         if (uploadedFile != null) {
             uploadedFile.updateCreateModifyFields(SecurityUtils.getAuthenticatedUsername());
 
@@ -98,11 +103,11 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
                 showMessagesFromResponse(fileSaveResponse);
                 return false;
             }
-            fileSaveResponse.getEntity().ifPresent(entity::setFile);
+            fileSaveResponse.getEntity().ifPresent(newEntity::setFile);
         }
 
         if (SecurityUtils.getAuthenticatedUserGroup() != null) {
-            entity.setGroup(SecurityUtils.getAuthenticatedUserGroup());
+            newEntity.setGroup(SecurityUtils.getAuthenticatedUserGroup());
         }
         return true;
     }
@@ -131,7 +136,7 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
 
     @Override
     protected boolean afterDelete() {
-        fileService.deleteFile(entity.getFile());
+        fileService.deleteFile(oldEntity.getFile());
         return true;
     }
 
@@ -186,10 +191,10 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
 
     @Override
     protected void afterNavigation() {
-        ServiceResponse<InputStream> contentResponse = fileService.getFileContent(entity.getFile());
+        ServiceResponse<InputStream> contentResponse = fileService.getFileContent(oldEntity.getFile());
         contentResponse.getEntity().ifPresentOrElse(stream ->
                         setMedia(new StreamResource(
-                                entity.getFile().getFileName(), () -> stream), entity.getFile().getMimeType()),
+                                oldEntity.getFile().getFileName(), () -> stream), oldEntity.getFile().getMimeType()),
                 () -> {
                 });
     }

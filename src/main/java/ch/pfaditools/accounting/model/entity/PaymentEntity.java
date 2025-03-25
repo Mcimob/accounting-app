@@ -13,6 +13,15 @@ import java.util.Set;
 @Table(name = "payment_entity")
 public class PaymentEntity extends AbstractEntity {
 
+    public PaymentEntity() { }
+
+    public PaymentEntity(PaymentEntity paymentEntity) {
+        super(paymentEntity);
+        this.title = paymentEntity.getTitle();
+        this.description = paymentEntity.getDescription();
+        this.receipts = paymentEntity.getReceipts();
+    }
+
     @Column(nullable = false)
     private String title;
 

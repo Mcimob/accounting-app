@@ -14,6 +14,17 @@ import java.util.Objects;
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
+    public AbstractEntity() { }
+
+    public AbstractEntity(AbstractEntity entity) {
+        this.id = entity.getId();
+        this.createdUser = entity.getCreatedUser();
+        this.updatedUser = entity.getUpdatedUser();
+        this.createdDateTime = entity.getCreatedDateTime();
+        this.updatedDateTime = entity.getUpdatedDateTime();
+        this.version = entity.getVersion();
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
