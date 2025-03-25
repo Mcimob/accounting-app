@@ -111,6 +111,16 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
     }
 
     @Override
+    protected boolean afterSave() {
+        if (oldEntity.getId() == null) {
+            ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(newEntity.getReceipts());
+            showMessagesFromResponse(response);
+            return !response.hasErrorMessages();
+        }
+        return true;
+    }
+
+    @Override
     protected void setupFields() {
         titleField = new TextField(getTranslation("entity.payment.title"));
         descriptionField = new TextArea(getTranslation("entity.payment.description"));
