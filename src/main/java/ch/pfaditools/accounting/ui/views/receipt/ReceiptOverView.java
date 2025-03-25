@@ -1,6 +1,5 @@
 package ch.pfaditools.accounting.ui.views.receipt;
 
-import ch.pfaditools.accounting.backend.service.UserService;
 import ch.pfaditools.accounting.logger.HasLogger;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.model.entity.UserEntity;
@@ -8,6 +7,7 @@ import ch.pfaditools.accounting.model.filter.ReceiptEntityFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.components.UserCbxAutoHide;
 import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
@@ -17,7 +17,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -44,18 +43,17 @@ import static ch.pfaditools.accounting.ui.views.AbstractEditEntityView.KEY_ENTIT
 @PermitAll
 public class ReceiptOverView extends AbstractNarrowView implements HasLogger, HasNotification, HasDynamicTitle {
 
-    private final transient UserService userService;
     private final ConfigurableFilterDataProvider<ReceiptEntity, Void, ReceiptEntityFilter> filterDataProvider;
 
-    private final ComboBox<UserEntity> userCbx = new ComboBox<>(getTranslation("entity.abstract.createdUser"));
+    private final UserCbxAutoHide userCbx;
     private final Checkbox unpaidCheck = new Checkbox(getTranslation("view.receipt.unpaid"));
     private final Grid<ReceiptEntity> grid = new Grid<>();
 
     private final ReceiptEntityFilter filter = new ReceiptEntityFilter();
 
-    public ReceiptOverView(UserService userService, ReceiptProvider receiptProvider) {
-        this.userService = userService;
+    public ReceiptOverView(ReceiptProvider receiptProvider, UserCbxAutoHide userCbx) {
         this.filterDataProvider = receiptProvider.withConfigurableFilter();
+        this.userCbx = userCbx;
         setupLayout();
         setupFilter();
         render();
@@ -83,15 +81,11 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
     }
 
     private Component createSelectionBar() {
-        userCbx.setItems(new UserProvider(userService));
-        userCbx.setItemLabelGenerator(UserEntity::getUsername);
         userCbx.addValueChangeListener(event -> {
            filter.setCreatedByUser(Optional.ofNullable(event.getValue()).map(UserEntity::getUsername).orElse(null));
             refreshFilter();
         });
-        if (SecurityUtils.isUserInRole(ROLE_USER_STRING)) {
-            userCbx.setVisible(false);
-        }
+
         unpaidCheck.addValueChangeListener(event -> {
             filter.setNotPaidBefore(Boolean.TRUE.equals(event.getValue()) ? LocalDateTime.now() : null);
             refreshFilter();
