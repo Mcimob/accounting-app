@@ -33,7 +33,7 @@ public class ReceiptEntity extends AbstractEntity {
     private String description;
 
     @Column(nullable = false)
-    private double amount;
+    private long amount;
 
     @OneToOne(fetch = FetchType.EAGER)
     private FileEntity file;
@@ -69,11 +69,11 @@ public class ReceiptEntity extends AbstractEntity {
         this.file = file;
     }
 
-    public double getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 
@@ -104,7 +104,7 @@ public class ReceiptEntity extends AbstractEntity {
         if (!super.equals(o)) {
             return false;
         }
-        return Double.compare(amount, that.amount) == 0
+        return amount == that.amount
                 && Objects.equals(name, that.name)
                 && Objects.equals(description, that.description)
                 && Objects.equals(file, that.file);

@@ -6,11 +6,11 @@ public final class AmountUtil {
 
     public static final float CENTS_PER_CURRENCY = 100f;
 
-    public static String fromAmount(double amount) {
+    public static String fromAmount(long amount) {
         return "%.2f".formatted(amount / CENTS_PER_CURRENCY);
     }
 
-    public static double fromString(String amount) {
-        return (Float.parseFloat(amount) * CENTS_PER_CURRENCY);
+    public static long fromString(String amount) {
+        return (long) (Float.parseFloat(amount) * CENTS_PER_CURRENCY);
     }
 }
