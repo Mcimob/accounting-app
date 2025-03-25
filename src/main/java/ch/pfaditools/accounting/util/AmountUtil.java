@@ -1,5 +1,9 @@
 package ch.pfaditools.accounting.util;
 
+import ch.pfaditools.accounting.model.entity.ReceiptEntity;
+
+import java.util.Collection;
+
 public final class AmountUtil {
 
     private AmountUtil() { }
@@ -12,5 +16,11 @@ public final class AmountUtil {
 
     public static long fromString(String amount) {
         return (long) (Float.parseFloat(amount) * CENTS_PER_CURRENCY);
+    }
+
+    public static long getAmountSum(Collection<ReceiptEntity> receipts) {
+        return receipts.stream()
+                .map(ReceiptEntity::getAmount)
+                .reduce(0L, Long::sum);
     }
 }

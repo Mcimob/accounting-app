@@ -65,9 +65,7 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
             }
             Set<ReceiptEntity> newReceipts = event.getValue();
             Set<ReceiptEntity> oldReceipts = event.getOldValue();
-            amountField.setValue(AmountUtil.fromAmount(newReceipts.stream()
-                    .map(ReceiptEntity::getAmount)
-                    .reduce(0L, Long::sum)));
+            amountField.setValue(AmountUtil.fromAmount(AmountUtil.getAmountSum(newReceipts)));
 
             if (oldEntity.getId() == null) {
                 return;
@@ -140,9 +138,7 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
                 .bind(PaymentEntity::getDescription, PaymentEntity::setDescription);
         binder.forField(amountField)
                 .bindReadOnly(payment ->
-                        AmountUtil.fromAmount(payment.getReceipts().stream()
-                                .map(ReceiptEntity::getAmount)
-                                .reduce(0L, Long::sum)));
+                        AmountUtil.fromAmount(AmountUtil.getAmountSum(payment.getReceipts())));
         binder.forField(receiptCbx)
                 .bind(PaymentEntity::getReceipts, (p, receipts) -> {
                     p.setReceipts(receipts);
