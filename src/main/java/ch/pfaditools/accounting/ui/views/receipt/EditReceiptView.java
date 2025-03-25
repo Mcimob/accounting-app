@@ -108,6 +108,9 @@ public class EditReceiptView extends AbstractNarrowView implements HasLogger, Ha
         binder.forField(amountField)
                 .asRequired()
                 .bind(ReceiptEntity::getAmountString, ReceiptEntity::setAmountString);
+                .bind(
+                        rec -> AmountUtil.fromAmount(rec.getAmount()),
+                        (rec, val) -> rec.setAmount(AmountUtil.fromString(val)));
     }
 
     private void setupButtons() {

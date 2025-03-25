@@ -10,6 +10,7 @@ import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
+import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -120,7 +121,7 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
 
         HorizontalLayout middleLayout = new HorizontalLayout();
         middleLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        middleLayout.add(title, new Span("CHF " + receipt.getAmountString()));
+        middleLayout.add(title, new Span("CHF " + AmountUtil.fromAmount(receipt.getAmount())));
         middleLayout.setWidthFull();
 
         HorizontalLayout bottomLayout = new HorizontalLayout();
