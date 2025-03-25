@@ -19,7 +19,7 @@ public class PaymentEntity extends AbstractEntity {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "payment")
     private Set<ReceiptEntity> receipts;
 
     public String getTitle() {

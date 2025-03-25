@@ -1,6 +1,8 @@
 package ch.pfaditools.accounting.ui.views.payment;
 
 import ch.pfaditools.accounting.backend.service.PaymentService;
+import ch.pfaditools.accounting.backend.service.ReceiptService;
+import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.model.entity.PaymentEntity;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.model.filter.PaymentEntityFilter;
@@ -16,8 +18,7 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
-
-import java.time.LocalDateTime;
+import org.springframework.data.domain.Page;
 
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
@@ -28,20 +29,25 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_PAYMENT;
 public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, PaymentEntityFilter> {
 
     private final ReceiptStringProvider provider;
+    private final ReceiptService receiptService;
 
     private TextField titleField;
     private TextArea descriptionField;
     private TextField amountField;
     private MultiSelectComboBox<ReceiptEntity> receiptCbx;
 
-    public EditPaymentView(PaymentService paymentService, ReceiptStringProvider receiptProvider) {
+    public EditPaymentView(
+            PaymentService paymentService,
+            ReceiptStringProvider receiptProvider,
+            ReceiptService receiptService) {
         super(paymentService);
         this.provider = receiptProvider;
+        this.receiptService = receiptService;
         setupReceiptCbx();
     }
 
     private void setupReceiptCbx() {
-        provider.getFilter().setNotPaidBefore(LocalDateTime.now());
+        provider.getFilter().setPaidOut(false);
 
         receiptCbx.setItems(provider);
         receiptCbx.setItemLabelGenerator(receipt -> "%s | CHF %s | %s".formatted(
@@ -54,6 +60,14 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
                     .map(ReceiptEntity::getAmount)
                     .reduce(0D, Double::sum)));
         });
+    }
+
+    @Override
+    protected boolean afterSave() {
+        entity.getReceipts().forEach(r -> r.setPayment(entity));
+        ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(entity.getReceipts());
+        showMessagesFromResponse(response);
+        return !response.hasErrorMessages();
     }
 
     @Override
@@ -80,7 +94,10 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
                                 .map(ReceiptEntity::getAmount)
                                 .reduce(0D, Double::sum)));
         binder.forField(receiptCbx)
-                .bind(PaymentEntity::getReceipts, PaymentEntity::setReceipts);
+                .bind(PaymentEntity::getReceipts, (p, receipts) -> {
+                    p.setReceipts(receipts);
+                    receipts.forEach(r -> r.setPayment(p));
+                });
     }
 
     @Override

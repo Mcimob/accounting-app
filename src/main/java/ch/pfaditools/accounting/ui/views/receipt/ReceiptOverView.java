@@ -30,7 +30,6 @@ import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -87,7 +86,7 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
         });
 
         unpaidCheck.addValueChangeListener(event -> {
-            filter.setNotPaidBefore(Boolean.TRUE.equals(event.getValue()) ? LocalDateTime.now() : null);
+            filter.setPaidOut(event.getValue() ? false : null);
             refreshFilter();
         });
         HorizontalLayout layout = new HorizontalLayout(userCbx, unpaidCheck);
@@ -125,8 +124,8 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
         bottomLayout.add(new Span(receipt.getCreatedUser()));
         bottomLayout.setWidthFull();
 
-        Icon paidIcon = receipt.getPaidOutAt() == null ? VaadinIcon.CASH.create() :  VaadinIcon.CHECK_CIRCLE.create();
-        paidIcon.setColor(receipt.getPaidOutAt() == null ? DesignConstants.CLR_ACCENT : DesignConstants.CLR_REGULAR);
+        Icon paidIcon = receipt.getPayment() == null ? VaadinIcon.CASH.create() :  VaadinIcon.CHECK_CIRCLE.create();
+        paidIcon.setColor(receipt.getPayment() == null ? DesignConstants.CLR_ACCENT : DesignConstants.CLR_REGULAR);
 
         layout.add(middleLayout, paidIcon, bottomLayout);
         return layout;

@@ -73,7 +73,9 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
             getLogger().warn("Validation failed for saving receipt", e);
             return;
         }
-        beforeSave();
+        if (!beforeSave()) {
+            return;
+        }
 
         entity.updateCreateModifyFields(SecurityUtils.getAuthenticatedUsername());
         ServiceResponse<T> response = service.save(entity);
@@ -83,7 +85,9 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
         }
         response.getInfoMessages().forEach(this::showSuccessNotification);
 
-        afterSave();
+        if (!afterSave()) {
+            return;
+        }
         UI.getCurrent().getPage().getHistory().back();
     }
 
@@ -98,15 +102,23 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
             showMessagesFromResponse(receiptResponse);
             return;
         }
-        afterDelete();
+        if (!afterDelete()) {
+            return;
+        }
         UI.getCurrent().getPage().getHistory().back();
     }
 
-    protected void afterDelete() { }
+    protected boolean afterDelete() {
+        return true;
+    }
 
-    protected void beforeSave() { }
+    protected boolean beforeSave() {
+        return true;
+    }
 
-    protected void afterSave() { }
+    protected boolean afterSave() {
+        return true;
+    }
 
     protected abstract void setupFields();
 

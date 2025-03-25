@@ -82,10 +82,10 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
 
 
     @Override
-    protected void beforeSave() {
+    protected boolean beforeSave() {
         if (entity.getFile() == null && uploadedFile == null) {
             showErrorNotification("view.editReceipt.notification.fileRequired");
-            return;
+            return false;
         }
 
         originalFile = entity.getFile();
@@ -96,7 +96,7 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
                     fileService.saveWithFile(uploadedFile, buffer.getInputStream());
             if (fileSaveResponse.hasErrorMessages()) {
                 showMessagesFromResponse(fileSaveResponse);
-                return;
+                return false;
             }
             fileSaveResponse.getEntity().ifPresent(entity::setFile);
         }
@@ -104,16 +104,19 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
         if (SecurityUtils.getAuthenticatedUserGroup() != null) {
             entity.setGroup(SecurityUtils.getAuthenticatedUserGroup());
         }
+        return true;
     }
 
     @Override
-    protected void afterSave() {
+    protected boolean afterSave() {
         if (originalFile != null && uploadedFile != null) {
             ServiceResponse<FileEntity> deleteResponse = fileService.deleteFile(originalFile);
             if (deleteResponse.hasErrorMessages()) {
                 showMessagesFromResponse(deleteResponse);
+                return false;
             }
         }
+        return true;
     }
 
     @Override
@@ -127,8 +130,9 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
     }
 
     @Override
-    protected void afterDelete() {
+    protected boolean afterDelete() {
         fileService.deleteFile(entity.getFile());
+        return true;
     }
 
     private void setupUpload() {

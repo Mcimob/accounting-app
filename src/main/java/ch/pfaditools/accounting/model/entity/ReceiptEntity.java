@@ -3,11 +3,11 @@ package ch.pfaditools.accounting.model.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -23,10 +23,12 @@ public class ReceiptEntity extends AbstractEntity {
     @Column(nullable = false)
     private double amount;
 
-    private LocalDateTime paidOutAt;
-
     @OneToOne(fetch = FetchType.EAGER)
     private FileEntity file;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "payment_id")
+    private PaymentEntity payment;
 
     @ManyToOne(optional = false)
     private GroupEntity group;
@@ -63,12 +65,12 @@ public class ReceiptEntity extends AbstractEntity {
         this.amount = amount;
     }
 
-    public LocalDateTime getPaidOutAt() {
-        return paidOutAt;
+    public PaymentEntity getPayment() {
+        return payment;
     }
 
-    public void setPaidOutAt(LocalDateTime paidOutAt) {
-        this.paidOutAt = paidOutAt;
+    public void setPayment(PaymentEntity payment) {
+        this.payment = payment;
     }
 
     public GroupEntity getGroup() {
@@ -93,7 +95,6 @@ public class ReceiptEntity extends AbstractEntity {
         return Double.compare(amount, that.amount) == 0
                 && Objects.equals(name, that.name)
                 && Objects.equals(description, that.description)
-                && Objects.equals(paidOutAt, that.paidOutAt)
                 && Objects.equals(file, that.file);
     }
 
@@ -103,7 +104,6 @@ public class ReceiptEntity extends AbstractEntity {
                 name,
                 description,
                 amount,
-                paidOutAt,
                 file);
     }
 
@@ -113,7 +113,6 @@ public class ReceiptEntity extends AbstractEntity {
                 + "name='" + name + '\''
                 + ", description='" + description + '\''
                 + ", amount=" + amount
-                + ", paidOutAt=" + paidOutAt
                 + ", file=" + file
                 + "} " + super.toString();
     }
