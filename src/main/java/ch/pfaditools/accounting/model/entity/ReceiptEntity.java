@@ -14,8 +14,6 @@ import java.util.Objects;
 @Table(name = "receipt_entity")
 public class ReceiptEntity extends AbstractEntity {
 
-    public static final float CENTS_PER_CURRENCY = 100f;
-
     @Column(nullable = false)
     private String name;
 
@@ -61,16 +59,8 @@ public class ReceiptEntity extends AbstractEntity {
         return amount;
     }
 
-    public String getAmountString() {
-        return "%.2f".formatted(amount / CENTS_PER_CURRENCY);
-    }
-
     public void setAmount(double amount) {
         this.amount = amount;
-    }
-
-    public void setAmountString(String amount) {
-        this.amount = (Float.parseFloat(amount) * CENTS_PER_CURRENCY);
     }
 
     public LocalDateTime getPaidOutAt() {
