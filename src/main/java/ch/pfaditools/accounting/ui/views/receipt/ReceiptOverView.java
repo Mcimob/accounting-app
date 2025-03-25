@@ -8,6 +8,7 @@ import ch.pfaditools.accounting.model.filter.ReceiptEntityFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
 import ch.pfaditools.accounting.util.AmountUtil;
@@ -37,6 +38,7 @@ import java.util.Optional;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER_STRING;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
+import static ch.pfaditools.accounting.ui.views.AbstractEditEntityView.KEY_ENTITY;
 
 @Route(value = ROUTE_RECEIPT_OVERVIEW, layout = MainLayout.class)
 @PermitAll
@@ -106,7 +108,7 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
             event.getFirstSelectedItem().ifPresent(receipt ->
                     UI.getCurrent().navigate(
                             ROUTE_EDIT_RECEIPT,
-                            QueryParameters.of("receiptId", receipt.getId().toString())));
+                            QueryParameters.of(KEY_ENTITY, receipt.getId().toString())));
         });
         grid.setItems(filterDataProvider);
         grid.setWidthFull();
