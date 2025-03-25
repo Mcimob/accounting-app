@@ -98,6 +98,10 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
             return;
         }
 
+        if (!beforeDelete()) {
+            return;
+        }
+
         ServiceResponse<T> receiptResponse = service.delete(newEntity);
         if (receiptResponse.hasErrorMessages()) {
             showMessagesFromResponse(receiptResponse);
@@ -107,6 +111,10 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
             return;
         }
         UI.getCurrent().getPage().getHistory().back();
+    }
+
+    protected boolean beforeDelete() {
+        return true;
     }
 
     protected boolean afterDelete() {

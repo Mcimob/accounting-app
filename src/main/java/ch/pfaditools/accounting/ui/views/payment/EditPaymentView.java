@@ -102,6 +102,15 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
     }
 
     @Override
+    protected boolean beforeDelete() {
+        Set<ReceiptEntity> oldReceipts = oldEntity.getReceipts();
+        oldReceipts.forEach(receipt -> receipt.setPayment(null));
+        ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(oldReceipts);
+        showMessagesFromResponse(response);
+        return !response.hasErrorMessages();
+    }
+
+    @Override
     protected void setupFields() {
         titleField = new TextField(getTranslation("entity.payment.title"));
         descriptionField = new TextArea(getTranslation("entity.payment.description"));
