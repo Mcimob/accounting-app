@@ -12,4 +12,7 @@ public final class ViewConstants {
 
     public static final String ROUTE_EDIT_RECEIPT = "editReceipt";
     public static final String ROUTE_RECEIPT_OVERVIEW = "receiptOverview";
+
+    public static final String ROUTE_PAYMENT_OVERVIEW = "paymentOverview";
+    public static final String ROUTE_EDIT_PAYMENT = "editPayment";
 }
