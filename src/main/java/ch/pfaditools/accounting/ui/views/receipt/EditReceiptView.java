@@ -151,6 +151,9 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
 
             setMedia(new StreamResource(fileName, buffer::getInputStream), mimeType);
         });
+        upload.addFileRemovedListener(event -> {
+            mediaDiv.removeAll();
+        });
         upload.setAcceptedFileTypes(".pdf", ".png", ".jpg", ".jpeg");
     }
 
