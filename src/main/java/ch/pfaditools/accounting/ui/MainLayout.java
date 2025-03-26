@@ -19,9 +19,11 @@ import com.vaadin.flow.server.VaadinServletRequest;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN_STRING;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_PAYMENT_OVERVIEW;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
 /**
@@ -79,13 +81,18 @@ public class MainLayout extends AppLayout {
     private SideNav createNavigation() {
         SideNav nav = new SideNav();
 
-        if (SecurityUtils.isUserInRole(ROLE_ADMIN_STRING)) {
+        if (SecurityUtils.isUserInRole(ROLE_ADMIN)) {
             nav.addItem(new SideNavItem(
                     getTranslation("view.admin.title"),
                     ROUTE_ADMIN,
                     VaadinIcon.COGS.create()));
         }
-        nav.addItem(new SideNavItem("Receipt Overview", ROUTE_RECEIPT_OVERVIEW, VaadinIcon.RECORDS.create()));
+        if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
+            nav.addItem(new SideNavItem(
+                    getTranslation("view.payment.title"),
+                    ROUTE_PAYMENT_OVERVIEW,
+                    VaadinIcon.MONEY.create()));
+        }
         nav.addItem(new SideNavItem(
                 getTranslation("view.receipt.title"),
                 ROUTE_RECEIPT_OVERVIEW,

@@ -5,6 +5,7 @@ import ch.pfaditools.accounting.model.entity.UserEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public final class SecurityUtils {
@@ -29,6 +30,10 @@ public final class SecurityUtils {
     }
 
     public static boolean isUserInRole(String role) {
-        return getCurrentUser().getRoles().contains(role);
+        return getCurrentUser().getRoles().contains("ROLE_" + role);
+    }
+
+    public static boolean isUserInAnyRole(String... roles) {
+        return Arrays.stream(roles).map(SecurityUtils::isUserInRole).reduce(false, Boolean::logicalOr);
     }
 }

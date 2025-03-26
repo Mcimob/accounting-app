@@ -17,7 +17,7 @@ public class UserCbxAutoHide extends ComboBox<UserEntity> {
     public UserCbxAutoHide(UserService userService) {
         setItems(new UserProvider(userService));
         setItemLabelGenerator(UserEntity::getUsername);
-        if (SecurityUtils.isUserInRole(ROLE_USER_STRING)) {
+        if (SecurityUtils.isUserInRole(ROLE_USER)) {
             setVisible(false);
         }
     }
