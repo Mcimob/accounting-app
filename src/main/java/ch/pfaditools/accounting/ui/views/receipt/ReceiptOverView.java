@@ -53,13 +53,8 @@ public class ReceiptOverView extends AbstractNarrowView implements HasLogger, Ha
     public ReceiptOverView(ReceiptProvider receiptProvider, UserCbxAutoHide userCbx) {
         this.filterDataProvider = receiptProvider.withConfigurableFilter();
         this.userCbx = userCbx;
-        setupLayout();
         setupFilter();
         render();
-    }
-
-    private void setupLayout() {
-        addClassName(DesignConstants.VIEW);
     }
 
     private void setupFilter() {

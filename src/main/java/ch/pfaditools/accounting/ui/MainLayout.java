@@ -80,9 +80,16 @@ public class MainLayout extends AppLayout {
         SideNav nav = new SideNav();
 
         if (SecurityUtils.isUserInRole(ROLE_ADMIN_STRING)) {
-            nav.addItem(new SideNavItem("Admin", ROUTE_ADMIN, VaadinIcon.COGS.create()));
+            nav.addItem(new SideNavItem(
+                    getTranslation("view.admin.title"),
+                    ROUTE_ADMIN,
+                    VaadinIcon.COGS.create()));
         }
         nav.addItem(new SideNavItem("Receipt Overview", ROUTE_RECEIPT_OVERVIEW, VaadinIcon.RECORDS.create()));
+        nav.addItem(new SideNavItem(
+                getTranslation("view.receipt.title"),
+                ROUTE_RECEIPT_OVERVIEW,
+                VaadinIcon.RECORDS.create()));
 
         return nav;
     }
