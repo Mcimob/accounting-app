@@ -13,6 +13,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
 import com.vaadin.flow.data.value.HasValueChangeMode;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -73,6 +74,7 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
     @Override
     protected void render() {
         super.render();
+        add(new H1(getPageTitle()));
         add(createAddButton());
         add(createGrid());
     }
