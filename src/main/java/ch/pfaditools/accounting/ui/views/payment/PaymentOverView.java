@@ -12,7 +12,6 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 
@@ -25,8 +24,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_PAYMENT_OVERVIEW;
 
 @Route(value = ROUTE_PAYMENT_OVERVIEW, layout = MainLayout.class)
 @RolesAllowed({ROLE_ADMIN, ROLE_GROUP_ADMIN})
-public class PaymentOverView extends AbstractEntityOverView<PaymentEntity, PaymentEntityFilter>
-        implements HasDynamicTitle {
+public class PaymentOverView extends AbstractEntityOverView<PaymentEntity, PaymentEntityFilter> {
 
     public PaymentOverView(PaymentService paymentService) {
         super(new PaymentProvider(paymentService), ROUTE_EDIT_PAYMENT, "view.payment.addButton");

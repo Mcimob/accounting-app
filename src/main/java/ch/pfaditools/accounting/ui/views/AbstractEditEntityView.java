@@ -2,7 +2,6 @@ package ch.pfaditools.accounting.ui.views;
 
 import ch.pfaditools.accounting.backend.service.BaseService;
 import ch.pfaditools.accounting.backend.service.ServiceResponse;
-import ch.pfaditools.accounting.logger.HasLogger;
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.filter.AbstractFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
@@ -16,7 +15,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 
@@ -24,7 +22,7 @@ import java.util.Optional;
 
 public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends AbstractFilter<T>>
         extends AbstractNarrowView
-        implements HasLogger, HasNotification, HasUrlParameter<String>, HasDynamicTitle {
+        implements HasUrlParameter<String> {
 
     public static final String KEY_ENTITY = "entityId";
 

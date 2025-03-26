@@ -3,13 +3,11 @@ package ch.pfaditools.accounting.ui.views.security.register;
 import ch.pfaditools.accounting.backend.service.GroupService;
 import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.backend.service.UserService;
-import ch.pfaditools.accounting.logger.HasLogger;
 import ch.pfaditools.accounting.model.entity.GroupEntity;
 import ch.pfaditools.accounting.model.entity.UserEntity;
 import ch.pfaditools.accounting.model.filter.GroupEntityFilter;
 import ch.pfaditools.accounting.model.filter.UserEntityFilter;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
-import ch.pfaditools.accounting.ui.views.HasNotification;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -21,7 +19,6 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +34,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
 
 @Route(ROUTE_REGISTER)
 @AnonymousAllowed
-public class RegisterView extends AbstractNarrowView implements HasLogger, HasNotification, HasDynamicTitle {
+public class RegisterView extends AbstractNarrowView {
 
     private final UserService userService;
     private final GroupService groupService;

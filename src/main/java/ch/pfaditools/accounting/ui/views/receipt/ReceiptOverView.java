@@ -2,7 +2,6 @@ package ch.pfaditools.accounting.ui.views.receipt;
 
 import ch.pfaditools.accounting.backend.service.ReceiptService;
 import ch.pfaditools.accounting.backend.service.UserService;
-import ch.pfaditools.accounting.logger.HasLogger;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.model.entity.UserEntity;
 import ch.pfaditools.accounting.model.filter.ReceiptEntityFilter;
@@ -12,7 +11,6 @@ import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.components.UserCbxAutoHide;
 import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
 import ch.pfaditools.accounting.ui.views.AbstractEntityOverView;
-import ch.pfaditools.accounting.ui.views.HasNotification;
 import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -20,7 +18,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
@@ -35,8 +32,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
 @Route(value = ROUTE_RECEIPT_OVERVIEW, layout = MainLayout.class)
 @PermitAll
-public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, ReceiptEntityFilter>
-        implements HasLogger, HasNotification, HasDynamicTitle {
+public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, ReceiptEntityFilter> {
 
     private final transient UserService userService;
 

@@ -5,7 +5,6 @@ import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -17,7 +16,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
 
 @Route(ROUTE_LOGIN)
 @AnonymousAllowed
-public class LoginView extends AbstractNarrowView implements HasDynamicTitle {
+public class LoginView extends AbstractNarrowView {
 
     public LoginView() {
         if (isUserAuthenticated()) {

@@ -2,13 +2,11 @@ package ch.pfaditools.accounting.ui.views.admin;
 
 import ch.pfaditools.accounting.backend.service.GroupService;
 import ch.pfaditools.accounting.backend.service.ServiceResponse;
-import ch.pfaditools.accounting.logger.HasLogger;
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.entity.GroupEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.views.AbstractWideView;
-import ch.pfaditools.accounting.ui.views.HasNotification;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
@@ -23,7 +21,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -37,7 +34,7 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
 
 @Route(value = ROUTE_ADMIN, layout = MainLayout.class)
 @RolesAllowed(ROLE_ADMIN)
-public class AdminView extends AbstractWideView implements HasNotification, HasLogger, HasDynamicTitle {
+public class AdminView extends AbstractWideView {
 
     public static final int CODE_LENGTH = 24;
     private final GroupService groupService;
