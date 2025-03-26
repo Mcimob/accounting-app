@@ -1,5 +1,7 @@
 package ch.pfaditools.accounting.ui.views.receipt;
 
+import ch.pfaditools.accounting.backend.service.ReceiptService;
+import ch.pfaditools.accounting.backend.service.UserService;
 import ch.pfaditools.accounting.logger.HasLogger;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.model.entity.UserEntity;
@@ -9,133 +11,89 @@ import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.components.UserCbxAutoHide;
 import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
-import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
+import ch.pfaditools.accounting.ui.views.AbstractEntityOverView;
 import ch.pfaditools.accounting.ui.views.HasNotification;
 import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.HasDynamicTitle;
-import com.vaadin.flow.router.QueryParameters;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
 import java.util.Objects;
 import java.util.Optional;
 
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER_STRING;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
-import static ch.pfaditools.accounting.ui.views.AbstractEditEntityView.KEY_ENTITY;
 
 @Route(value = ROUTE_RECEIPT_OVERVIEW, layout = MainLayout.class)
 @PermitAll
-public class ReceiptOverView extends AbstractNarrowView implements HasLogger, HasNotification, HasDynamicTitle {
+public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, ReceiptEntityFilter>
+        implements HasLogger, HasNotification, HasDynamicTitle {
 
-    private final ConfigurableFilterDataProvider<ReceiptEntity, Void, ReceiptEntityFilter> filterDataProvider;
+    private final transient UserService userService;
 
-    private final UserCbxAutoHide userCbx;
     private final Checkbox unpaidCheck = new Checkbox(getTranslation("view.receipt.unpaid"));
-    private final Grid<ReceiptEntity> grid = new Grid<>();
 
-    private final ReceiptEntityFilter filter = new ReceiptEntityFilter();
-
-    public ReceiptOverView(ReceiptProvider receiptProvider, UserCbxAutoHide userCbx) {
-        this.filterDataProvider = receiptProvider.withConfigurableFilter();
-        this.userCbx = userCbx;
-        setupFilter();
+    public ReceiptOverView(ReceiptService receiptService, UserService userService) {
+        super(new ReceiptProvider(receiptService), ROUTE_EDIT_RECEIPT, "view.receipt.addReceipt");
+        this.userService = userService;
         render();
     }
 
-    private void setupFilter() {
+    @Override
+    protected Component createGrid() {
+        Grid.Column<ReceiptEntity> nameColumn = grid.addColumn(ReceiptEntity::getName)
+                        .setHeader(getTranslation("entity.receipt.title"));
+        grid.addColumn(r -> "CHF " + AmountUtil.fromAmount(r.getAmount()))
+                        .setHeader(getTranslation("entity.receipt.amount"));
+        grid.addComponentColumn(this::createIcon)
+                        .setHeader(getTranslation("entity.receipt.paid"));
+        if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
+            Grid.Column<ReceiptEntity> createdColumn = grid.addColumn(ReceiptEntity::getCreatedUser)
+                    .setHeader(getTranslation("entity.abstract.createdUser"));
+            UserCbxAutoHide userCbx = new UserCbxAutoHide(userService);
+            userCbx.setEmptySelectionAllowed(true);
+            addHeaderFilterCell(
+                    createdColumn,
+                    (f, user) -> f.setCreatedByUser(Optional.ofNullable(user)
+                            .map(UserEntity::getUsername).orElse(null)),
+                    userCbx);
+        }
+
+        new TextField().setWidthFull();
+        addHeaderFilterCell(nameColumn, ReceiptEntityFilter::setName, new TextField());
+
+        return grid;
+    }
+
+    private Icon createIcon(ReceiptEntity receipt) {
+        Icon paidIcon = receipt.getPayment() == null
+                ? VaadinIcon.CLOSE_CIRCLE.create()
+                :  VaadinIcon.CHECK_CIRCLE.create();
+        paidIcon.setColor(receipt.getPayment() == null
+                ? DesignConstants.CLR_ACCENT
+                : DesignConstants.CLR_REGULAR);
+        return paidIcon;
+    }
+
+    @Override
+    protected ReceiptEntityFilter getBaseFilter() {
+        ReceiptEntityFilter filter = new ReceiptEntityFilter();
         if (Objects.requireNonNull(SecurityUtils.getCurrentUser()).getRoles().contains(ROLE_USER_STRING)) {
             filter.setCreatedByUser(SecurityUtils.getAuthenticatedUsername());
         } else {
             filter.setGroup(SecurityUtils.getAuthenticatedUserGroup());
         }
-        refreshFilter();
-    }
 
-    private Component createAddButton() {
-        Button createButton = new Button(getTranslation("view.receipt.addReceipt"));
-        createButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        createButton.addClickListener(click -> UI.getCurrent().navigate(ROUTE_EDIT_RECEIPT));
-
-        return createButton;
-    }
-
-    private Component createSelectionBar() {
-        userCbx.addValueChangeListener(event -> {
-           filter.setCreatedByUser(Optional.ofNullable(event.getValue()).map(UserEntity::getUsername).orElse(null));
-            refreshFilter();
-        });
-
-        unpaidCheck.addValueChangeListener(event -> {
-            filter.setPaidOut(event.getValue() ? false : null);
-            refreshFilter();
-        });
-        HorizontalLayout layout = new HorizontalLayout(userCbx, unpaidCheck);
-        layout.setAlignItems(FlexComponent.Alignment.BASELINE);
-        return layout;
-    }
-
-    private Component createGrid() {
-        grid.addComponentColumn(this::createGridComponent);
-        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
-        grid.addSelectionListener(event -> {
-            event.getFirstSelectedItem().ifPresent(receipt ->
-                    UI.getCurrent().navigate(
-                            ROUTE_EDIT_RECEIPT,
-                            QueryParameters.of(KEY_ENTITY, receipt.getId().toString())));
-        });
-        grid.setItems(filterDataProvider);
-        grid.setWidthFull();
-        return grid;
-    }
-
-    private Component createGridComponent(ReceiptEntity receipt) {
-        VerticalLayout layout = new VerticalLayout();
-
-        Span title = new Span(receipt.getName());
-        title.addClassName(DesignConstants.STYLE_FW_700);
-
-        HorizontalLayout middleLayout = new HorizontalLayout();
-        middleLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        middleLayout.add(title, new Span("CHF " + AmountUtil.fromAmount(receipt.getAmount())));
-        middleLayout.setWidthFull();
-
-        HorizontalLayout bottomLayout = new HorizontalLayout();
-        bottomLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        bottomLayout.add(new Span(receipt.getCreatedUser()));
-        bottomLayout.setWidthFull();
-
-        Icon paidIcon = receipt.getPayment() == null ? VaadinIcon.CASH.create() :  VaadinIcon.CHECK_CIRCLE.create();
-        paidIcon.setColor(receipt.getPayment() == null ? DesignConstants.CLR_ACCENT : DesignConstants.CLR_REGULAR);
-
-        layout.add(middleLayout, paidIcon, bottomLayout);
-        return layout;
-    }
-
-    private void refreshFilter() {
-        filterDataProvider.setFilter(filter);
-        filterDataProvider.refreshAll();
-    }
-
-    protected void render() {
-        super.render();
-        add(createAddButton());
-        add(createSelectionBar());
-        add(createGrid());
+        return filter;
     }
 
     @Override

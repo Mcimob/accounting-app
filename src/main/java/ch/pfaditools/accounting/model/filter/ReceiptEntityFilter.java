@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 public class ReceiptEntityFilter extends AbstractFilter<ReceiptEntity> {
 
     private String userInput;
+    private String name;
     private Boolean paidOut;
     private GroupEntity group;
 
@@ -24,6 +25,10 @@ public class ReceiptEntityFilter extends AbstractFilter<ReceiptEntity> {
 
         if (group != null) {
             spec = spec.and(belongsToGroup());
+        }
+
+        if (name != null) {
+            spec = spec.and(hasName());
         }
 
         return spec;
@@ -46,6 +51,11 @@ public class ReceiptEntityFilter extends AbstractFilter<ReceiptEntity> {
                 cb.equal(root.get("group"), group));
     }
 
+    private Specification<ReceiptEntity> hasName() {
+        return ((root, query, cb) ->
+                cb.like(root.get("name"), name + "%"));
+    }
+
     public void setUserInput(String userInput) {
         this.userInput = userInput;
     }
@@ -56,5 +66,9 @@ public class ReceiptEntityFilter extends AbstractFilter<ReceiptEntity> {
 
     public void setPaidOut(Boolean paidOut) {
         this.paidOut = paidOut;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

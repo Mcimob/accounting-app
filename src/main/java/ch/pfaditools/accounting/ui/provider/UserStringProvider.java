@@ -8,17 +8,24 @@ import ch.pfaditools.accounting.security.SecurityUtils;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class UserProvider extends AbstractEntityStringProvider<UserEntity, UserEntityFilter> {
+public class UserStringProvider extends AbstractEntityStringProvider<UserEntity, UserEntityFilter> {
 
-    public UserProvider(BaseService<UserEntity, UserEntityFilter> service) {
+    private UserEntityFilter filter;
+
+    public UserStringProvider(BaseService<UserEntity, UserEntityFilter> service) {
         super(service);
+        setupFilter();
+    }
+
+    private void setupFilter() {
+        UserEntityFilter userFilter = new UserEntityFilter();
+        userFilter.setGroup(SecurityUtils.getAuthenticatedUserGroup());
+        this.filter = userFilter;
     }
 
     @Override
-    protected UserEntityFilter getFilter() {
-        UserEntityFilter userFilter = new UserEntityFilter();
-        userFilter.setGroup(SecurityUtils.getAuthenticatedUserGroup());
-        return userFilter;
+    public UserEntityFilter getFilter() {
+        return filter;
     }
 
     @Override
