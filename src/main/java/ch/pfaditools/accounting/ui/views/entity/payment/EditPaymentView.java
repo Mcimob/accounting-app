@@ -1,4 +1,4 @@
-package ch.pfaditools.accounting.ui.views.payment;
+package ch.pfaditools.accounting.ui.views.entity.payment;
 
 import ch.pfaditools.accounting.backend.service.PaymentService;
 import ch.pfaditools.accounting.backend.service.ReceiptService;
@@ -8,7 +8,7 @@ import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.model.filter.PaymentEntityFilter;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.provider.ReceiptStringProvider;
-import ch.pfaditools.accounting.ui.views.AbstractEditEntityView;
+import ch.pfaditools.accounting.ui.views.entity.AbstractEditEntityView;
 import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;

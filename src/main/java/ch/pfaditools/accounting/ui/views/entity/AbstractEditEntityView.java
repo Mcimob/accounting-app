@@ -1,10 +1,11 @@
-package ch.pfaditools.accounting.ui.views;
+package ch.pfaditools.accounting.ui.views.entity;
 
 import ch.pfaditools.accounting.backend.service.BaseService;
 import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.filter.AbstractFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
+import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;

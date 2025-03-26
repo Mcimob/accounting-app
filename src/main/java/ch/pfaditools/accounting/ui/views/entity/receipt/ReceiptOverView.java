@@ -1,4 +1,4 @@
-package ch.pfaditools.accounting.ui.views.receipt;
+package ch.pfaditools.accounting.ui.views.entity.receipt;
 
 import ch.pfaditools.accounting.backend.service.ReceiptService;
 import ch.pfaditools.accounting.backend.service.UserService;
@@ -10,7 +10,7 @@ import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.components.UserCbxAutoHide;
 import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
-import ch.pfaditools.accounting.ui.views.AbstractEntityOverView;
+import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
 import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;

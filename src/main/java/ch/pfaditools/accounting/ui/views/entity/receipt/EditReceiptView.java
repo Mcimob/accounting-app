@@ -1,4 +1,4 @@
-package ch.pfaditools.accounting.ui.views.receipt;
+package ch.pfaditools.accounting.ui.views.entity.receipt;
 
 import ch.pfaditools.accounting.backend.service.FileService;
 import ch.pfaditools.accounting.backend.service.ReceiptService;
@@ -9,7 +9,7 @@ import ch.pfaditools.accounting.model.filter.ReceiptEntityFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.components.CustomUpload;
-import ch.pfaditools.accounting.ui.views.AbstractEditEntityView;
+import ch.pfaditools.accounting.ui.views.entity.AbstractEditEntityView;
 import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.componentfactory.pdfviewer.PdfViewer;
 import com.vaadin.flow.component.Component;

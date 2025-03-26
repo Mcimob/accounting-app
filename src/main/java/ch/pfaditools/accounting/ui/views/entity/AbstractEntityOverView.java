@@ -1,8 +1,9 @@
-package ch.pfaditools.accounting.ui.views;
+package ch.pfaditools.accounting.ui.views.entity;
 
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.filter.AbstractFilter;
 import ch.pfaditools.accounting.ui.provider.AbstractEntityProvider;
+import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasPlaceholder;
 import com.vaadin.flow.component.HasSize;
@@ -21,7 +22,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
-import static ch.pfaditools.accounting.ui.views.AbstractEditEntityView.KEY_ENTITY;
+import static ch.pfaditools.accounting.ui.views.entity.AbstractEditEntityView.KEY_ENTITY;
 
 public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends AbstractFilter<T>>
         extends AbstractNarrowView {
