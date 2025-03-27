@@ -4,7 +4,6 @@ import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.backend.service.UserService;
 import ch.pfaditools.accounting.model.entity.UserEntity;
 import ch.pfaditools.accounting.model.filter.UserEntityFilter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,29 +16,29 @@ import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN_STR
 @Configuration
 public class DataInitializer {
 
-    @Value("${admin.username}")
-    private String adminUsername;
+    private final AppConfiguration appConfiguration;
 
-    @Value("${admin.password}")
-    private String adminPassword;
+    public DataInitializer(AppConfiguration appConfiguration) {
+        this.appConfiguration = appConfiguration;
+    }
 
     @Bean
     CommandLineRunner init(UserService userService, PasswordEncoder passwordEncoder) {
         return args -> {
             UserEntityFilter filter = new UserEntityFilter();
-            filter.setUsername(adminUsername);
+            filter.setUsername(appConfiguration.getAdminUsername());
             filter.setExactMatch(true);
             ServiceResponse<UserEntity> response = userService.fetchOne(filter);
 
             if (response.getEntity().isEmpty()) {
                 UserEntity admin = new UserEntity();
-                admin.setUsername(adminUsername);
-                admin.setPassword(passwordEncoder.encode(adminPassword));
+                admin.setUsername(appConfiguration.getAdminUsername());
+                admin.setPassword(passwordEncoder.encode(appConfiguration.getAdminPassword()));
                 admin.setRoles(Set.of(ROLE_ADMIN_STRING));
                 admin.updateCreateModifyFields("INIT");
                 userService.save(admin);
 
-                System.out.println("Admin user created: " + adminUsername);
+                System.out.println("Admin user created: " + appConfiguration.getAdminUsername());
             }
         };
     }
