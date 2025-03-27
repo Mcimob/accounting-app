@@ -1,6 +1,9 @@
 name: Increment Version in Develop
 
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     branches:
       - develop
@@ -9,7 +12,7 @@ on:
 
 jobs:
   increment-version:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop' && github.event.pull_request.head.ref == 'test'
+    if: github.event_name == 'push' || (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,7 +20,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Increment version in develop
+      - name: Check last merged branch
+        id: last-merge
+        run: |
+          LAST_MERGED_BRANCH=$(git log --merges -1 --pretty=format:'%P' | awk '{print $2}')
+          echo "LAST_MERGED_BRANCH=$LAST_MERGED_BRANCH" >> $GITHUB_ENV
+
+      - name: Increment version if merged from test
+        if: env.LAST_MERGED_BRANCH == 'test'
         run: |
           VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+' pom.xml)
           MAJOR=$(echo $VERSION | cut -d. -f1)
@@ -30,11 +40,4 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git add pom.xml
           git commit -m "Increment version to $NEW_VERSION [ci skip]" || exit 0
-          git push origin develop
-
-      - name: Merge test back into develop
-        run: |
-          git checkout develop
-          git pull origin develop
-          git merge --no-ff test -m "Auto-merge test into develop after version increment [ci skip]"
           git push origin develop
