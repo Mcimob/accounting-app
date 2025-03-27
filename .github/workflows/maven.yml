@@ -50,23 +50,6 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Generate package-lock.json if missing
-        run: |
-          if [ ! -f package-lock.json ]; then
-            npm install --package-lock-only
-          fi
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'npm'
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: frontend  # Adjust path if needed
-
       - name: Set environment variables based on branch
         run: |
           if [ "${{ github.ref_name }}" == "main" ]; then
