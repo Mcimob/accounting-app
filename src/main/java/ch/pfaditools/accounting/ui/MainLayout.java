@@ -1,5 +1,6 @@
 package ch.pfaditools.accounting.ui;
 
+import ch.pfaditools.accounting.app.AppConfiguration;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -16,8 +17,10 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.sidenav.SideNav;
 import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.server.VaadinServletRequest;
+import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.stereotype.Component;
 
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
@@ -29,9 +32,14 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 /**
  * The main view is a top-level placeholder for other views.
  */
+@UIScope
+@Component
 public class MainLayout extends AppLayout {
 
-    public MainLayout() {
+    private final AppConfiguration appConfiguration;
+
+    public MainLayout(AppConfiguration appConfiguration) {
+        this.appConfiguration = appConfiguration;
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
@@ -69,7 +77,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
-        Span appName = new Span("My App");
+        Span appName = new Span(appConfiguration.getApplicationTitle());
         appName.addClassNames(LumoUtility.FontWeight.SEMIBOLD, LumoUtility.FontSize.LARGE);
         Header header = new Header(appName);
 
