@@ -54,7 +54,7 @@ jobs:
         run: |
           if [ "${{ github.ref_name }}" == "main" ]; then
             echo "PROFILE=prod" >> $GITHUB_ENV
-            echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+            echo "DOCKER_TAG=prod" >> $GITHUB_ENV
             echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_PROD_DB_URL }}" >> $GITHUB_ENV
             echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_PROD_DB_USER }}" >> $GITHUB_ENV
             echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_PROD_DB_PASSWORD }}" >> $GITHUB_ENV
@@ -62,7 +62,7 @@ jobs:
             echo "ADMIN_PASSWORD=${{ secrets.PROD_ADMIN_PASSWORD }}" >> $GITHUB_ENV
           elif [ "${{ github.ref_name }}" == "test" ]; then
             echo "PROFILE=test" >> $GITHUB_ENV
-            echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+            echo "DOCKER_TAG=test" >> $GITHUB_ENV
             echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_TEST_DB_URL }}" >> $GITHUB_ENV
             echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_TEST_DB_USER }}" >> $GITHUB_ENV
             echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_TEST_DB_PASSWORD }}" >> $GITHUB_ENV
