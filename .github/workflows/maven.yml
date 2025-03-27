@@ -82,6 +82,12 @@ jobs:
           name: accounting-app-${{ env.PROFILE }}
           path: target/*.jar
 
+      - name: Set JAR_FILE
+        run: JAR_FILE=$(ls target/*.jar | head -n 1)
+
+      - name: Log in to private Docker registry
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         
