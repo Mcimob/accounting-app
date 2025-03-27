@@ -89,11 +89,11 @@ jobs:
       - name: Build the Docker image
         run: |
           JAR_FILE=$(ls target/*.jar | head -n 1)
-          docker build -t ${{ secrets.REGISTRY_URL }}/accounting-app/test:${{ env.DOCKER_TAG }} .
+          docker build -t ${{ secrets.REGISTRY_URL }}/accounting-app/${{ env.DOCKER_TAG }}:latest
 
       - name: Push Docker image
         run: |
-          docker push ${{ secrets.REGISTRY_URL }}/accounting-app/prod:${{ env.DOCKER_TAG }}
+          docker push ${{ secrets.REGISTRY_URL }}/accounting-app/${{ env.DOCKER_TAG }}:latest
 
       - name: Logout from Docker registry
         run: docker logout ${{ secrets.REGISTRY_URL }}
