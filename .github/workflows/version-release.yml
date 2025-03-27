@@ -14,7 +14,7 @@ jobs:
 
       - name: Update version in pom.xml
         run: |
-          VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+(?=-SNAPSHOT)' pom.xml)
+          VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+(?=-SNAPSHOT)' pom.xml | head -n 1)
           MAJOR=$(echo $VERSION | cut -d. -f1)
           MINOR=$(echo $VERSION | cut -d. -f2)
           PATCH=$(echo $VERSION | cut -d. -f3)
@@ -27,7 +27,6 @@ jobs:
           git config --global user.name "GitHub Actions"
           git commit -am "Update version for test release: $NEW_VERSION"
           
-          git 
           git push
 
       - name: Merge test back into develop
