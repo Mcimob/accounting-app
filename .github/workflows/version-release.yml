@@ -1,0 +1,27 @@
+name: Remove SNAPSHOT for Test
+
+on:
+  pull_request:
+    branches:
+      - test
+    types:
+      - closed
+
+jobs:
+  remove-snapshot:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'test'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Remove -SNAPSHOT from pom.xml
+        run: |
+          sed -i 's/<version>\(.*\)-SNAPSHOT<\/version>/<version>\1<\/version>/g' pom.xml
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add pom.xml
+          git commit -m "Remove -SNAPSHOT from version [ci skip]" || exit 0
+          git push origin test
