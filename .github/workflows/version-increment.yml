@@ -1,43 +1,33 @@
-name: Increment Version in Develop
+name: Update Version on Develop
 
 on:
   push:
     branches:
       - develop
-  pull_request:
-    branches:
-      - develop
-    types:
-      - closed
 
 jobs:
-  increment-version:
-    if: github.event_name == 'push' || (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
+  update-version-develop:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Check last merged branch
-        id: last-merge
+      - name: Increment patch version and add -SNAPSHOT
         run: |
-          LAST_MERGED_BRANCH=$(git log --merges -1 --pretty=format:'%P' | awk '{print $2}')
-          echo "LAST_MERGED_BRANCH=$LAST_MERGED_BRANCH" >> $GITHUB_ENV
-
-      - name: Increment version if merged from test
-        if: env.LAST_MERGED_BRANCH == 'test'
-        run: |
-          VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+' pom.xml)
+          VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+.*(?=</version>)' pom.xml | head -n 1)
+          if [[ "$VERSION" =~ SNAPSHOT ]]; then
+            echo "Not incrementing"
+            exit 0;
+          fi
           MAJOR=$(echo $VERSION | cut -d. -f1)
           MINOR=$(echo $VERSION | cut -d. -f2)
           PATCH=$(echo $VERSION | cut -d. -f3)
           NEW_PATCH=$((PATCH + 1))
           NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH-SNAPSHOT"
-          sed -i "s/<version>$VERSION<\/version>/<version>$NEW_VERSION<\/version>/g" pom.xml
-          git config --global user.name "github-actions"
+
+          sed -i "s/<version>$VERSION<\/version>/<version>$NEW_VERSION<\/version>/" pom.xml
+
           git config --global user.email "github-actions@github.com"
-          git add pom.xml
-          git commit -m "Increment version to $NEW_VERSION [ci skip]" || exit 0
-          git push origin develop
+          git config --global user.name "GitHub Actions"
+          git commit -am "Increment version for develop snapshot: $NEW_VERSION"
+          git push
