@@ -40,7 +40,5 @@ jobs:
           # Merge the updated test branch into develop, allowing unrelated histories if necessary
           git merge --no-ff --strategy-option=theirs --allow-unrelated-histories test -m "Auto-merge test into develop after removing -SNAPSHOT [ci skip]"
           
-          git commit --allow-empty -m "Temporary commit to trigger GitHub Actions"
-          
           # Push the changes to the remote develop branch
           git push origin develop
