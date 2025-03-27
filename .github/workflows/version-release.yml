@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update version in pom.xml
         run: |
@@ -25,6 +25,11 @@ jobs:
           git commit -am "Update version for test release: $NEW_VERSION"
           
           git push
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
 
       - name: Merge test back into develop
         run: |
@@ -39,8 +44,6 @@ jobs:
           
           # Merge the updated test branch into develop, allowing unrelated histories if necessary
           git merge --no-ff --strategy-option=theirs --allow-unrelated-histories test -m "Auto-merge test into develop after removing -SNAPSHOT [ci skip]"
-          
-          git commit --allow-empty -m "Temporary commit to trigger GitHub Actions"
           
           # Push the changes to the remote develop branch
           git push origin develop
