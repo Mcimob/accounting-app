@@ -71,10 +71,10 @@ jobs:
           fi
 
       - name: Build frontend assets
-        run: mvn vaadin:build-frontend -P$PROFILE
+        run: mvn vaadin:build-frontend -Pproduction
 
       - name: Build project for $PROFILE
-        run: mvn package -DskipTests -P$PROFILE
+        run: mvn package -DskipTests -Pproduction
 
       - name: Confirm JAR file exists
         run: ls target/
