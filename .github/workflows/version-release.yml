@@ -25,3 +25,10 @@ jobs:
           git add pom.xml
           git commit -m "Remove -SNAPSHOT from version [ci skip]" || exit 0
           git push origin test
+
+      - name: Merge test back into develop
+        run: |
+          git checkout develop
+          git pull origin develop
+          git merge --no-ff test -m "Auto-merge test into develop after removing -SNAPSHOT [ci skip]"
+          git push origin develop
