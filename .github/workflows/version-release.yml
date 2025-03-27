@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Checkout repo to find out version
+        uses: actions/checkout@v4
+
       - name: Set version
         run: echo "VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+.*(?=<\/version>)' pom.xml | head -n 1)" >> $GITHUB_ENV
 
@@ -21,6 +24,11 @@ jobs:
               echo "RUN_MERGE=true" >> "$GITHUB_ENV"
           fi
 
+      - name: Setup git-config
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+
       - name: Checkout repository
         if: env.RUN_MERGE == 'false'
         uses: actions/checkout@v4
@@ -30,8 +38,6 @@ jobs:
         run: |
           sed -i "s/<version>$VERSION-SNAPSHOT<\/version>/<version>$VERSION<\/version>/" pom.xml
 
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
           git commit -am "Update version for test release: $NEW_VERSION"
           
           git push
