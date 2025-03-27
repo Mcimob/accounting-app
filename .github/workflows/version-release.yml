@@ -26,8 +26,17 @@ jobs:
 
       - name: Merge test back into develop
         run: |
+          # Fetch all remote branches to ensure develop and test are both up-to-date
           git fetch --all
+          
+          # Ensure we are on the develop branch
           git checkout develop
+          
+          # Pull the latest changes from the remote develop branch to ensure we have all the latest updates
           git pull origin develop
-          git merge --no-ff test -m "Auto-merge test into develop after removing -SNAPSHOT [ci skip]"
+          
+          # Merge the updated test branch into develop, allowing unrelated histories if necessary
+          git merge --no-ff --allow-unrelated-histories test -m "Auto-merge test into develop after removing -SNAPSHOT [ci skip]"
+          
+          # Push the changes to the remote develop branch
           git push origin develop
