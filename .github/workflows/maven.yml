@@ -76,6 +76,9 @@ jobs:
       - name: Build project for $PROFILE
         run: mvn package -DskipTests -P$PROFILE
 
+      - name: Confirm JAR file exists
+        run: ls target/
+        
       - name: Log in to private Docker registry
         run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
