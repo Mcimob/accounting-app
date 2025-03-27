@@ -27,7 +27,7 @@ jobs:
 
       - name: Remove -SNAPSHOT on test
         run: |
-          echo "$NUM_VERSION=$(echo $VERSION | cut -d '-' -f1)" >> $GITHUB_ENV
+          echo "NUM_VERSION=$(echo $VERSION | cut -d '-' -f1)" >> $GITHUB_ENV
           sed -i "s/<version>$VERSION<\/version>/<version>$NUM_VERSION<\/version>/" pom.xml
           
           git commit -am "Update version for test release: $NUM_VERSION"
