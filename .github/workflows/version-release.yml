@@ -1,62 +1,41 @@
 name: Update Version on Test
 
 on:
-  push:
+  pull_request:
     branches:
       - test
+    types:
+      - closed
 
 jobs:
   update-version-test:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Checkout repo to find out version
+      - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          persist-credentials: 'false'
-
-      - name: Set version
-        run: echo "VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+.*(?=<\/version>)' pom.xml | head -n 1)" >> $GITHUB_ENV
-
-      - name: Set env RUN_MERGE
-        run: |
-          if [[ "$VERSION" == *SNAPSHOT ]]; then
-              echo "RUN_MERGE=false" >> "$GITHUB_ENV"
-          else
-              echo "RUN_MERGE=true" >> "$GITHUB_ENV"
-          fi
+          fetch-depth: 0
 
       - name: Setup git-config
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
 
-      - name: Checkout repository
-        if: env.RUN_MERGE == 'false'
-        uses: actions/checkout@v4
+      - name: Set version
+        run: echo "VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+.*(?=<\/version>)' pom.xml | head -n 1)" >> $GITHUB_ENV
 
-      - name: Update version in pom.xml
-        if: env.RUN_MERGE == 'false'
+      - name: Remove -SNAPSHOT on test
         run: |
           NUM_VERSION=$(echo $VERSION | cut -d '-' -f1)
           sed -i "s/<version>$VERSION<\/version>/<version>$NUM_VERSION<\/version>/" pom.xml
-
-          git commit -am "Update version for test release: $NEW_VERSION"
+          
+          git commit -am "Update version for test release: $NUM_VERSION"
           
           git push
 
-      - name: Checkout repository
-        if: env.RUN_MERGE == 'true'
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.PAT }}
-
       - name: Merge test back into develop
-        if: env.RUN_MERGE == 'true'
         run: |
-          # Fetch all remote branches to ensure develop and test are both up-to-date
-          git fetch --all
-          
           # Ensure we are on the develop branch
           git checkout develop
           
@@ -67,4 +46,20 @@ jobs:
           git merge --no-ff --strategy-option=theirs --allow-unrelated-histories test -m "Auto-merge test into develop after removing -SNAPSHOT [ci skip]"
           
           # Push the changes to the remote develop branch
-          git push origin develop
+          git push
+
+      - name: Add -SNAPSHOT back on dev
+        run: |
+          git checkout develop
+          git pull origin develop
+          
+          MAJOR=$(echo $NUM_VERSION | cut -d. -f1)
+          MINOR=$(echo $NUM_VERSION | cut -d. -f2)
+          PATCH=$(echo $NUM_VERSION | cut -d. -f3)
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH-SNAPSHOT"
+          
+          sed -i "s/<version>$NUM_VERSION<\/version>/<version>$NEW_VERSION<\/version>/" pom.xml
+          
+          git commit -am "Incremented version to $NEW_VERSION"
+          git push
