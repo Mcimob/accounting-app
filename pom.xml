@@ -6,8 +6,8 @@
     <!-- Project from https://start.vaadin.com/project/bbad8fc6-5a6c-4eaf-850d-2292aee65191 -->
     <groupId>ch.pfaditools.accounting</groupId>
     <artifactId>accounting-app</artifactId>
-    <name>accounting-app</name>
-    <version>1.0-SNAPSHOT</version>
+    <name>Accounting-App</name>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
