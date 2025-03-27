@@ -38,7 +38,8 @@ jobs:
       - name: Update version in pom.xml
         if: env.RUN_MERGE == 'false'
         run: |
-          sed -i "s/<version>$VERSION-SNAPSHOT<\/version>/<version>$VERSION<\/version>/" pom.xml
+          NUM_VERSION=$(echo $VERSION | cut -d '-' -f1)
+          sed -i "s/<version>$VERSION<\/version>/<version>$NUM_VERSION<\/version>/" pom.xml
 
           git commit -am "Update version for test release: $NEW_VERSION"
           
