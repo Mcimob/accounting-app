@@ -32,6 +32,7 @@ jobs:
             VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+.*(?=<\/version>)' pom.xml | head -n 1)
             echo "Current Version: $VERSION"
             if [[ "$VERSION" =~ .*SNAPSHOT ]]; then
+              echo "Snapshot-version, not incrementing"
             else 
               echo "Not a snapshot"
               echo "Incrementing version..."
