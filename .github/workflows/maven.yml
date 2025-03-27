@@ -86,14 +86,12 @@ jobs:
       - name: Log in to private Docker registry
         run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
 
-      - name: Build the Docker image
+      - name: Build and push Docker image
         run: |
-          JAR_FILE=$(ls target/*.jar | head -n 1)
-          docker build -t ${{ secrets.REGISTRY_URL }}/accounting-app/${{ env.DOCKER_TAG }}:latest
-
-      - name: Push Docker image
-        run: |
-          docker push ${{ secrets.REGISTRY_URL }}/accounting-app/${{ env.DOCKER_TAG }}:latest
+          docker buildx create --use
+          docker buildx build --platform linux/amd64 \
+            --tag ${{ secrets.REGISTRY_URL }}/accounting-app/${{ env.DOCKER_TAG }}:latest
+            --push .
 
       - name: Logout from Docker registry
         run: docker logout ${{ secrets.REGISTRY_URL }}
