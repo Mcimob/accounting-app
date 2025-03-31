@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_GROUP;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_PAYMENT_OVERVIEW;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
@@ -95,6 +96,15 @@ public class MainLayout extends AppLayout {
                     ROUTE_ADMIN,
                     VaadinIcon.COGS.create()));
         }
+
+        if (SecurityUtils.isUserInRole(ROLE_GROUP_ADMIN)) {
+            nav.addItem(new SideNavItem(
+                    getTranslation("view.group.title"),
+                    ROUTE_GROUP,
+                    VaadinIcon.GROUP.create()
+            ));
+        }
+
         if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
             nav.addItem(new SideNavItem(
                     getTranslation("view.payment.title"),
