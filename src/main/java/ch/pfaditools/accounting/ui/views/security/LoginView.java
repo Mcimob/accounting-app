@@ -24,8 +24,6 @@ public class LoginView extends AbstractNarrowView {
             return;
         }
 
-        super.render();
-
         CustomLogin loginForm = new CustomLogin();
         loginForm.setAction("login");
         loginForm.setForgotPasswordButtonVisible(false);

@@ -28,7 +28,6 @@ public class PaymentOverView extends AbstractEntityOverView<PaymentEntity, Payme
 
     public PaymentOverView(PaymentService paymentService) {
         super(new PaymentProvider(paymentService), ROUTE_EDIT_PAYMENT, "view.payment.addButton");
-        render();
     }
 
     @Override

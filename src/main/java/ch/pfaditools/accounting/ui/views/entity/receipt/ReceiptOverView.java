@@ -41,7 +41,6 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
     public ReceiptOverView(ReceiptService receiptService, UserService userService) {
         super(new ReceiptProvider(receiptService), ROUTE_EDIT_RECEIPT, "view.receipt.addReceipt");
         this.userService = userService;
-        render();
     }
 
     @Override

@@ -56,7 +56,6 @@ public class AdminView extends AbstractWideView {
         this.groupProvider = groupProvider;
         this.passwordEncoder = passwordEncoder;
         setupBinder();
-        render();
     }
 
     private Component createGrid() {

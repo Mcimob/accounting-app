@@ -55,7 +55,6 @@ public class RegisterView extends AbstractNarrowView {
         this.userService = userService;
         this.groupService = groupService;
         this.passwordEncoder = passwordEncoder;
-        render();
         setupBinder();
     }
 
