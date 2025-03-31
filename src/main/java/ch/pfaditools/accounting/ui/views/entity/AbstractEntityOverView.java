@@ -22,7 +22,6 @@ import com.vaadin.flow.router.QueryParameters;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 import static ch.pfaditools.accounting.ui.views.entity.AbstractEditEntityView.KEY_ENTITY;
 
 public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends AbstractFilter<T>>
@@ -59,7 +58,7 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
     private Component createAddButton() {
         Button createButton = new Button(getTranslation(buttonText));
         createButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        createButton.addClickListener(click -> UI.getCurrent().navigate(ROUTE_EDIT_RECEIPT));
+        createButton.addClickListener(click -> UI.getCurrent().navigate(addingRoute));
 
         return createButton;
     }
