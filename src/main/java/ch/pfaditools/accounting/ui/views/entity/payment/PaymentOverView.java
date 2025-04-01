@@ -37,7 +37,7 @@ public class PaymentOverView extends AbstractEntityOverView<PaymentEntity, Payme
         grid.addColumn(p -> Optional.of(p)
                         .map(PaymentEntity::getReceipts)
                         .map(AmountUtil::getAmountSum)
-                        .map(AmountUtil::fromAmount)
+                        .map(AmountUtil::fromAmountWithCurrency)
                         .orElse(""))
                 .setHeader(getTranslation("entity.receipt.amount"));
         grid.addComponentColumn(p -> {

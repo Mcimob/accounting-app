@@ -23,8 +23,11 @@ import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import jakarta.annotation.security.PermitAll;
+import org.javamoney.moneta.FastMoney;
+import org.vaadin.addons.MoneyField;
 
 import java.io.InputStream;
+import java.util.Currency;
 
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 
@@ -35,7 +38,7 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
     private final transient FileService fileService;
 
     private TextField titleField;
-    private TextField amountField;
+    private MoneyField amountField;
     private TextArea descriptionField;
 
     private final FileBuffer buffer = new FileBuffer();
@@ -81,8 +84,17 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
         binder.forField(amountField)
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.receipt.amount")))
                 .bind(
-                        rec -> AmountUtil.fromAmount(rec.getAmount()),
-                        (rec, val) -> rec.setAmount(AmountUtil.fromString(val)));
+                rec -> {
+                    Currency currency = Currency.getInstance(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
+                    return FastMoney.of(rec.getAmount()
+                            / AmountUtil.getCurrencyRatio(currency), currency.getCurrencyCode());
+                },
+                (rec, val) -> {
+                    Currency currency = Currency.getInstance(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
+                    long amount = (long) (AmountUtil.getCurrencyRatio(currency)
+                            * val.getNumber().numberValue(Long.class));
+                    rec.setAmount(amount);
+                });
     }
 
 
@@ -127,11 +139,11 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
     @Override
     protected void setupFields() {
         titleField = new TextField(getTranslation("entity.receipt.title"));
-        amountField = new TextField(getTranslation("entity.receipt.amount"));
+        amountField = new MoneyField(getTranslation("entity.receipt.amount"));
         descriptionField = new TextArea(getTranslation("entity.receipt.description"));
 
-        amountField.setPattern("[0-9]+\\.[0-9]{2}");
-        amountField.setPrefixComponent(new Div("CHF"));
+        amountField.setCurrency(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
+        amountField.setCurrencyReadOnly(true);
     }
 
     @Override

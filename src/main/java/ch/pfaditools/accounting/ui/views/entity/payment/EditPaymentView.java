@@ -6,6 +6,7 @@ import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.model.entity.PaymentEntity;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.model.filter.PaymentEntityFilter;
+import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.provider.ReceiptStringProvider;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEditEntityView;
@@ -13,13 +14,15 @@ import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.MultiSelectComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
+import org.javamoney.moneta.FastMoney;
 import org.springframework.data.domain.Page;
+import org.vaadin.addons.MoneyField;
 
+import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,7 +39,7 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
 
     private TextField titleField;
     private TextArea descriptionField;
-    private TextField amountField;
+    private MoneyField amountField;
     private MultiSelectComboBox<ReceiptEntity> receiptCbx;
 
     public EditPaymentView(
@@ -52,9 +55,9 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
     private void setupReceiptCbx() {
         provider.getFilter().setPaidOut(false);
         receiptCbx.setItems(provider);
-        receiptCbx.setItemLabelGenerator(receipt -> "%s | CHF %s | %s".formatted(
+        receiptCbx.setItemLabelGenerator(receipt -> "%s | %s | %s".formatted(
                 receipt.getName(),
-                AmountUtil.fromAmount(receipt.getAmount()),
+                AmountUtil.fromAmountWithCurrency(receipt.getAmount()),
                 receipt.getCreatedUser()));
 
         receiptCbx.setAutoExpand(MultiSelectComboBox.AutoExpandMode.VERTICAL);
@@ -65,7 +68,7 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
             }
             Set<ReceiptEntity> newReceipts = event.getValue();
             Set<ReceiptEntity> oldReceipts = event.getOldValue();
-            amountField.setValue(AmountUtil.fromAmount(AmountUtil.getAmountSum(newReceipts)));
+            amountField.setAmount(AmountUtil.fromAmount(AmountUtil.getAmountSum(newReceipts)));
 
             if (oldEntity.getId() == null) {
                 return;
@@ -122,10 +125,10 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
     protected void setupFields() {
         titleField = new TextField(getTranslation("entity.payment.title"));
         descriptionField = new TextArea(getTranslation("entity.payment.description"));
-        amountField = new TextField(getTranslation("entity.receipt.amount"));
+        amountField = new MoneyField(getTranslation("entity.receipt.amount"));
+        amountField.setCurrencyReadOnly(true);
+        amountField.setCurrency(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
         receiptCbx = new MultiSelectComboBox<>(getTranslation("entity.payment.receipts"));
-
-        amountField.setPrefixComponent(new Div("CHF"));
     }
 
     @Override
@@ -137,8 +140,12 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.payment.description")))
                 .bind(PaymentEntity::getDescription, PaymentEntity::setDescription);
         binder.forField(amountField)
-                .bindReadOnly(payment ->
-                        AmountUtil.fromAmount(AmountUtil.getAmountSum(payment.getReceipts())));
+                .bindReadOnly(payment -> {
+                    Currency currency = Currency.getInstance(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
+                    return FastMoney.of(
+                            AmountUtil.getAmountSum(payment.getReceipts())
+                                    / AmountUtil.getCurrencyRatio(currency), currency.getCurrencyCode());
+                });
         binder.forField(receiptCbx)
                 .bind(PaymentEntity::getReceipts, (p, receipts) -> {
                     p.setReceipts(receipts);

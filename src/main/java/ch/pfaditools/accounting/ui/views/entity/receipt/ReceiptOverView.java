@@ -47,7 +47,7 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
     protected Component createGrid() {
         Grid.Column<ReceiptEntity> nameColumn = grid.addColumn(ReceiptEntity::getName)
                         .setHeader(getTranslation("entity.receipt.title"));
-        grid.addColumn(r -> "CHF " + AmountUtil.fromAmount(r.getAmount()))
+        grid.addColumn(r -> AmountUtil.fromAmountWithCurrency(r.getAmount()))
                         .setHeader(getTranslation("entity.receipt.amount"));
         grid.addComponentColumn(this::createIcon)
                         .setHeader(getTranslation("entity.receipt.paid"));
