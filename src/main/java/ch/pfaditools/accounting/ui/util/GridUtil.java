@@ -2,7 +2,6 @@ package ch.pfaditools.accounting.ui.util;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasPlaceholder;
-import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.HeaderRow;
@@ -43,10 +42,6 @@ public final class GridUtil {
         }
         if (field instanceof HasPlaceholder hasPlaceholder) {
             hasPlaceholder.setPlaceholder(grid.getHeaderRows().getFirst().getCell(column).getText());
-        }
-
-        if (field instanceof HasSize hasSize) {
-            hasSize.setWidthFull();
         }
 
         if (field instanceof Component component) {

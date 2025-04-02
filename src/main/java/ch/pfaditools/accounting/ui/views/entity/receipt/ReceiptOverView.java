@@ -13,14 +13,17 @@ import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
 import ch.pfaditools.accounting.ui.util.GridUtil;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -36,8 +39,6 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
 
     private final transient UserService userService;
 
-    private final Checkbox unpaidCheck = new Checkbox(getTranslation("view.receipt.unpaid"));
-
     public ReceiptOverView(ReceiptService receiptService, UserService userService) {
         super(new ReceiptProvider(receiptService), ROUTE_EDIT_RECEIPT, "view.receipt.addReceipt");
         this.userService = userService;
@@ -49,7 +50,7 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
                 .setHeader(getTranslation("entity.receipt.title"));
         grid.addColumn(ReceiptEntity::getAmount)
                 .setHeader(getTranslation("entity.receipt.amount"));
-        grid.addComponentColumn(this::createIcon)
+        Grid.Column<ReceiptEntity> paidColumn = grid.addComponentColumn(rec -> createIcon(rec.getPayment() != null))
                 .setHeader(getTranslation("entity.receipt.paid"));
         if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
             Grid.Column<ReceiptEntity> createdColumn = grid.addColumn(ReceiptEntity::getCreatedUser)
@@ -68,16 +69,32 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
                 nameColumn,
                 ReceiptEntityFilter::setName,
                 new TextField());
+        GridUtil.addHeaderFilterCell(grid,
+                filter,
+                filterDataProvider,
+                paidColumn,
+                ReceiptEntityFilter::setPaidOut,
+                createPaidSelect());
         return grid;
     }
 
-    private Icon createIcon(ReceiptEntity receipt) {
-        Icon paidIcon = receipt.getPayment() == null
-                ? VaadinIcon.CLOSE_CIRCLE.create()
-                :  VaadinIcon.CHECK_CIRCLE.create();
-        paidIcon.setColor(receipt.getPayment() == null
-                ? DesignConstants.CLR_ACCENT
-                : DesignConstants.CLR_REGULAR);
+    private HasValue<?, Boolean> createPaidSelect() {
+        Select<Boolean> paidSelect = new Select<>();
+        paidSelect.setItems(List.of(Boolean.TRUE, Boolean.FALSE));
+        paidSelect.setEmptySelectionAllowed(true);
+        paidSelect.setRenderer(new ComponentRenderer<Component, Boolean>(this::createIcon));
+        paidSelect.setWidth("calc(var(--lumo-icon-size-m) * 3)");
+
+        return paidSelect;
+    }
+
+    private Icon createIcon(Boolean paid) {
+        Icon paidIcon = paid
+                ? VaadinIcon.CHECK_CIRCLE.create()
+                : VaadinIcon.CLOSE_CIRCLE.create();
+        paidIcon.setColor(paid
+                ? DesignConstants.CLR_REGULAR
+                : DesignConstants.CLR_ACCENT);
         return paidIcon;
     }
 
