@@ -178,6 +178,8 @@ public class GroupView extends AbstractNarrowView {
                 UserEntityFilter::setUsername,
                 new TextField());
 
+        personGrid.getColumns().forEach(c -> c.setAutoWidth(true));
+
         personGrid.setItems(filterDataProvider);
 
         return personGrid;

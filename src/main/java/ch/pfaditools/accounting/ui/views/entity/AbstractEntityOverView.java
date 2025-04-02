@@ -11,6 +11,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
+import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.QueryParameters;
 
 import static ch.pfaditools.accounting.ui.views.entity.AbstractEditEntityView.KEY_ENTITY;
@@ -31,7 +32,6 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
         this.addingRoute = addingRoute;
         this.buttonText = buttonText;
         filter = getBaseFilter();
-        setupGrid();
     }
 
     private void setupGrid() {
@@ -44,6 +44,7 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
         });
         grid.setItems(filterDataProvider);
         grid.setWidthFull();
+        grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
     private Component createAddButton() {
@@ -62,6 +63,12 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
         add(new H1(getPageTitle()));
         add(createAddButton());
         add(createGrid());
+    }
+
+    @Override
+    public void afterNavigation(AfterNavigationEvent event) {
+        super.afterNavigation(event);
+        setupGrid();
     }
 
     protected abstract F getBaseFilter();
