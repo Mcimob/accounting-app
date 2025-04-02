@@ -195,10 +195,18 @@ public class RegisterView extends AbstractNarrowView {
         return layout;
     }
 
+    private Component createLoginButton() {
+        Button loginButton = new Button(getTranslation("view.register.loginLink"));
+        loginButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+        loginButton.addClickListener(e -> UI.getCurrent().navigate(ROUTE_LOGIN));
+
+        return loginButton;
+    }
+
     @Override
     protected void render() {
         super.render();
-        add(createHeader(), createContent());
+        add(createHeader(), createContent(), createLoginButton());
     }
 
     @Override
