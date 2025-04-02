@@ -6,6 +6,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Arrays;
+import java.util.Currency;
 import java.util.Optional;
 
 public final class SecurityUtils {
@@ -27,6 +28,14 @@ public final class SecurityUtils {
 
     public static GroupEntity getAuthenticatedUserGroup() {
         return Optional.ofNullable(getCurrentUser()).map(UserEntity::getGroup).orElse(null);
+    }
+
+    public static String getGroupCurrencyString() {
+        return Optional.ofNullable(getAuthenticatedUserGroup()).map(GroupEntity::getCurrency).orElse("USD");
+    }
+
+    public static Currency getGroupCurrency() {
+        return Currency.getInstance(getGroupCurrencyString());
     }
 
     public static boolean isUserInRole(String role) {

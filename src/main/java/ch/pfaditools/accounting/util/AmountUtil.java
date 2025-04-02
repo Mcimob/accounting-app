@@ -25,7 +25,6 @@ public final class AmountUtil {
                 .map(MonetaryAmount::getNumber)
                 .map(NumberValue::doubleValueExact)
                 .reduce(0D, Double::sum);
-        Currency currency = Currency.getInstance(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
-        return FastMoney.of(amount, SecurityUtils.getAuthenticatedUserGroup().getCurrency());
+        return FastMoney.of(amount, SecurityUtils.getGroupCurrencyString());
     }
 }

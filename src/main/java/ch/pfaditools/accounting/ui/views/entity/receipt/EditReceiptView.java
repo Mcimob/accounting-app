@@ -128,7 +128,7 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
         amountField = new MoneyField(getTranslation("entity.receipt.amount"));
         descriptionField = new TextArea(getTranslation("entity.receipt.description"));
 
-        amountField.setCurrency(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
+        amountField.setCurrency(SecurityUtils.getGroupCurrencyString());
         amountField.setCurrencyReadOnly(true);
     }
 

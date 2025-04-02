@@ -125,7 +125,7 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
         descriptionField = new TextArea(getTranslation("entity.payment.description"));
         amountField = new MoneyField(getTranslation("entity.receipt.amount"));
         amountField.setCurrencyReadOnly(true);
-        amountField.setCurrency(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
+        amountField.setCurrency(SecurityUtils.getGroupCurrencyString());
         receiptCbx = new MultiSelectComboBox<>(getTranslation("entity.payment.receipts"));
     }
 
