@@ -18,11 +18,9 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
-import org.javamoney.moneta.FastMoney;
 import org.springframework.data.domain.Page;
 import org.vaadin.addons.MoneyField;
 
-import java.util.Currency;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -57,7 +55,7 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
         receiptCbx.setItems(provider);
         receiptCbx.setItemLabelGenerator(receipt -> "%s | %s | %s".formatted(
                 receipt.getName(),
-                AmountUtil.fromAmountWithCurrency(receipt.getAmount()),
+                receipt.getAmount(),
                 receipt.getCreatedUser()));
 
         receiptCbx.setAutoExpand(MultiSelectComboBox.AutoExpandMode.VERTICAL);
@@ -68,7 +66,7 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
             }
             Set<ReceiptEntity> newReceipts = event.getValue();
             Set<ReceiptEntity> oldReceipts = event.getOldValue();
-            amountField.setAmount(AmountUtil.fromAmount(AmountUtil.getAmountSum(newReceipts)));
+            amountField.setValue(AmountUtil.getAmountSum(newReceipts));
 
             if (oldEntity.getId() == null) {
                 return;
@@ -140,12 +138,7 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.payment.description")))
                 .bind(PaymentEntity::getDescription, PaymentEntity::setDescription);
         binder.forField(amountField)
-                .bindReadOnly(payment -> {
-                    Currency currency = Currency.getInstance(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
-                    return FastMoney.of(
-                            AmountUtil.getAmountSum(payment.getReceipts())
-                                    / AmountUtil.getCurrencyRatio(currency), currency.getCurrencyCode());
-                });
+                .bindReadOnly(PaymentEntity::getReceiptsAmount);
         binder.forField(receiptCbx)
                 .bind(PaymentEntity::getReceipts, (p, receipts) -> {
                     p.setReceipts(receipts);

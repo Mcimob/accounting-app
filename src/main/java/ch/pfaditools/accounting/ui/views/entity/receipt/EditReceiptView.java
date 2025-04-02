@@ -10,7 +10,6 @@ import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.components.CustomUpload;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEditEntityView;
-import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.componentfactory.pdfviewer.PdfViewer;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -23,11 +22,9 @@ import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.StreamResource;
 import jakarta.annotation.security.PermitAll;
-import org.javamoney.moneta.FastMoney;
 import org.vaadin.addons.MoneyField;
 
 import java.io.InputStream;
-import java.util.Currency;
 
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 
@@ -83,18 +80,7 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
                 .bind(ReceiptEntity::getDescription, ReceiptEntity::setDescription);
         binder.forField(amountField)
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.receipt.amount")))
-                .bind(
-                rec -> {
-                    Currency currency = Currency.getInstance(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
-                    return FastMoney.of(rec.getAmount()
-                            / AmountUtil.getCurrencyRatio(currency), currency.getCurrencyCode());
-                },
-                (rec, val) -> {
-                    Currency currency = Currency.getInstance(SecurityUtils.getAuthenticatedUserGroup().getCurrency());
-                    long amount = (long) (AmountUtil.getCurrencyRatio(currency)
-                            * val.getNumber().numberValue(Long.class));
-                    rec.setAmount(amount);
-                });
+                .bind(ReceiptEntity::getAmount, ReceiptEntity::setAmount);
     }
 
 

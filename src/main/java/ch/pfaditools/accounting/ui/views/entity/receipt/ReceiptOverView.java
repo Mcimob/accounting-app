@@ -11,7 +11,6 @@ import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.components.UserCbxAutoHide;
 import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
-import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
@@ -47,7 +46,7 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
     protected Component createGrid() {
         Grid.Column<ReceiptEntity> nameColumn = grid.addColumn(ReceiptEntity::getName)
                         .setHeader(getTranslation("entity.receipt.title"));
-        grid.addColumn(r -> AmountUtil.fromAmountWithCurrency(r.getAmount()))
+        grid.addColumn(ReceiptEntity::getAmount)
                         .setHeader(getTranslation("entity.receipt.amount"));
         grid.addComponentColumn(this::createIcon)
                         .setHeader(getTranslation("entity.receipt.paid"));

@@ -1,6 +1,8 @@
 package ch.pfaditools.accounting.model.entity;
 
+import ch.pfaditools.accounting.model.converter.MoneyConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -8,6 +10,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+import javax.money.MonetaryAmount;
 import java.util.Objects;
 
 @Entity
@@ -33,7 +36,8 @@ public class ReceiptEntity extends AbstractEntity {
     private String description;
 
     @Column(nullable = false)
-    private long amount;
+    @Convert(converter = MoneyConverter.class)
+    private MonetaryAmount amount;
 
     @OneToOne(fetch = FetchType.EAGER)
     private FileEntity file;
@@ -69,11 +73,11 @@ public class ReceiptEntity extends AbstractEntity {
         this.file = file;
     }
 
-    public long getAmount() {
+    public MonetaryAmount getAmount() {
         return amount;
     }
 
-    public void setAmount(long amount) {
+    public void setAmount(MonetaryAmount amount) {
         this.amount = amount;
     }
 
