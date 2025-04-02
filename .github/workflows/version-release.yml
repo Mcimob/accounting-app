@@ -1,0 +1,64 @@
+name: Update Version on Test
+
+on:
+  pull_request:
+    branches:
+      - test
+    types:
+      - closed
+
+jobs:
+  update-version-test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup git-config
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Set version
+        run: echo "VERSION=$(grep -oP '(?<=<version>)[0-9]+\.[0-9]+\.[0-9]+(?=-SNAPSHOT)' pom.xml | head -n 1)" >> $GITHUB_ENV
+
+      - name: Remove -SNAPSHOT on test
+        run: |
+          sed -i "s/<version>$VERSION-SNAPSHOT<\/version>/<version>$VERSION<\/version>/" pom.xml
+          
+          git commit -am "Update version for test release: $VERSION"
+          
+          git push
+
+      - name: Merge test back into develop
+        run: |
+          # Ensure we are on the develop branch
+          git checkout develop
+          
+          # Pull the latest changes from the remote develop branch to ensure we have all the latest updates
+          git pull origin develop
+          
+          # Merge the updated test branch into develop, allowing unrelated histories if necessary
+          git merge --no-ff --strategy-option=theirs --allow-unrelated-histories test -m "Auto-merge test into develop after removing -SNAPSHOT [ci skip]"
+          
+          # Push the changes to the remote develop branch
+          git push
+
+      - name: Add -SNAPSHOT back on dev
+        run: |
+          git checkout develop
+          git pull origin develop
+          
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          MINOR=$(echo $VERSION | cut -d. -f2)
+          PATCH=$(echo $VERSION | cut -d. -f3)
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH-SNAPSHOT"
+          
+          sed -i "s/<version>$VERSION<\/version>/<version>$NEW_VERSION<\/version>/" pom.xml
+          
+          git commit -am "Incremented version to $NEW_VERSION"
+          git push

@@ -1,1 +1,81 @@
 @import url('./main-layout.css');
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    --clr-accent: #E63946;
+    --clr-bg: #F1FAEE;
+    --clr-light: #A8DADC;
+    --clr-regular: #457B9D;
+    --clr-dark: #1D3557;
+
+    --lumo-primary-color: var(--clr-regular);
+    --lumo-primary-text-color: var(--clr-regular);
+    --lumo-error-color: var(--clr-accent);
+    --lumo-required-field-indicator-color: var(--clr-regular);
+    --lumo-contrast-60pct: var(--clr-regular);
+}
+
+vaadin-combo-box-item:hover {
+    background-color: var(--clr-light);
+}
+
+.view {
+    min-width: 100%;
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding: .5rem;
+    background-color: var(--clr-bg);
+    & > * {
+        width: min(100%, 800px);
+
+        /*height: 100%;*/
+        background-color: white;
+        border: 5px solid var(--clr-dark);
+        border-radius: 20px;
+        box-shadow: 5px 5px 10px gray;
+        padding: 2rem;
+        gap: .5rem;
+    }
+}
+
+.view-wide {
+    & > * {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+.content-match-width {
+    & > * {
+        width: 100%;
+    }
+}
+
+.width-narrow {
+    width: 100%;
+    max-width: 400px;
+}
+
+.fw-700 {
+    font-weight: 700;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-center {
+    align-items: center;
+    justify-content: center;
+}
+
