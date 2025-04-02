@@ -7,6 +7,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
@@ -25,6 +26,7 @@ import org.springframework.stereotype.Component;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_GROUP;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_PAYMENT_OVERVIEW;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
@@ -65,10 +67,13 @@ public class MainLayout extends AppLayout {
 
         HorizontalLayout leftLayout = new HorizontalLayout(toggle);
         leftLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+        HorizontalLayout title = new HorizontalLayout(new Div(appConfiguration.getApplicationTitle()));
+        title.addClassName(DesignConstants.STYLE_FW_700);
+        title.setAlignItems(FlexComponent.Alignment.CENTER);
         HorizontalLayout rightLayout = new HorizontalLayout(logoutButton);
         rightLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
 
-        HorizontalLayout layout = new HorizontalLayout(leftLayout, rightLayout);
+        HorizontalLayout layout = new HorizontalLayout(leftLayout, title, rightLayout);
         layout.setMargin(true);
         layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         layout.setWidthFull();
@@ -95,6 +100,15 @@ public class MainLayout extends AppLayout {
                     ROUTE_ADMIN,
                     VaadinIcon.COGS.create()));
         }
+
+        if (SecurityUtils.isUserInRole(ROLE_GROUP_ADMIN)) {
+            nav.addItem(new SideNavItem(
+                    getTranslation("view.group.title"),
+                    ROUTE_GROUP,
+                    VaadinIcon.GROUP.create()
+            ));
+        }
+
         if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
             nav.addItem(new SideNavItem(
                     getTranslation("view.payment.title"),

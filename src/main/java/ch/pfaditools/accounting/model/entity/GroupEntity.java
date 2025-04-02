@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -22,6 +23,10 @@ public class GroupEntity extends AbstractEntity {
     private String groupCode;
 
     private String groupAdminCode;
+
+    @Column(nullable = false)
+    @ColumnDefault("USD")
+    private String currency;
 
     public String getName() {
         return name;
@@ -55,6 +60,14 @@ public class GroupEntity extends AbstractEntity {
         this.groupAdminCode = groupAdminCode;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -68,7 +81,8 @@ public class GroupEntity extends AbstractEntity {
         }
         return Objects.equals(name, that.name)
                 && Objects.equals(groupCode, that.groupCode)
-                && Objects.equals(groupAdminCode, that.groupAdminCode);
+                && Objects.equals(groupAdminCode, that.groupAdminCode)
+                && Objects.equals(currency, that.currency);
     }
 
     @Override
@@ -76,14 +90,15 @@ public class GroupEntity extends AbstractEntity {
         return Objects.hash(super.hashCode(),
                 name,
                 groupCode,
-                groupAdminCode);
+                groupAdminCode,
+                currency);
     }
 
     @Override
     public String toString() {
         return "GroupEntity{"
                 + "name='" + name + '\''
+                + ", currency='" + currency + '\''
                 + "} " + super.toString();
     }
-
 }

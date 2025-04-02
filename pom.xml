@@ -7,7 +7,7 @@
     <groupId>ch.pfaditools.accounting</groupId>
     <artifactId>accounting-app</artifactId>
     <name>Accounting-App</name>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -97,6 +97,13 @@
             <artifactId>vcf-pdf-viewer</artifactId>
             <version>3.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.vaadin.addons.e-movimento</groupId>
+            <artifactId>moneyfield</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -189,8 +196,8 @@
 
     <profiles>
         <profile>
-            <!-- Production mode is activated using -Pproduction -->
-            <id>production</id>
+            <!-- Production mode is activated using -Pprod -->
+            <id>prod</id>
             <dependencies>
                 <!-- Exclude development dependencies from production -->
                 <dependency>

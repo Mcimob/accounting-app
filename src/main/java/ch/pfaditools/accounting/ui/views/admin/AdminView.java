@@ -7,12 +7,11 @@ import ch.pfaditools.accounting.model.entity.GroupEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.views.AbstractWideView;
+import ch.pfaditools.accounting.util.CodeUtil;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
@@ -23,7 +22,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -36,7 +34,6 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_ADMIN;
 @RolesAllowed(ROLE_ADMIN)
 public class AdminView extends AbstractWideView {
 
-    public static final int CODE_LENGTH = 24;
     private final GroupService groupService;
     private final GroupProvider groupProvider;
     private final PasswordEncoder passwordEncoder;
@@ -56,7 +53,6 @@ public class AdminView extends AbstractWideView {
         this.groupProvider = groupProvider;
         this.passwordEncoder = passwordEncoder;
         setupBinder();
-        render();
     }
 
     private Component createGrid() {
@@ -107,28 +103,8 @@ public class AdminView extends AbstractWideView {
 
     private void onAddCodeButtonClicked(
             GroupEntity group, BiConsumer<GroupEntity, String> setter, String codeText) {
-        String code = RandomStringUtils.secure().nextAlphanumeric(CODE_LENGTH);
-        String encodedCode = passwordEncoder.encode(code);
-        setter.accept(group, encodedCode);
-        ServiceResponse<GroupEntity> saveResponse = groupService.save(group);
-        if (saveResponse.hasErrorMessages()) {
-            showMessagesFromResponse(saveResponse);
-            return;
-        }
-
+        CodeUtil.onCodeButtonClicked(passwordEncoder, groupService, group, setter, codeText, this);
         groupProvider.refreshAll();
-
-        Dialog dialog = new Dialog();
-
-        Button closeButton = new Button(getTranslation("view.general.close"));
-        closeButton.addClickListener(click -> dialog.close());
-        closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
-        dialog.getFooter().add(closeButton);
-
-        dialog.setHeaderTitle(getTranslation("view.admin.codeDialogTitle", codeText));
-        dialog.add(new Text(getTranslation("view.admin.codeDialogText", codeText, code)));
-
-        dialog.open();
     }
 
     private Component createForm() {

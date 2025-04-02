@@ -7,15 +7,12 @@ import ch.pfaditools.accounting.model.filter.PaymentEntityFilter;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.provider.PaymentProvider;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
-import ch.pfaditools.accounting.util.AmountUtil;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
-
-import java.util.Optional;
 
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
@@ -28,18 +25,13 @@ public class PaymentOverView extends AbstractEntityOverView<PaymentEntity, Payme
 
     public PaymentOverView(PaymentService paymentService) {
         super(new PaymentProvider(paymentService), ROUTE_EDIT_PAYMENT, "view.payment.addButton");
-        render();
     }
 
     @Override
     protected Component createGrid() {
         Grid.Column<PaymentEntity> titleColumn = grid.addColumn(PaymentEntity::getTitle)
                 .setHeader(getTranslation("entity.payment.title"));
-        grid.addColumn(p -> Optional.of(p)
-                        .map(PaymentEntity::getReceipts)
-                        .map(AmountUtil::getAmountSum)
-                        .map(AmountUtil::fromAmount)
-                        .orElse(""))
+        grid.addColumn(PaymentEntity::getReceiptsAmount)
                 .setHeader(getTranslation("entity.receipt.amount"));
         grid.addComponentColumn(p -> {
             Details details = new Details("%s %s".formatted(

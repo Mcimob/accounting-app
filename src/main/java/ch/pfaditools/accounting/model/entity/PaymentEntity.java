@@ -1,11 +1,14 @@
 package ch.pfaditools.accounting.model.entity;
 
+import ch.pfaditools.accounting.util.AmountUtil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import javax.money.MonetaryAmount;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -29,7 +32,7 @@ public class PaymentEntity extends AbstractEntity {
     private String description;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "payment")
-    private Set<ReceiptEntity> receipts;
+    private Set<ReceiptEntity> receipts = new HashSet<>();
 
     public String getTitle() {
         return title;
@@ -49,6 +52,10 @@ public class PaymentEntity extends AbstractEntity {
 
     public Set<ReceiptEntity> getReceipts() {
         return receipts;
+    }
+
+    public MonetaryAmount getReceiptsAmount() {
+        return AmountUtil.getAmountSum(receipts);
     }
 
     public void setReceipts(Set<ReceiptEntity> receipts) {

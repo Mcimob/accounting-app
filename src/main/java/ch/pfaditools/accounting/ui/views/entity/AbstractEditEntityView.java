@@ -162,7 +162,6 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
             oldEntity = createEntity();
             newEntity = createEntity();
         });
-        render();
     }
 
     protected abstract T copyEntity(T entity);
