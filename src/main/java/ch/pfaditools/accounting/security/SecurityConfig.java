@@ -20,9 +20,13 @@ public class SecurityConfig extends VaadinWebSecurity {
         http.authorizeHttpRequests(auth ->
                 auth.requestMatchers(new AntPathRequestMatcher("/public/**")).permitAll());
 
-        http.formLogin(form -> form
+        http
+            .formLogin(form -> form
                 .loginPage("/" + ROUTE_LOGIN)
-                .defaultSuccessUrl("/" + ROUTE_RECEIPT_OVERVIEW));
+                .defaultSuccessUrl("/" + ROUTE_RECEIPT_OVERVIEW, true))
+            .logout(form -> form
+                .logoutSuccessUrl("/" + ROUTE_LOGIN));
         super.configure(http);
+        setLoginView(http, ROUTE_LOGIN);
     }
 }

@@ -6,6 +6,8 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -17,7 +19,9 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
 
 @Route(ROUTE_LOGIN)
 @AnonymousAllowed
-public class LoginView extends AbstractNarrowView {
+public class LoginView extends AbstractNarrowView implements BeforeEnterObserver {
+
+    private final CustomLogin loginForm = new CustomLogin();
 
     public LoginView() {
         if (isUserAuthenticated()) {
@@ -26,7 +30,6 @@ public class LoginView extends AbstractNarrowView {
     }
 
     private Component createLoginComponent() {
-        CustomLogin loginForm = new CustomLogin();
         loginForm.setAction("login");
         loginForm.setForgotPasswordButtonVisible(false);
 
@@ -59,5 +62,18 @@ public class LoginView extends AbstractNarrowView {
     @Override
     public String getPageTitle() {
         return getTranslation("view.login.title");
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
+        System.out.println("BEFORE-EVENT-METHOD-CALLED!");
+
+        // inform the user about an authentication error
+        if (beforeEnterEvent.getLocation()
+                .getQueryParameters()
+                .getParameters()
+                .containsKey("error")) {
+            loginForm.setError(true);
+        }
     }
 }
