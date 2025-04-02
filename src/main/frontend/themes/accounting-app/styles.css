@@ -37,7 +37,8 @@ vaadin-combo-box-item:hover {
         border: 5px solid var(--clr-dark);
         border-radius: 20px;
         box-shadow: 5px 5px 10px gray;
-        padding: .5rem;
+        padding: 2rem;
+        gap: .5rem;
     }
 }
 
