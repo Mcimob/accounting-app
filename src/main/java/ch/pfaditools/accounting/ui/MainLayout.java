@@ -7,6 +7,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.html.Span;
@@ -66,10 +67,13 @@ public class MainLayout extends AppLayout {
 
         HorizontalLayout leftLayout = new HorizontalLayout(toggle);
         leftLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
+        HorizontalLayout title = new HorizontalLayout(new Div(appConfiguration.getApplicationTitle()));
+        title.addClassName(DesignConstants.STYLE_FW_700);
+        title.setAlignItems(FlexComponent.Alignment.CENTER);
         HorizontalLayout rightLayout = new HorizontalLayout(logoutButton);
         rightLayout.setAlignItems(FlexComponent.Alignment.BASELINE);
 
-        HorizontalLayout layout = new HorizontalLayout(leftLayout, rightLayout);
+        HorizontalLayout layout = new HorizontalLayout(leftLayout, title, rightLayout);
         layout.setMargin(true);
         layout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         layout.setWidthFull();
