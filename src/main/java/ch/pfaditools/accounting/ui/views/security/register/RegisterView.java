@@ -19,11 +19,13 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN_STRING;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER_STRING;
@@ -35,6 +37,14 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
 @Route(ROUTE_REGISTER)
 @AnonymousAllowed
 public class RegisterView extends AbstractNarrowView {
+
+    private static final String ONE_DIGIT = ".*[0-9].*";
+    private static final String LOWER_CASE = ".*[a-z].*";
+    private static final String UPPER_CASE = ".*[A-Z].*";
+    private static final String SPECIAL_CHAR = ".*[@#$%^&+=].*";
+    private static final String NO_SPACE = "\\S+$";
+    public static final int MIN_PASSWORD_LENGTH = 8;
+    public static final int MAX_PASSWORD_LENGTH = 20;
 
     private final UserService userService;
     private final GroupService groupService;
@@ -50,12 +60,15 @@ public class RegisterView extends AbstractNarrowView {
 
     private final UserWithCodeAndGroup userWithCodeAndGroup = new UserWithCodeAndGroup();
 
+    private Binder.Binding<UserWithCodeAndGroup, String> passwordBinding;
+
     public RegisterView(UserService userService, GroupService groupService, PasswordEncoder passwordEncoder) {
         super();
         this.userService = userService;
         this.groupService = groupService;
         this.passwordEncoder = passwordEncoder;
         setupBinder();
+        setupPasswordField();
     }
 
     private void setupBinder() {
@@ -63,11 +76,25 @@ public class RegisterView extends AbstractNarrowView {
         binder.forField(usernameField)
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.username")))
                 .bind(u -> u.getUser().getUsername(), (u, val) -> u.getUser().setUsername(val));
-        binder.forField(passwordField)
+        passwordBinding = binder.forField(passwordField)
+                .withValidator(pass -> pass.length() >= MIN_PASSWORD_LENGTH && pass.length() <= MAX_PASSWORD_LENGTH,
+                        getTranslation("view.register.error.password.length"))
+                .withValidator(pass -> Pattern.compile(ONE_DIGIT).matcher(pass).matches(),
+                        getTranslation("view.register.error.password.oneDigit"))
+                .withValidator(pass -> Pattern.compile(LOWER_CASE).matcher(pass).matches(),
+                        getTranslation("view.register.error.password.lowerCase"))
+                .withValidator(pass -> Pattern.compile(UPPER_CASE).matcher(pass).matches(),
+                        getTranslation("view.register.error.password.upperCase"))
+                .withValidator(pass -> Pattern.compile(SPECIAL_CHAR).matcher(pass).matches(),
+                        getTranslation("view.register.error.password.specialChar"))
+                .withValidator(pass -> Pattern.compile(NO_SPACE).matcher(pass).matches(),
+                        getTranslation("view.register.error.password.noSpace"))
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.password")))
                 .bind(u -> u.getUser().getPassword(), (u, val) -> u.getUser().setPassword(val));
         binder.forField(confirmPasswordField)
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.password")))
+                .withValidator(val -> val.equals(passwordField.getValue()),
+                        getTranslation("view.register.error.password.equal"))
                 .bind(u -> u.getUser().getPassword(), (u, val) -> u.getUser().setPassword(val));
         binder.forField(groupField)
                 .asRequired(getTranslation("view.general.error.notEmpty", getTranslation("entity.user.group")))
@@ -77,6 +104,13 @@ public class RegisterView extends AbstractNarrowView {
                 .bind(UserWithCodeAndGroup::getCode, UserWithCodeAndGroup::setCode);
 
         binder.setBean(userWithCodeAndGroup);
+    }
+
+    private void setupPasswordField() {
+        passwordField.addValueChangeListener(event -> {
+           passwordBinding.validate();
+        });
+        passwordField.setValueChangeMode(ValueChangeMode.LAZY);
     }
 
     private void registerUser(ClickEvent<Button> clickEvent) {
