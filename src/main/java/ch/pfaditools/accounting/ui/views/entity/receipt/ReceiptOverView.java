@@ -10,6 +10,7 @@ import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
 import ch.pfaditools.accounting.ui.components.UserCbxAutoHide;
 import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
+import ch.pfaditools.accounting.ui.util.GridUtil;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -55,15 +56,18 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
                     .setHeader(getTranslation("entity.abstract.createdUser"));
             UserCbxAutoHide userCbx = new UserCbxAutoHide(userService);
             userCbx.setEmptySelectionAllowed(true);
-            addHeaderFilterCell(
+            GridUtil.addHeaderFilterCell(grid, filter, filterDataProvider,
                     createdColumn,
                     (f, user) -> f.setCreatedByUser(Optional.ofNullable(user)
                             .map(UserEntity::getUsername).orElse(null)),
                     userCbx);
         }
-
-        new TextField().setWidthFull();
-        addHeaderFilterCell(nameColumn, ReceiptEntityFilter::setName, new TextField());
+        GridUtil.addHeaderFilterCell(grid,
+                filter,
+                filterDataProvider,
+                nameColumn,
+                ReceiptEntityFilter::setName,
+                new TextField());
 
         return grid;
     }

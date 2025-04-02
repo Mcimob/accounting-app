@@ -5,29 +5,20 @@ import ch.pfaditools.accounting.model.filter.AbstractFilter;
 import ch.pfaditools.accounting.ui.provider.AbstractEntityProvider;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.HasPlaceholder;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.data.provider.ConfigurableFilterDataProvider;
-import com.vaadin.flow.data.value.HasValueChangeMode;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.QueryParameters;
-
-import java.util.List;
-import java.util.function.BiConsumer;
 
 import static ch.pfaditools.accounting.ui.views.entity.AbstractEditEntityView.KEY_ENTITY;
 
 public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends AbstractFilter<T>>
         extends AbstractNarrowView {
 
-    private final ConfigurableFilterDataProvider<T, Void, F> filterDataProvider;
+    protected final ConfigurableFilterDataProvider<T, Void, F> filterDataProvider;
     private final String addingRoute;
     private final String buttonText;
 
@@ -63,11 +54,6 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
         return createButton;
     }
 
-    protected void refreshFilter() {
-        filterDataProvider.setFilter(filter);
-        filterDataProvider.refreshAll();
-    }
-
     protected abstract Component createGrid();
 
     @Override
@@ -79,36 +65,5 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
     }
 
     protected abstract F getBaseFilter();
-
-    protected <V> void addHeaderFilterCell(Grid.Column<T> column, BiConsumer<F, V> filterSetter, HasValue<?, V> field) {
-        List<HeaderRow> headers = grid.getHeaderRows();
-        HeaderRow header;
-        if (headers.isEmpty()) {
-            header = grid.appendHeaderRow();
-        } else {
-            header = headers.getFirst();
-        }
-
-        field.addValueChangeListener(event -> {
-            filterSetter.accept(filter, event.getValue());
-            refreshFilter();
-        });
-        if (field instanceof HasValueChangeMode hasChangeMode) {
-            hasChangeMode.setValueChangeMode(ValueChangeMode.EAGER);
-        }
-        if (field instanceof HasPlaceholder hasPlaceholder) {
-            hasPlaceholder.setPlaceholder(column.getHeaderText());
-        }
-
-        if (field instanceof HasSize hasSize) {
-            hasSize.setWidthFull();
-        }
-
-        if (field instanceof Component component) {
-            header.getCell(column).setComponent(component);
-        } else {
-            throw new IllegalArgumentException("Field must be a component");
-        }
-    }
 
 }

@@ -37,7 +37,13 @@ public abstract class AbstractEntityProvider<T extends AbstractEntity, F extends
 
     @Override
     protected int sizeInBackEnd(Query<T, F> query) {
-        return (int) fetchFromBackEnd(query).count();
+        Optional<F> filter = query.getFilter();
+        ServiceResponse<Long> response = service.count(filter.orElseGet(this::getFilter));
+
+        if (response.hasErrorMessages() || response.getEntity().isEmpty()) {
+            return 0;
+        }
+        return response.getEntity().get().intValue();
     }
 
     protected abstract F getFilter();
