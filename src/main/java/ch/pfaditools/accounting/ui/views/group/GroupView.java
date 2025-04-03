@@ -148,12 +148,13 @@ public class GroupView extends AbstractNarrowView {
                getLogger().info("Validation failed in GroupView", e);
                return;
            }
-            ServiceResponse<GroupEntity> response = groupService.save(group);
-            Optional<GroupEntity> newGroup = response.getEntity();
+           ServiceResponse<GroupEntity> response = groupService.save(group);
+           Optional<GroupEntity> newGroup = response.getEntity();
            if (response.hasErrorMessages() || newGroup.isEmpty()) {
                showMessagesFromResponse(response);
                return;
            }
+           response.getInfoMessages().forEach(this::showSuccessNotification);
            this.group = newGroup.get();
            showSuccessNotification("view.general.notification.success.save");
         });
@@ -206,8 +207,10 @@ public class GroupView extends AbstractNarrowView {
             Button confirmButton = new Button(getTranslation("view.general.delete"));
             confirmButton.addClickListener(c -> {
                 ServiceResponse<UserEntity> response = userService.delete(user);
-                showMessagesFromResponse(response);
-                if (!response.hasErrorMessages()) {
+                if (response.hasErrorMessages()) {
+                    showMessagesFromResponse(response);
+                } else {
+                    response.getInfoMessages().forEach(this::showSuccessNotification);
                     filterDataProvider.refreshAll();
                 }
                 dialog.close();

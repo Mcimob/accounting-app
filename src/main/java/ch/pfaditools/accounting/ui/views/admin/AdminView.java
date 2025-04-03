@@ -156,6 +156,7 @@ public class AdminView extends AbstractWideView {
             showMessagesFromResponse(saveResponse);
             return;
         }
+        saveResponse.getInfoMessages().forEach(this::showSuccessNotification);
         groupBinder.readBean(new GroupEntity());
         groupProvider.refreshAll();
     }
@@ -167,9 +168,7 @@ public class AdminView extends AbstractWideView {
             return;
         }
         ServiceResponse<GroupEntity> response = groupService.delete(groupToRemove.get());
-        if (response.hasErrorMessages()) {
-            showMessagesFromResponse(response);
-        }
+        showMessagesFromResponse(response);
 
         groupProvider.refreshAll();
     }

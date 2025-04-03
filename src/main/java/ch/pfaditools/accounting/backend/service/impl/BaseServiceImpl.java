@@ -19,6 +19,8 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
     public static final String ERROR_NULL = "service.base.error.null";
     public static final String ERROR_VERSION = "service.base.error.version";
     public static final String ERROR_ENTITY_NOT_FOUND = "service.base.error.entityNotFound";
+    public static final String MESSAGE_SAVE = "service.base.message.save";
+    public static final String MESSAGE_DELETE = "service.base.message.delete";
 
     private final BaseDao<T, F> dao;
 
@@ -200,6 +202,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             response.setEntity(dao.save(entity).orElse(null));
+            response.addInfoMessage(MESSAGE_SAVE);
             return response;
         } catch (VersioningDaoException e) {
             return handleVersioningException(e, response);
@@ -217,6 +220,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             response.setEntity(dao.saveAll(entities));
+            response.addInfoMessage(MESSAGE_SAVE);
             return response;
         } catch (VersioningDaoException e) {
             return handleVersioningException(e, response);
@@ -234,6 +238,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             dao.delete(entity);
+            response.addInfoMessage(MESSAGE_DELETE);
             return response;
         } catch (DaoException e) {
             return handleException(e, "Error deleting entity");
@@ -249,6 +254,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             dao.deleteById(id);
+            response.addInfoMessage(MESSAGE_DELETE);
             return response;
         } catch (DaoException e) {
             return handleException(e, "Error deleting entity by ID");
@@ -264,6 +270,7 @@ public class BaseServiceImpl<T extends AbstractEntity, F extends AbstractFilter<
 
         try {
             dao.deleteAll(entities);
+            response.addInfoMessage(MESSAGE_DELETE);
             return response;
         } catch (DaoException e) {
             return handleException(e, "Error deleting multiple entities");
