@@ -4,7 +4,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -25,8 +24,7 @@ public class GroupEntity extends AbstractEntity {
     private String groupAdminCode;
 
     @Column(nullable = false)
-    @ColumnDefault("USD")
-    private String currency;
+    private String currency = "USD";
 
     public String getName() {
         return name;

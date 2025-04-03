@@ -6,6 +6,7 @@ import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.entity.GroupEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.provider.GroupProvider;
 import ch.pfaditools.accounting.ui.views.AbstractWideView;
 import ch.pfaditools.accounting.util.CodeUtil;
 import com.vaadin.flow.component.ClickEvent;
@@ -57,13 +58,23 @@ public class AdminView extends AbstractWideView {
 
     private Component createGrid() {
         groupGrid.addColumn(GroupEntity::getName)
-                .setHeader(getTranslation("entity.group.name"));
+                .setHeader(getTranslation("entity.group.name"))
+                .setSortable(true)
+                .setSortProperty("name")
+                .setAutoWidth(true);
         groupGrid.addColumn(AbstractEntity::getLatestUpdatedUser)
-                .setHeader(getTranslation("entity.abstract.lastUpdatedUser"));
-        groupGrid.addColumn(AbstractEntity::getCreatedDateTime)
-                .setHeader(getTranslation("entity.abstract.createdDateTime"));
-        groupGrid.addColumn(AbstractEntity::getUpdatedDateTime)
-                .setHeader(getTranslation("entity.abstract.updatedDateTime"));
+                .setHeader(getTranslation("entity.abstract.lastUpdatedUser"))
+                .setAutoWidth(true);
+        groupGrid.addColumn(group -> group.getCreatedDateTimeString(getLocale()))
+                .setHeader(getTranslation("entity.abstract.createdDateTime"))
+                .setSortable(true)
+                .setSortProperty("createdDateTime")
+                .setAutoWidth(true);
+        groupGrid.addColumn(group -> group.getUpdatedDateTimeString(getLocale()))
+                .setHeader(getTranslation("entity.abstract.updatedDateTime"))
+                .setSortable(true)
+                .setSortProperty("updatedDateTime")
+                .setAutoWidth(true);
         groupGrid.addComponentColumn(this::createUserCodeButton)
                 .setHeader(getTranslation("entity.group.userCode"));
         groupGrid.addComponentColumn(this::createGroupAdminCodeButton)
@@ -75,7 +86,7 @@ public class AdminView extends AbstractWideView {
             group.ifPresentOrElse(groupBinder::readBean, () -> groupBinder.readBean(new GroupEntity()));
             removeButton.setEnabled(group.isPresent());
         });
-        groupGrid.setItems(groupProvider);
+        groupGrid.setItems(groupProvider.withConfigurableFilter());
         return groupGrid;
     }
 
@@ -156,6 +167,7 @@ public class AdminView extends AbstractWideView {
             showMessagesFromResponse(saveResponse);
             return;
         }
+        saveResponse.getInfoMessages().forEach(this::showSuccessNotification);
         groupBinder.readBean(new GroupEntity());
         groupProvider.refreshAll();
     }
@@ -167,9 +179,7 @@ public class AdminView extends AbstractWideView {
             return;
         }
         ServiceResponse<GroupEntity> response = groupService.delete(groupToRemove.get());
-        if (response.hasErrorMessages()) {
-            showMessagesFromResponse(response);
-        }
+        showMessagesFromResponse(response);
 
         groupProvider.refreshAll();
     }
@@ -190,9 +200,9 @@ public class AdminView extends AbstractWideView {
         groupBinder.forField(latestUpdatedUserField)
                 .bindReadOnly(AbstractEntity::getLatestUpdatedUser);
         groupBinder.forField(createdDateTimeField)
-                .bindReadOnly(AbstractEntity::getCreatedDateTimeString);
+                .bindReadOnly(group -> group.getCreatedDateTimeString(getLocale()));
         groupBinder.forField(updatedDateTimeField)
-                .bindReadOnly(AbstractEntity::getUpdatedDateTimeString);
+                .bindReadOnly(group -> group.getUpdatedDateTimeString(getLocale()));
     }
 
     @Override

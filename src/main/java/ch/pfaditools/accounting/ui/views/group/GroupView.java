@@ -148,12 +148,13 @@ public class GroupView extends AbstractNarrowView {
                getLogger().info("Validation failed in GroupView", e);
                return;
            }
-            ServiceResponse<GroupEntity> response = groupService.save(group);
-            Optional<GroupEntity> newGroup = response.getEntity();
+           ServiceResponse<GroupEntity> response = groupService.save(group);
+           Optional<GroupEntity> newGroup = response.getEntity();
            if (response.hasErrorMessages() || newGroup.isEmpty()) {
                showMessagesFromResponse(response);
                return;
            }
+           response.getInfoMessages().forEach(this::showSuccessNotification);
            this.group = newGroup.get();
            showSuccessNotification("view.general.notification.success.save");
         });
@@ -164,10 +165,12 @@ public class GroupView extends AbstractNarrowView {
     private Component createGrid() {
         Grid.Column<UserEntity> usernameColumn = personGrid.addColumn(UserEntity::getUsername)
                 .setHeader(getTranslation("entity.user.username"))
-                .setSortable(true);
+                .setSortable(true)
+                .setSortProperty("username");
         personGrid.addColumn(UserEntity::getDisplayName)
                 .setHeader(getTranslation("entity.user.displayName"))
-                .setSortable(true);
+                .setSortable(true)
+                .setSortProperty("displayName");
         personGrid.addComponentColumn(this::createHasGroupAdminRoleIndicator)
                 .setHeader(getTranslation("view.group.isGroupAdmin"));
         personGrid.addComponentColumn(this::createDeleteButton)
@@ -206,8 +209,10 @@ public class GroupView extends AbstractNarrowView {
             Button confirmButton = new Button(getTranslation("view.general.delete"));
             confirmButton.addClickListener(c -> {
                 ServiceResponse<UserEntity> response = userService.delete(user);
-                showMessagesFromResponse(response);
-                if (!response.hasErrorMessages()) {
+                if (response.hasErrorMessages()) {
+                    showMessagesFromResponse(response);
+                } else {
+                    response.getInfoMessages().forEach(this::showSuccessNotification);
                     filterDataProvider.refreshAll();
                 }
                 dialog.close();

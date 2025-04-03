@@ -78,9 +78,9 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
             if (!receiptsToRemove.isEmpty()) {
                 receiptsToRemove.forEach(receipt -> receipt.setPayment(null));
                 ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(receiptsToRemove);
-                showMessagesFromResponse(response);
                 provider.refreshAll();
                 if (response.hasErrorMessages()) {
+                    showMessagesFromResponse(response);
                     receiptCbx.setValue(oldReceipts);
                 }
             }
@@ -90,9 +90,9 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
             if (!receiptsToAdd.isEmpty()) {
                 receiptsToAdd.forEach(receipt -> receipt.setPayment(oldEntity));
                 ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(receiptsToAdd);
-                showMessagesFromResponse(response);
                 provider.refreshAll();
                 if (response.hasErrorMessages()) {
+                    showMessagesFromResponse(response);
                     receiptCbx.setValue(oldReceipts);
                 }
             }
@@ -105,7 +105,9 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
         Set<ReceiptEntity> oldReceipts = oldEntity.getReceipts();
         oldReceipts.forEach(receipt -> receipt.setPayment(null));
         ServiceResponse<Page<ReceiptEntity>> response = receiptService.saveAll(oldReceipts);
-        showMessagesFromResponse(response);
+        if (response.hasErrorMessages()) {
+            showMessagesFromResponse(response);
+        }
         return !response.hasErrorMessages();
     }
 

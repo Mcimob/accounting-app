@@ -82,7 +82,6 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
         newEntity.updateCreateModifyFields(SecurityUtils.getAuthenticatedUsername());
         ServiceResponse<T> response = service.save(newEntity);
         if (response.hasErrorMessages()) {
-            showMessagesFromResponse(response);
             return;
         }
         response.getInfoMessages().forEach(this::showSuccessNotification);
@@ -104,8 +103,8 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
         }
 
         ServiceResponse<T> receiptResponse = service.delete(newEntity);
+        showMessagesFromResponse(receiptResponse);
         if (receiptResponse.hasErrorMessages()) {
-            showMessagesFromResponse(receiptResponse);
             return;
         }
         if (!afterDelete()) {
