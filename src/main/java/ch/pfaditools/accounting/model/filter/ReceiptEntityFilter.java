@@ -16,7 +16,7 @@ public class ReceiptEntityFilter extends AbstractFilter<ReceiptEntity> {
         Specification<ReceiptEntity> spec = super.getSpecification();
 
         if (userInput != null) {
-            spec = spec.or(includesUserInput());
+            spec = spec.and(includesUserInput());
         }
 
         if (paidOut != null) {

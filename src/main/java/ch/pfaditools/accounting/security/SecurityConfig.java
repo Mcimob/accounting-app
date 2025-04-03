@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
-import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
 @Configuration
 @EnableWebSecurity
@@ -21,12 +20,9 @@ public class SecurityConfig extends VaadinWebSecurity {
                 auth.requestMatchers(new AntPathRequestMatcher("/public/**")).permitAll());
 
         http
-            .formLogin(form -> form
-                .loginPage("/" + ROUTE_LOGIN)
-                .defaultSuccessUrl("/" + ROUTE_RECEIPT_OVERVIEW, true))
             .logout(form -> form
                 .logoutSuccessUrl("/" + ROUTE_LOGIN));
-        super.configure(http);
         setLoginView(http, ROUTE_LOGIN);
+        super.configure(http);
     }
 }
