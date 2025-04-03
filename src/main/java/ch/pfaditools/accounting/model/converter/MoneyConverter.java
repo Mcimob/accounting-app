@@ -15,7 +15,7 @@ public class MoneyConverter implements AttributeConverter<MonetaryAmount, Long> 
     public Long convertToDatabaseColumn(MonetaryAmount attribute) {
         Currency currency = SecurityUtils.getGroupCurrency();
         return (long) (AmountUtil.getCurrencyRatio(currency)
-                * attribute.getNumber().numberValue(Long.class));
+                * attribute.getNumber().numberValue(Double.class));
     }
 
     @Override
