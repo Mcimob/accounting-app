@@ -47,14 +47,20 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
     @Override
     protected Component createGrid() {
         Grid.Column<ReceiptEntity> nameColumn = grid.addColumn(ReceiptEntity::getName)
-                .setHeader(getTranslation("entity.receipt.title"));
+                .setHeader(getTranslation("entity.receipt.title"))
+                .setSortable(true)
+                .setSortProperty("name");
         grid.addColumn(ReceiptEntity::getAmount)
-                .setHeader(getTranslation("entity.receipt.amount"));
+                .setHeader(getTranslation("entity.receipt.amount"))
+                .setSortable(true)
+                .setSortProperty("amount");
         Grid.Column<ReceiptEntity> paidColumn = grid.addComponentColumn(rec -> createIcon(rec.getPayment() != null))
                 .setHeader(getTranslation("entity.receipt.paid"));
         if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
             Grid.Column<ReceiptEntity> createdColumn = grid.addColumn(ReceiptEntity::getCreatedUser)
-                    .setHeader(getTranslation("entity.abstract.createdUser"));
+                    .setHeader(getTranslation("entity.abstract.createdUser"))
+                    .setSortable(true)
+                    .setSortProperty("createdUser");
             UserCbxAutoHide userCbx = new UserCbxAutoHide(userService);
             userCbx.setEmptySelectionAllowed(true);
             GridUtil.addHeaderFilterCell(grid, filter, filterDataProvider,

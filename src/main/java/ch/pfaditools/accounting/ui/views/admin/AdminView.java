@@ -6,6 +6,7 @@ import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.entity.GroupEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.provider.GroupProvider;
 import ch.pfaditools.accounting.ui.views.AbstractWideView;
 import ch.pfaditools.accounting.util.CodeUtil;
 import com.vaadin.flow.component.ClickEvent;
@@ -57,13 +58,23 @@ public class AdminView extends AbstractWideView {
 
     private Component createGrid() {
         groupGrid.addColumn(GroupEntity::getName)
-                .setHeader(getTranslation("entity.group.name"));
+                .setHeader(getTranslation("entity.group.name"))
+                .setSortable(true)
+                .setSortProperty("name")
+                .setAutoWidth(true);
         groupGrid.addColumn(AbstractEntity::getLatestUpdatedUser)
-                .setHeader(getTranslation("entity.abstract.lastUpdatedUser"));
+                .setHeader(getTranslation("entity.abstract.lastUpdatedUser"))
+                .setAutoWidth(true);
         groupGrid.addColumn(AbstractEntity::getCreatedDateTime)
-                .setHeader(getTranslation("entity.abstract.createdDateTime"));
+                .setHeader(getTranslation("entity.abstract.createdDateTime"))
+                .setSortable(true)
+                .setSortProperty("createdDateTime")
+                .setAutoWidth(true);
         groupGrid.addColumn(AbstractEntity::getUpdatedDateTime)
-                .setHeader(getTranslation("entity.abstract.updatedDateTime"));
+                .setHeader(getTranslation("entity.abstract.updatedDateTime"))
+                .setSortable(true)
+                .setSortProperty("updatedDateTime")
+                .setAutoWidth(true);
         groupGrid.addComponentColumn(this::createUserCodeButton)
                 .setHeader(getTranslation("entity.group.userCode"));
         groupGrid.addComponentColumn(this::createGroupAdminCodeButton)
@@ -75,7 +86,7 @@ public class AdminView extends AbstractWideView {
             group.ifPresentOrElse(groupBinder::readBean, () -> groupBinder.readBean(new GroupEntity()));
             removeButton.setEnabled(group.isPresent());
         });
-        groupGrid.setItems(groupProvider);
+        groupGrid.setItems(groupProvider.withConfigurableFilter());
         return groupGrid;
     }
 

@@ -9,7 +9,6 @@ import ch.pfaditools.accounting.ui.provider.PaymentProvider;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.details.Details;
-import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
@@ -29,10 +28,14 @@ public class PaymentOverView extends AbstractEntityOverView<PaymentEntity, Payme
 
     @Override
     protected Component createGrid() {
-        Grid.Column<PaymentEntity> titleColumn = grid.addColumn(PaymentEntity::getTitle)
-                .setHeader(getTranslation("entity.payment.title"));
+        grid.addColumn(PaymentEntity::getTitle)
+                .setHeader(getTranslation("entity.payment.title"))
+                .setSortable(true)
+                .setSortProperty("title");
         grid.addColumn(PaymentEntity::getReceiptsAmount)
-                .setHeader(getTranslation("entity.receipt.amount"));
+                .setHeader(getTranslation("entity.receipt.amount"))
+                .setSortable(true)
+                .setSortProperty("receiptsAmount");
         grid.addComponentColumn(p -> {
             Details details = new Details("%s %s".formatted(
                     p.getReceipts().size(), getTranslation("entity.payment.receipts")));

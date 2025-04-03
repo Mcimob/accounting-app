@@ -2,10 +2,9 @@ package ch.pfaditools.accounting.util;
 
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.security.SecurityUtils;
-import org.javamoney.moneta.FastMoney;
+import org.javamoney.moneta.Money;
 
 import javax.money.MonetaryAmount;
-import javax.money.NumberValue;
 import java.util.Collection;
 import java.util.Currency;
 
@@ -20,11 +19,9 @@ public final class AmountUtil {
     }
 
     public static MonetaryAmount getAmountSum(Collection<ReceiptEntity> receipts) {
-        double amount = receipts.stream()
+        return receipts.stream()
                 .map(ReceiptEntity::getAmount)
-                .map(MonetaryAmount::getNumber)
-                .map(NumberValue::doubleValueExact)
-                .reduce(0D, Double::sum);
-        return FastMoney.of(amount, SecurityUtils.getGroupCurrencyString());
+                .reduce(MonetaryAmount::add)
+                .orElse(Money.of(0, SecurityUtils.getGroupCurrencyString()));
     }
 }

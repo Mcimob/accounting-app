@@ -8,9 +8,13 @@ import com.vaadin.flow.data.provider.AbstractBackEndDataProvider;
 import com.vaadin.flow.data.provider.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 
 public abstract class AbstractEntityProvider<T extends AbstractEntity, F extends AbstractFilter<T>>
         extends AbstractBackEndDataProvider<T, F> {
@@ -24,8 +28,16 @@ public abstract class AbstractEntityProvider<T extends AbstractEntity, F extends
     @Override
     protected Stream<T> fetchFromBackEnd(Query<T, F> query) {
         Optional<F> filter = query.getFilter();
+        Sort sort = Sort.by(query.getSortOrders().stream()
+                .map(queryOrder -> {
+            Sort.Direction dir = switch (queryOrder.getDirection()) {
+              case ASCENDING -> ASC;
+                case DESCENDING -> DESC;
+            };
+            return new Sort.Order(dir, queryOrder.getSorted());
+        }).toList());
         ServiceResponse<Page<T>> response =
-                service.fetch(PageRequest.of(query.getPage(), query.getPageSize()),
+                service.fetch(PageRequest.of(query.getPage(), query.getPageSize(), sort),
                         filter.orElseGet(this::getFilter));
 
         if (response.hasErrorMessages() || response.getEntity().isEmpty()) {

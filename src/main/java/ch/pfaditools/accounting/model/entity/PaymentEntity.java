@@ -1,11 +1,13 @@
 package ch.pfaditools.accounting.model.entity;
 
-import ch.pfaditools.accounting.util.AmountUtil;
+import ch.pfaditools.accounting.model.converter.MoneyConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Formula;
 
 import javax.money.MonetaryAmount;
 import java.util.HashSet;
@@ -34,6 +36,10 @@ public class PaymentEntity extends AbstractEntity {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "payment")
     private Set<ReceiptEntity> receipts = new HashSet<>();
 
+    @Formula("(COALESCE((SELECT SUM(re.amount) FROM receipt_entity re WHERE re.payment_id = id), 0))")
+    @Convert(converter = MoneyConverter.class)
+    private MonetaryAmount receiptsAmount;
+
     public String getTitle() {
         return title;
     }
@@ -55,7 +61,7 @@ public class PaymentEntity extends AbstractEntity {
     }
 
     public MonetaryAmount getReceiptsAmount() {
-        return AmountUtil.getAmountSum(receipts);
+        return receiptsAmount;
     }
 
     public void setReceipts(Set<ReceiptEntity> receipts) {

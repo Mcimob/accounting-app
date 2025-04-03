@@ -165,10 +165,12 @@ public class GroupView extends AbstractNarrowView {
     private Component createGrid() {
         Grid.Column<UserEntity> usernameColumn = personGrid.addColumn(UserEntity::getUsername)
                 .setHeader(getTranslation("entity.user.username"))
-                .setSortable(true);
+                .setSortable(true)
+                .setSortProperty("username");
         personGrid.addColumn(UserEntity::getDisplayName)
                 .setHeader(getTranslation("entity.user.displayName"))
-                .setSortable(true);
+                .setSortable(true)
+                .setSortProperty("displayName");
         personGrid.addComponentColumn(this::createHasGroupAdminRoleIndicator)
                 .setHeader(getTranslation("view.group.isGroupAdmin"));
         personGrid.addComponentColumn(this::createDeleteButton)
