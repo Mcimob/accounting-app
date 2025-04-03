@@ -31,7 +31,13 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
         this.filterDataProvider = provider.withConfigurableFilter();
         this.addingRoute = addingRoute;
         this.buttonText = buttonText;
+        setupFilter();
+    }
+
+    private void setupFilter() {
         filter = getBaseFilter();
+        filterDataProvider.setFilter(filter);
+        filterDataProvider.refreshAll();
     }
 
     private void setupGrid() {

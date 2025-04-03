@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_LOGIN;
+import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
 
 @Route(ROUTE_LOGIN)
@@ -25,7 +26,7 @@ public class LoginView extends AbstractNarrowView implements BeforeEnterObserver
 
     public LoginView() {
         if (isUserAuthenticated()) {
-            UI.getCurrent().navigate("/");
+            UI.getCurrent().navigate(ROUTE_RECEIPT_OVERVIEW);
         }
     }
 
@@ -66,8 +67,6 @@ public class LoginView extends AbstractNarrowView implements BeforeEnterObserver
 
     @Override
     public void beforeEnter(BeforeEnterEvent beforeEnterEvent) {
-        System.out.println("BEFORE-EVENT-METHOD-CALLED!");
-
         // inform the user about an authentication error
         if (beforeEnterEvent.getLocation()
                 .getQueryParameters()
