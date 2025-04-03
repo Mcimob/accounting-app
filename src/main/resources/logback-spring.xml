@@ -17,8 +17,9 @@
     </springProfile>
 
     <!-- Configuration for tst and prod modes (JSON logging for Loki) -->
-    <springProfile name="tst,prod,dev">
+    <springProfile name="tst,prod">
         <springProperty name="APP_NAME" source="application.title"/>
+        <springProperty name="LOKI_URL" source="LOKI_URL" />
         <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
             <http>
                 <url>${LOKI_URL}</url>
