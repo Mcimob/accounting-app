@@ -18,17 +18,34 @@
 
     <!-- Configuration for tst and prod modes (JSON logging for Loki) -->
     <springProfile name="tst,prod">
-        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>${LOG_FILE}</file>
-            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>logs/app-%d{yyyy-MM-dd}.log</fileNamePattern>
-                <maxHistory>30</maxHistory>
-            </rollingPolicy>
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        <springProperty name="APP_NAME" source="application.title"/>
+        <springProperty name="LOKI_URL" source="LOKI_URL" />
+        <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+            <http>
+                <url>${LOKI_URL}</url>
+            </http>
+            <format>
+                <label>
+                    <pattern>app=${APP_NAME},host=${HOSTNAME},level=%level</pattern>
+                    <readMarkers>true</readMarkers>
+                </label>
+                <message>
+                    <pattern>
+                        {
+                        "time": "%d{yyyy-MM-dd HH:mm:ss}",
+                        "level":"%level",
+                        "class":"%logger{36}",
+                        "thread":"%thread",
+                        "message": "%message",
+                        "requestId": "%X{X-Request-ID}"
+                        }
+                    </pattern>
+                </message>
+            </format>
         </appender>
 
         <root level="INFO">
-            <appender-ref ref="FILE"/>
+            <appender-ref ref="LOKI"/>
         </root>
     </springProfile>
 
