@@ -65,12 +65,12 @@ public class AdminView extends AbstractWideView {
         groupGrid.addColumn(AbstractEntity::getLatestUpdatedUser)
                 .setHeader(getTranslation("entity.abstract.lastUpdatedUser"))
                 .setAutoWidth(true);
-        groupGrid.addColumn(AbstractEntity::getCreatedDateTime)
+        groupGrid.addColumn(group -> group.getCreatedDateTimeString(getLocale()))
                 .setHeader(getTranslation("entity.abstract.createdDateTime"))
                 .setSortable(true)
                 .setSortProperty("createdDateTime")
                 .setAutoWidth(true);
-        groupGrid.addColumn(AbstractEntity::getUpdatedDateTime)
+        groupGrid.addColumn(group -> group.getUpdatedDateTimeString(getLocale()))
                 .setHeader(getTranslation("entity.abstract.updatedDateTime"))
                 .setSortable(true)
                 .setSortProperty("updatedDateTime")
@@ -200,9 +200,9 @@ public class AdminView extends AbstractWideView {
         groupBinder.forField(latestUpdatedUserField)
                 .bindReadOnly(AbstractEntity::getLatestUpdatedUser);
         groupBinder.forField(createdDateTimeField)
-                .bindReadOnly(AbstractEntity::getCreatedDateTimeString);
+                .bindReadOnly(group -> group.getCreatedDateTimeString(getLocale()));
         groupBinder.forField(updatedDateTimeField)
-                .bindReadOnly(AbstractEntity::getUpdatedDateTimeString);
+                .bindReadOnly(group -> group.getUpdatedDateTimeString(getLocale()));
     }
 
     @Override

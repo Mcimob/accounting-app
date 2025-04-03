@@ -69,6 +69,10 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
                             .map(UserEntity::getUsername).orElse(null)),
                     userCbx);
         }
+        grid.addColumn(rec -> rec.getCreatedDateTimeString(getLocale()))
+            .setHeader(getTranslation("entity.abstract.createdDateTime"))
+            .setSortable(true)
+            .setSortProperty("createdDateTime");
         GridUtil.addHeaderFilterCell(grid,
                 filter,
                 filterDataProvider,

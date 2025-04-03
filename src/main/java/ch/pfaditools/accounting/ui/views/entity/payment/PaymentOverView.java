@@ -39,10 +39,13 @@ public class PaymentOverView extends AbstractEntityOverView<PaymentEntity, Payme
         grid.addComponentColumn(p -> {
             Details details = new Details("%s %s".formatted(
                     p.getReceipts().size(), getTranslation("entity.payment.receipts")));
-            p.getReceipts().stream().map(ReceiptEntity::getName).map(Div::new).forEach(details::add);
-            return details;
-        })
-                .setHeader(getTranslation("entity.payment.receipts"));
+                    p.getReceipts().stream().map(ReceiptEntity::getName).map(Div::new).forEach(details::add);
+                    return details;
+        }).setHeader(getTranslation("entity.payment.receipts"));
+        grid.addColumn(pay -> pay.getCreatedDateTimeString(getLocale()))
+                .setHeader(getTranslation("entity.abstract.createdDateTime"))
+                .setSortable(true)
+                .setSortProperty("createdDateTime");
 
         return grid;
     }
