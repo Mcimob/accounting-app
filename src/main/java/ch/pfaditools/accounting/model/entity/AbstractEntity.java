@@ -1,5 +1,6 @@
 package ch.pfaditools.accounting.model.entity;
 
+import ch.pfaditools.accounting.util.DateTimeUtils;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,6 +10,7 @@ import jakarta.persistence.Version;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.Objects;
 
 @MappedSuperclass
@@ -64,11 +66,11 @@ public abstract class AbstractEntity implements Serializable {
         return createdDateTime;
     }
 
-    public String getCreatedDateTimeString() {
+    public String getCreatedDateTimeString(Locale locale) {
         if (createdDateTime == null) {
             return "";
         }
-        return createdDateTime.toString();
+        return DateTimeUtils.formatDateTime(createdDateTime, locale);
     }
 
     public void setCreatedDateTime(LocalDateTime createdDateTime) {
@@ -87,11 +89,11 @@ public abstract class AbstractEntity implements Serializable {
         return updatedDateTime;
     }
 
-    public String getUpdatedDateTimeString() {
+    public String getUpdatedDateTimeString(Locale locale) {
         if (updatedDateTime == null) {
             return "";
         }
-        return updatedDateTime.toString();
+        return DateTimeUtils.formatDateTime(updatedDateTime, locale);
     }
 
     public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
