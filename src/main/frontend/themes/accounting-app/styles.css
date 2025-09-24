@@ -6,6 +6,7 @@
 
 html {
     --clr-accent: #E63946;
+    --clr-accent-light: #f7bfc4;
     --clr-bg: #F1FAEE;
     --clr-light: #A8DADC;
     --clr-regular: #457B9D;
@@ -16,6 +17,10 @@ html {
     --lumo-error-color: var(--clr-accent);
     --lumo-required-field-indicator-color: var(--clr-regular);
     --lumo-contrast-60pct: var(--clr-regular);
+
+    --size-s: .5rem;
+    --size-m: 1rem;
+    --size-l: 2rem;
 }
 
 vaadin-combo-box-item:hover {
@@ -64,6 +69,21 @@ vaadin-combo-box-item:hover {
     font-weight: 700;
 }
 
+.text-wrap {
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+}
+
+.bg-light-regular {
+    background-color: var(--clr-light);
+}
+
+.bg-light-accent {
+    background-color: var(--clr-accent-light);
+}
+
 .flex-column {
     display: flex;
     flex-direction: column;
@@ -79,3 +99,50 @@ vaadin-combo-box-item:hover {
     justify-content: center;
 }
 
+.flex-between {
+    justify-content: space-between;
+}
+
+.padding-s {
+    padding: var(--size-s);
+}
+
+.padding-m {
+    padding: var(--size-m);
+}
+
+.padding-l {
+    padding: var(--size-l);
+}
+
+.gap-s {
+    gap: var(--size-s);
+}
+
+.gap-m {
+    gap: var(--size-m);
+}
+
+.gap-l {
+    gap: var(--size-l);
+}
+
+.border-radius-s {
+    border-radius: var(--size-s);
+}
+
+.border-radius-m {
+    border-radius: var(--size-m);
+}
+
+.border-radius-l {
+    border-radius: var(--size-l);
+}
+
+.font-size-s {
+    font-size: smaller;
+}
+
+.font-size-l {
+    font-size: larger;
+}

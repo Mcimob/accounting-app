@@ -10,9 +10,30 @@ public final class DesignConstants {
     public static final String STYLE_CONTENT_MATCH_WIDTH = "content-match-width";
     public static final String STYLE_WIDTH_NARROW = "width-narrow";
     public static final String STYLE_FW_700 = "fw-700";
+
     public static final String STYLE_FLEX_COLUMN = "flex-column";
     public static final String STYLE_FLEX_ROW = "flex-row";
     public static final String STYLE_FLEX_CENTER = "flex-center";
+    public static final String STYLE_FLEX_BETWEEN = "flex-between";
+
+    public static final String STYLE_PADDING_S = "padding-s";
+    public static final String STYLE_PADDING_M = "padding-m";
+    public static final String STYLE_PADDING_L = "padding-l";
+
+    public static final String STYLE_GAP_S = "gap-s";
+    public static final String STYLE_GAP_M = "gap-m";
+    public static final String STYLE_GAP_L = "gap-l";
+
+    public static final String STYLE_BORDER_RADIUS_S = "border-radius-s";
+    public static final String STYLE_BORDER_RADIUS_M = "border-radius-m";
+    public static final String STYLE_BORDER_RADIUS_L = "border-radius-l";
+
+    public static final String STYLE_FONT_SIZE_S = "font-size-s";
+    //                         STYLE_FONT_SIZE_M is not needed, as it would just be regular font size
+    public static final String STYLE_FONT_SIZE_L = "font-size-l";
+
+    public static final String STYLE_BG_REGULAR = "bg-light-regular";
+    public static final String STYLE_BG_ACCENT = "bg-light-accent";
 
     public static final String CLR_ACCENT = "var(--clr-accent)";
     public static final String CLR_BG = "var(--clr-bg)";
