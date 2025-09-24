@@ -66,6 +66,7 @@ public abstract class AbstractEntityOverView<T extends AbstractEntity, F extends
     @Override
     protected void render() {
         super.render();
+        grid.removeAllColumns();
         add(new H1(getPageTitle()));
         add(createAddButton());
         add(createGrid());
