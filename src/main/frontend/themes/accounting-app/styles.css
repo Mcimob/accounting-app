@@ -65,6 +65,10 @@ vaadin-combo-box-item:hover {
     max-width: 400px;
 }
 
+.width-full {
+    width: 100%;
+}
+
 .fw-700 {
     font-weight: 700;
 }
@@ -113,6 +117,10 @@ vaadin-combo-box-item:hover {
 
 .flex-between {
     justify-content: space-between;
+}
+
+.flex-align-start {
+    align-items: start;
 }
 
 .padding-s {

@@ -17,9 +17,9 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -33,6 +33,9 @@ import java.util.Optional;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER_STRING;
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_ALIGN_START;
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_COLUMN;
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_WIDTH_FULL;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
@@ -50,7 +53,8 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
     @Override
     protected Component createGrid() {
         Grid.Column<ReceiptEntity> cardColumn = grid.addComponentColumn(ReceiptCard::new);
-        VerticalLayout layout = new VerticalLayout();
+        Div layout = new Div();
+        layout.addClassNames(STYLE_FLEX_COLUMN, STYLE_FLEX_ALIGN_START, STYLE_WIDTH_FULL);
 
         if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
             List<Grid.Column<ReceiptEntity>> columns = createAdminColumns();

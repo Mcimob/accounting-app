@@ -11,10 +11,13 @@ public final class DesignConstants {
     public static final String STYLE_WIDTH_NARROW = "width-narrow";
     public static final String STYLE_FW_700 = "fw-700";
 
+    public static final String STYLE_WIDTH_FULL = "width-full";
+
     public static final String STYLE_FLEX_COLUMN = "flex-column";
     public static final String STYLE_FLEX_ROW = "flex-row";
     public static final String STYLE_FLEX_CENTER = "flex-center";
     public static final String STYLE_FLEX_BETWEEN = "flex-between";
+    public static final String STYLE_FLEX_ALIGN_START = "flex-align-start";
 
     public static final String STYLE_PADDING_S = "padding-s";
     public static final String STYLE_PADDING_M = "padding-m";
