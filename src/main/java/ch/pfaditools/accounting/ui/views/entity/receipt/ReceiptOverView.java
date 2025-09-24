@@ -87,17 +87,11 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
                 .setHeader(getTranslation("entity.abstract.createdUser"))
                 .setSortable(true)
                 .setSortProperty("createdUser");
-        UserCbxAutoHide userCbx = new UserCbxAutoHide(userService);
-        userCbx.setEmptySelectionAllowed(true);
         Grid.Column<ReceiptEntity> createdTimeColumn = grid.addColumn(rec -> rec.getCreatedDateTimeString(getLocale()))
                 .setHeader(getTranslation("entity.abstract.createdDateTime"))
                 .setSortable(true)
                 .setSortProperty("createdDateTime");
-        GridUtil.addHeaderFilterCell(grid, filter, filterDataProvider,
-                createdColumn,
-                (f, user) -> f.setCreatedByUser(Optional.ofNullable(user)
-                        .map(UserEntity::getUsername).orElse(null)),
-                userCbx);
+
         GridUtil.addHeaderFilterCell(grid,
                 filter,
                 filterDataProvider,
@@ -110,6 +104,14 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
                 paidColumn,
                 ReceiptEntityFilter::setPaidOut,
                 createPaidSelect());
+        UserCbxAutoHide userCbx = new UserCbxAutoHide(userService);
+        userCbx.setEmptySelectionAllowed(true);
+        GridUtil.addHeaderFilterCell(grid, filter, filterDataProvider,
+                createdColumn,
+                (f, user) -> f.setCreatedByUser(Optional.ofNullable(user)
+                        .map(UserEntity::getUsername).orElse(null)),
+                userCbx);
+
         return List.of(
                 nameColumn,
                 amountColumn,
