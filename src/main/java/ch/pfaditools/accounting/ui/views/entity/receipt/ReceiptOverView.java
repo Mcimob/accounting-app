@@ -14,9 +14,12 @@ import ch.pfaditools.accounting.ui.util.GridUtil;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -46,33 +49,53 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
 
     @Override
     protected Component createGrid() {
+        Grid.Column<ReceiptEntity> cardColumn = grid.addComponentColumn(ReceiptCard::new);
+        VerticalLayout layout = new VerticalLayout();
+
+        if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
+            List<Grid.Column<ReceiptEntity>> columns = createAdminColumns();
+
+            Checkbox gridModeToggle = new Checkbox("List Mode");
+            gridModeToggle.addValueChangeListener(e -> {
+                columns.forEach(col -> col.setVisible(e.getValue()));
+                cardColumn.setVisible(!e.getValue());
+            });
+            layout.add(gridModeToggle);
+            columns.forEach(col -> col.setVisible(false));
+        }
+
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+
+        layout.add(grid);
+        return layout;
+    }
+
+    private List<Grid.Column<ReceiptEntity>> createAdminColumns() {
         Grid.Column<ReceiptEntity> nameColumn = grid.addColumn(ReceiptEntity::getName)
                 .setHeader(getTranslation("entity.receipt.title"))
                 .setSortable(true)
                 .setSortProperty("name");
-        grid.addColumn(ReceiptEntity::getAmount)
+        Grid.Column<ReceiptEntity> amountColumn = grid.addColumn(ReceiptEntity::getAmount)
                 .setHeader(getTranslation("entity.receipt.amount"))
                 .setSortable(true)
                 .setSortProperty("amount");
         Grid.Column<ReceiptEntity> paidColumn = grid.addComponentColumn(rec -> createIcon(rec.getPayment() != null))
                 .setHeader(getTranslation("entity.receipt.paid"));
-        if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
-            Grid.Column<ReceiptEntity> createdColumn = grid.addColumn(ReceiptEntity::getCreatedUser)
-                    .setHeader(getTranslation("entity.abstract.createdUser"))
-                    .setSortable(true)
-                    .setSortProperty("createdUser");
-            UserCbxAutoHide userCbx = new UserCbxAutoHide(userService);
-            userCbx.setEmptySelectionAllowed(true);
-            GridUtil.addHeaderFilterCell(grid, filter, filterDataProvider,
-                    createdColumn,
-                    (f, user) -> f.setCreatedByUser(Optional.ofNullable(user)
-                            .map(UserEntity::getUsername).orElse(null)),
-                    userCbx);
-        }
-        grid.addColumn(rec -> rec.getCreatedDateTimeString(getLocale()))
-            .setHeader(getTranslation("entity.abstract.createdDateTime"))
-            .setSortable(true)
-            .setSortProperty("createdDateTime");
+        Grid.Column<ReceiptEntity> createdColumn = grid.addColumn(ReceiptEntity::getCreatedUser)
+                .setHeader(getTranslation("entity.abstract.createdUser"))
+                .setSortable(true)
+                .setSortProperty("createdUser");
+        UserCbxAutoHide userCbx = new UserCbxAutoHide(userService);
+        userCbx.setEmptySelectionAllowed(true);
+        Grid.Column<ReceiptEntity> createdTimeColumn = grid.addColumn(rec -> rec.getCreatedDateTimeString(getLocale()))
+                .setHeader(getTranslation("entity.abstract.createdDateTime"))
+                .setSortable(true)
+                .setSortProperty("createdDateTime");
+        GridUtil.addHeaderFilterCell(grid, filter, filterDataProvider,
+                createdColumn,
+                (f, user) -> f.setCreatedByUser(Optional.ofNullable(user)
+                        .map(UserEntity::getUsername).orElse(null)),
+                userCbx);
         GridUtil.addHeaderFilterCell(grid,
                 filter,
                 filterDataProvider,
@@ -85,7 +108,13 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
                 paidColumn,
                 ReceiptEntityFilter::setPaidOut,
                 createPaidSelect());
-        return grid;
+        return List.of(
+                nameColumn,
+                amountColumn,
+                paidColumn,
+                createdColumn,
+                createdTimeColumn
+        );
     }
 
     private HasValue<?, Boolean> createPaidSelect() {
