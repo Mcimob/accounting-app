@@ -8,16 +8,15 @@ import ch.pfaditools.accounting.model.filter.ReceiptEntityFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
-import ch.pfaditools.accounting.ui.components.IconToggle;
 import ch.pfaditools.accounting.ui.components.UserCbxAutoHide;
 import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
 import ch.pfaditools.accounting.ui.util.GridUtil;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
+import ch.pfaditools.accounting.ui.components.CardDetailGrid;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.select.Select;
@@ -33,9 +32,6 @@ import java.util.Optional;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_USER_STRING;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_ALIGN_START;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_COLUMN;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_WIDTH_FULL;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_RECEIPT;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_RECEIPT_OVERVIEW;
 
@@ -53,27 +49,12 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
     @Override
     protected Component createGrid() {
         Grid.Column<ReceiptEntity> cardColumn = grid.addComponentColumn(ReceiptCard::new);
-        Div layout = new Div();
-        layout.addClassNames(STYLE_FLEX_COLUMN, STYLE_FLEX_ALIGN_START, STYLE_WIDTH_FULL);
-
-        if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
-            List<Grid.Column<ReceiptEntity>> columns = createAdminColumns();
-
-            IconToggle gridModeToggle = new IconToggle();
-            gridModeToggle.setFalseIcon(VaadinIcon.GRID_BIG_O);
-            gridModeToggle.setTrueIcon(VaadinIcon.LINES);
-            gridModeToggle.addValueChangeListener(e -> {
-                columns.forEach(col -> col.setVisible(e.getValue()));
-                cardColumn.setVisible(!e.getValue());
-            });
-            layout.add(gridModeToggle);
-            columns.forEach(col -> col.setVisible(false));
-        }
-
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
 
-        layout.add(grid);
-        return layout;
+        if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
+            return new CardDetailGrid<>(grid, createAdminColumns(), cardColumn);
+        }
+        return grid;
     }
 
     private List<Grid.Column<ReceiptEntity>> createAdminColumns() {

@@ -65,4 +65,11 @@ public class IconToggle extends Div {
     public Registration addValueChangeListener(ComponentEventListener<IconToggleValueChangeEvent> listener) {
         return addListener(IconToggleValueChangeEvent.class, listener);
     }
+
+    public void setValue(boolean value) {
+        (value
+            ? trueButton
+            : falseButton)
+            .click();
+    }
 }
