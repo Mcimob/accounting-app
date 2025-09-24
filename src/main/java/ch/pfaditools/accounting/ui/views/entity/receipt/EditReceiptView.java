@@ -53,6 +53,11 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
     }
 
     @Override
+    protected String getDeleteDialogContent() {
+        return getTranslation("view.editReceipt.deleteDialog");
+    }
+
+    @Override
     protected Component createForm() {
         VerticalLayout uploadLayout = new VerticalLayout(upload, mediaDiv);
         FormLayout layout = new FormLayout(titleField, amountField, descriptionField, uploadLayout, deleteButton);

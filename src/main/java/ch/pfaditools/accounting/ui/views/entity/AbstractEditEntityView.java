@@ -5,6 +5,7 @@ import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.filter.AbstractFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
+import ch.pfaditools.accounting.ui.components.ConfirmDeleteDialog;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -107,6 +108,15 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
             return;
         }
 
+        ConfirmDeleteDialog dialog = new ConfirmDeleteDialog();
+        dialog.addConfirmListener(confirm -> delete());
+        dialog.setText(getDeleteDialogContent());
+        dialog.open();
+    }
+
+    protected abstract String getDeleteDialogContent();
+
+    private void delete() {
         ServiceResponse<T> receiptResponse = service.delete(newEntity);
         showMessagesFromResponse(receiptResponse);
         if (receiptResponse.hasErrorMessages()) {

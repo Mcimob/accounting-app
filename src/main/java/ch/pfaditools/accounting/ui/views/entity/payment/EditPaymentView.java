@@ -101,6 +101,11 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
     }
 
     @Override
+    protected String getDeleteDialogContent() {
+        return getTranslation("view.editPayment.deleteDialog");
+    }
+
+    @Override
     protected boolean beforeDelete() {
         Set<ReceiptEntity> oldReceipts = oldEntity.getReceipts();
         oldReceipts.forEach(receipt -> receipt.setPayment(null));

@@ -10,16 +10,15 @@ import ch.pfaditools.accounting.security.SecurityConstants;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.components.ConfirmDeleteDialog;
 import ch.pfaditools.accounting.ui.provider.UserProvider;
 import ch.pfaditools.accounting.ui.util.GridUtil;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import ch.pfaditools.accounting.util.CodeUtil;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H1;
@@ -203,26 +202,25 @@ public class GroupView extends AbstractNarrowView {
     private Component createDeleteButton(UserEntity user) {
         Button deleteButton = new Button(VaadinIcon.TRASH.create());
         deleteButton.addClickListener(click -> {
-            Dialog dialog = new Dialog(getTranslation("view.general.deleteConfirmation"));
-            Button cancelButton = new Button(getTranslation("view.general.cancel"));
-            cancelButton.addClickListener(c -> dialog.close());
-            Button confirmButton = new Button(getTranslation("view.general.delete"));
-            confirmButton.addClickListener(c -> {
-                ServiceResponse<UserEntity> response = userService.delete(user);
-                if (response.hasErrorMessages()) {
-                    showMessagesFromResponse(response);
-                } else {
-                    response.getInfoMessages().forEach(this::showSuccessNotification);
-                    filterDataProvider.refreshAll();
-                }
+            ConfirmDeleteDialog dialog = new ConfirmDeleteDialog();
+            dialog.addConfirmListener(confirm -> {
+                onConfirmDelete(user);
                 dialog.close();
             });
-            confirmButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            dialog.getFooter().add(cancelButton, confirmButton);
-            dialog.add(new Text(getTranslation("view.group.deleteDialog.text")));
+            dialog.setText(getTranslation("view.group.deleteDialog.text"));
             dialog.open();
         });
         return deleteButton;
+    }
+
+    private void onConfirmDelete(UserEntity user) {
+        ServiceResponse<UserEntity> response = userService.delete(user);
+        if (response.hasErrorMessages()) {
+            showMessagesFromResponse(response);
+        } else {
+            response.getInfoMessages().forEach(this::showSuccessNotification);
+            filterDataProvider.refreshAll();
+        }
     }
 
     @Override
