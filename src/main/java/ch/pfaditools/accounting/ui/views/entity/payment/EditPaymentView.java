@@ -150,8 +150,9 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
 
     @Override
     protected Component createForm() {
-        FormLayout layout = new FormLayout(titleField, amountField, descriptionField, receiptCbx);
+        FormLayout layout = new FormLayout(titleField, amountField, descriptionField, receiptCbx, deleteButton);
         layout.setColspan(descriptionField, 2);
+        layout.setColspan(deleteButton, 2);
         layout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("500px", 2));

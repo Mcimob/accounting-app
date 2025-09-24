@@ -55,9 +55,10 @@ public class EditReceiptView extends AbstractEditEntityView<ReceiptEntity, Recei
     @Override
     protected Component createForm() {
         VerticalLayout uploadLayout = new VerticalLayout(upload, mediaDiv);
-        FormLayout layout = new FormLayout(titleField, amountField, descriptionField, uploadLayout);
+        FormLayout layout = new FormLayout(titleField, amountField, descriptionField, uploadLayout, deleteButton);
         layout.setColspan(descriptionField, 2);
         layout.setColspan(uploadLayout, 2);
+        layout.setColspan(deleteButton, 2);
         layout.setResponsiveSteps(
                 new FormLayout.ResponsiveStep("0", 1),
                 new FormLayout.ResponsiveStep("500px", 2));
