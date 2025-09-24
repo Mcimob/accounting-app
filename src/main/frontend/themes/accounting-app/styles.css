@@ -80,8 +80,20 @@ vaadin-combo-box-item:hover {
     background-color: var(--clr-light);
 }
 
+.bg-regular {
+    background-color: var(--clr-regular);
+}
+
+.bg-dark {
+    background-color: var(--clr-dark);
+}
+
 .bg-light-accent {
     background-color: var(--clr-accent-light);
+}
+
+.bg-transition {
+    transition: background-color 0.25s ease;
 }
 
 .flex-column {
@@ -137,6 +149,10 @@ vaadin-combo-box-item:hover {
 
 .border-radius-l {
     border-radius: var(--size-l);
+}
+
+.border-radius-round {
+    border-radius: 100vw;
 }
 
 .font-size-s {

@@ -27,13 +27,17 @@ public final class DesignConstants {
     public static final String STYLE_BORDER_RADIUS_S = "border-radius-s";
     public static final String STYLE_BORDER_RADIUS_M = "border-radius-m";
     public static final String STYLE_BORDER_RADIUS_L = "border-radius-l";
+    public static final String STYLE_BORDER_RADIUS_ROUND = "border-radius-round";
 
     public static final String STYLE_FONT_SIZE_S = "font-size-s";
     //                         STYLE_FONT_SIZE_M is not needed, as it would just be regular font size
     public static final String STYLE_FONT_SIZE_L = "font-size-l";
 
-    public static final String STYLE_BG_REGULAR = "bg-light-regular";
-    public static final String STYLE_BG_ACCENT = "bg-light-accent";
+    public static final String STYLE_BG_LIGHT_REGULAR = "bg-light-regular";
+    public static final String STYLE_BG_REGULAR = "bg-regular";
+    public static final String STYLE_BG_DARK = "bg-dark";
+    public static final String STYLE_BG_LIGHT_ACCENT = "bg-light-accent";
+    public static final String STYLE_BG_TRANSITION = "bg-transition";
 
     public static final String CLR_ACCENT = "var(--clr-accent)";
     public static final String CLR_BG = "var(--clr-bg)";

@@ -8,13 +8,13 @@ import ch.pfaditools.accounting.model.filter.ReceiptEntityFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
 import ch.pfaditools.accounting.ui.DesignConstants;
 import ch.pfaditools.accounting.ui.MainLayout;
+import ch.pfaditools.accounting.ui.components.IconToggle;
 import ch.pfaditools.accounting.ui.components.UserCbxAutoHide;
 import ch.pfaditools.accounting.ui.provider.ReceiptProvider;
 import ch.pfaditools.accounting.ui.util.GridUtil;
 import ch.pfaditools.accounting.ui.views.entity.AbstractEntityOverView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.Icon;
@@ -55,7 +55,9 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
         if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
             List<Grid.Column<ReceiptEntity>> columns = createAdminColumns();
 
-            Checkbox gridModeToggle = new Checkbox("List Mode");
+            IconToggle gridModeToggle = new IconToggle();
+            gridModeToggle.setFalseIcon(VaadinIcon.GRID_BIG_O);
+            gridModeToggle.setTrueIcon(VaadinIcon.LINES);
             gridModeToggle.addValueChangeListener(e -> {
                 columns.forEach(col -> col.setVisible(e.getValue()));
                 cardColumn.setVisible(!e.getValue());

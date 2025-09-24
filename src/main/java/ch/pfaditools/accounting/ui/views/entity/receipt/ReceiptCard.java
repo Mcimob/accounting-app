@@ -6,8 +6,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_BG_ACCENT;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_BG_REGULAR;
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_BG_LIGHT_ACCENT;
+import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_BG_LIGHT_REGULAR;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_BORDER_RADIUS_M;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_BETWEEN;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_COLUMN;
@@ -52,8 +52,8 @@ public class ReceiptCard extends Div {
         addClassNames(STYLE_PADDING_M, STYLE_FLEX_COLUMN, STYLE_GAP_M, STYLE_BORDER_RADIUS_M);
 
         addClassName(receipt.getPayment() != null
-                ? STYLE_BG_REGULAR
-                : STYLE_BG_ACCENT);
+                ? STYLE_BG_LIGHT_REGULAR
+                : STYLE_BG_LIGHT_ACCENT);
     }
 
     private Icon createIcon(Boolean paid) {
