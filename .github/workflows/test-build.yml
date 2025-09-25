@@ -58,6 +58,9 @@ jobs:
             echo "DOCKER_TAG=test" >> $GITHUB_ENV
           fi
 
+      - name: Prepare frontend assets
+        run: mvn vaadin:prepare-frontend -Pprod
+
       - name: Build frontend assets
         run: mvn vaadin:build-frontend -Pprod
 
