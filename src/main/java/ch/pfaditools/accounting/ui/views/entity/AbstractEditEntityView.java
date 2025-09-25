@@ -5,6 +5,7 @@ import ch.pfaditools.accounting.backend.service.ServiceResponse;
 import ch.pfaditools.accounting.model.entity.AbstractEntity;
 import ch.pfaditools.accounting.model.filter.AbstractFilter;
 import ch.pfaditools.accounting.security.SecurityUtils;
+import ch.pfaditools.accounting.ui.components.ConfirmDeleteDialog;
 import ch.pfaditools.accounting.ui.views.AbstractNarrowView;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
@@ -30,7 +31,8 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
 
     private final transient BaseService<T, F> service;
 
-    private final Button deleteButton = new Button(getTranslation("view.general.delete"));
+    protected final Button deleteButton = new Button(getTranslation("view.general.delete"));
+    private final Button cancelButton = new Button(getTranslation("view.general.cancel"));
     private final Button saveButton = new Button(getTranslation("view.general.save"));
 
     protected final Binder<T> binder = new Binder<>();
@@ -43,6 +45,7 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
         setupFields();
         setupBinder();
         setupButtons();
+        initStyles();
     }
 
     protected final void render() {
@@ -52,13 +55,15 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
         add(createButtonsBar());
     }
 
-    private Component createButtonsBar() {
-        HorizontalLayout buttonsBar = new HorizontalLayout(deleteButton, saveButton);
-        buttonsBar.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
-        buttonsBar.setWidthFull();
-
+    private void initStyles() {
         deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_ERROR);
         saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    }
+
+    private Component createButtonsBar() {
+        HorizontalLayout buttonsBar = new HorizontalLayout(cancelButton, saveButton);
+        buttonsBar.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        buttonsBar.setWidthFull();
 
         return buttonsBar;
     }
@@ -66,6 +71,7 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
     private void setupButtons() {
         saveButton.addClickListener(this::onSaveButtonClick);
         deleteButton.addClickListener(this::onDeleteButtonClick);
+        cancelButton.addClickListener(e -> UI.getCurrent().getPage().getHistory().back());
     }
 
     private void onSaveButtonClick(ClickEvent<Button> event) {
@@ -102,6 +108,15 @@ public abstract class AbstractEditEntityView<T extends AbstractEntity, F extends
             return;
         }
 
+        ConfirmDeleteDialog dialog = new ConfirmDeleteDialog();
+        dialog.addConfirmListener(confirm -> delete());
+        dialog.setText(getDeleteDialogContent());
+        dialog.open();
+    }
+
+    protected abstract String getDeleteDialogContent();
+
+    private void delete() {
         ServiceResponse<T> receiptResponse = service.delete(newEntity);
         showMessagesFromResponse(receiptResponse);
         if (receiptResponse.hasErrorMessages()) {

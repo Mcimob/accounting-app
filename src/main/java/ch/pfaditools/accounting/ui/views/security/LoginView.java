@@ -6,6 +6,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
@@ -23,12 +24,6 @@ import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_REGISTER;
 public class LoginView extends AbstractNarrowView implements BeforeEnterObserver {
 
     private final CustomLogin loginForm = new CustomLogin();
-
-    public LoginView() {
-        if (isUserAuthenticated()) {
-            UI.getCurrent().navigate(ROUTE_RECEIPT_OVERVIEW);
-        }
-    }
 
     private Component createLoginComponent() {
         loginForm.setAction("login");
@@ -73,6 +68,14 @@ public class LoginView extends AbstractNarrowView implements BeforeEnterObserver
                 .getParameters()
                 .containsKey("error")) {
             loginForm.setError(true);
+        }
+    }
+
+    @Override
+    public void afterNavigation(AfterNavigationEvent event) {
+        super.afterNavigation(event);
+        if (isUserAuthenticated()) {
+            UI.getCurrent().navigate(ROUTE_RECEIPT_OVERVIEW);
         }
     }
 }

@@ -28,6 +28,7 @@ public abstract class AbstractView extends Div
 
     protected void render() {
         removeAll();
+        layout.removeAll();
         super.add(layout);
         layout.addClassNames(STYLE_FLEX_COLUMN, STYLE_FLEX_CENTER);
     }
