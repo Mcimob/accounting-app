@@ -2,22 +2,18 @@ package ch.pfaditools.accounting.ui.views.entity.receipt;
 
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.ui.DesignConstants;
+import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_BG_LIGHT_ACCENT;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_BG_LIGHT_REGULAR;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_BORDER_RADIUS_M;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_BETWEEN;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_COLUMN;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FLEX_ROW;
 import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FONT_SIZE_S;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_FW_700;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_GAP_M;
-import static ch.pfaditools.accounting.ui.DesignConstants.STYLE_PADDING_M;
 
-public class ReceiptCard extends Div {
+public class ReceiptCard extends Card {
 
     private final ReceiptEntity receipt;
 
@@ -30,12 +26,10 @@ public class ReceiptCard extends Div {
         removeAll();
 
         Div titleDiv = new Div(receipt.getName());
-        titleDiv.addClassNames(STYLE_FW_700, "text-wrap");
-        Div amountDiv = new Div(receipt.getAmount().toString());
-        amountDiv.addClassNames(STYLE_FW_700);
+        titleDiv.addClassNames("text-wrap");
+        setTitle(titleDiv);
 
-        Div top = new Div(titleDiv, amountDiv);
-        top.addClassNames(STYLE_FLEX_ROW, STYLE_FLEX_BETWEEN);
+        setSubtitle(new Div(receipt.getAmount().toString()));
 
         Div createdTimeDiv = new Div("%s: %s".formatted(
                 getTranslation("entity.abstract.createdDateTime"),
@@ -47,9 +41,7 @@ public class ReceiptCard extends Div {
         bottom.add(createIcon(receipt.getPayment() != null));
         bottom.add(createdTimeDiv);
 
-        add(top, bottom);
-
-        addClassNames(STYLE_PADDING_M, STYLE_FLEX_COLUMN, STYLE_GAP_M, STYLE_BORDER_RADIUS_M);
+        add(bottom);
 
         addClassName(receipt.getPayment() != null
                 ? STYLE_BG_LIGHT_REGULAR
