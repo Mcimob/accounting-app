@@ -69,6 +69,10 @@ vaadin-combo-box-item:hover {
     width: 100%;
 }
 
+.fw-500 {
+    font-weight: 500;
+}
+
 .fw-700 {
     font-weight: 700;
 }
@@ -100,6 +104,10 @@ vaadin-combo-box-item:hover {
     transition: background-color 0.25s ease;
 }
 
+.text-color-white {
+    color: white;
+}
+
 .flex-column {
     display: flex;
     flex-direction: column;
@@ -119,6 +127,10 @@ vaadin-combo-box-item:hover {
     justify-content: space-between;
 }
 
+.flex-justify-end {
+    justify-content: end;
+}
+
 .flex-align-start {
     align-items: start;
 }
@@ -133,6 +145,18 @@ vaadin-combo-box-item:hover {
 
 .padding-l {
     padding: var(--size-l);
+}
+
+.margin-s {
+    margin: var(--size-s);
+}
+
+.margin-m {
+    margin: var(--size-m);
+}
+
+.margin-l {
+    margin: var(--size-l);
 }
 
 .gap-s {

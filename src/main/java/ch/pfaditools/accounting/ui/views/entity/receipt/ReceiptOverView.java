@@ -49,7 +49,7 @@ public class ReceiptOverView extends AbstractEntityOverView<ReceiptEntity, Recei
     @Override
     protected Component createGrid() {
         Grid.Column<ReceiptEntity> cardColumn = grid.addComponentColumn(ReceiptCard::new);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER, GridVariant.LUMO_NO_ROW_BORDERS);
 
         if (SecurityUtils.isUserInAnyRole(ROLE_ADMIN, ROLE_GROUP_ADMIN)) {
             return new CardDetailGrid<>(grid, createAdminColumns(), cardColumn);
