@@ -106,6 +106,8 @@ vaadin-combo-box-item:hover {
 
 .text-color-white {
     color: white;
+    fill: white;
+    stroke: white;
 }
 
 .flex-column {
@@ -133,6 +135,10 @@ vaadin-combo-box-item:hover {
 
 .flex-align-start {
     align-items: start;
+}
+
+.flex-align-center {
+    align-items: center;
 }
 
 .padding-s {

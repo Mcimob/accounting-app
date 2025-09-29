@@ -20,6 +20,7 @@ public final class DesignConstants {
     public static final String STYLE_FLEX_CENTER = "flex-center";
     public static final String STYLE_FLEX_BETWEEN = "flex-between";
     public static final String STYLE_FLEX_ALIGN_START = "flex-align-start";
+    public static final String STYLE_FLEX_ALIGN_CENTER = "flex-align-center";
     public static final String STYLE_FLEX_JUSTIFY_END = "flex-justify-end";
 
     public static final String STYLE_PADDING_S = "padding-s";
