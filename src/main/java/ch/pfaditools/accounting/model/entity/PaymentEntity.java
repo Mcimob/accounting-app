@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.Formula;
@@ -40,6 +41,9 @@ public class PaymentEntity extends AbstractEntity {
     @Convert(converter = MoneyConverter.class)
     private MonetaryAmount receiptsAmount;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private GroupEntity group;
+
     public String getTitle() {
         return title;
     }
@@ -66,6 +70,14 @@ public class PaymentEntity extends AbstractEntity {
 
     public void setReceipts(Set<ReceiptEntity> receipts) {
         this.receipts = receipts;
+    }
+
+    public GroupEntity getGroup() {
+        return group;
+    }
+
+    public void setGroup(GroupEntity group) {
+        this.group = group;
     }
 
     @Override

@@ -18,9 +18,11 @@ import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.RolesAllowed;
 
 import java.util.List;
+import java.util.Objects;
 
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_ADMIN;
 import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN;
+import static ch.pfaditools.accounting.security.SecurityConstants.ROLE_GROUP_ADMIN_STRING;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_EDIT_PAYMENT;
 import static ch.pfaditools.accounting.ui.ViewConstants.ROUTE_PAYMENT_OVERVIEW;
 
@@ -74,6 +76,9 @@ public class PaymentOverView extends AbstractEntityOverView<PaymentEntity, Payme
     @Override
     protected PaymentEntityFilter getBaseFilter() {
         PaymentEntityFilter filter = new PaymentEntityFilter();
+        if (Objects.requireNonNull(SecurityUtils.getCurrentUser()).getRoles().contains(ROLE_GROUP_ADMIN_STRING)) {
+            filter.setGroup(SecurityUtils.getAuthenticatedUserGroup());
+        }
         return filter;
     }
 

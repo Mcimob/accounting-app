@@ -3,6 +3,7 @@ package ch.pfaditools.accounting.ui.views.entity.payment;
 import ch.pfaditools.accounting.backend.service.PaymentService;
 import ch.pfaditools.accounting.backend.service.ReceiptService;
 import ch.pfaditools.accounting.backend.service.ServiceResponse;
+import ch.pfaditools.accounting.model.entity.GroupEntity;
 import ch.pfaditools.accounting.model.entity.PaymentEntity;
 import ch.pfaditools.accounting.model.entity.ReceiptEntity;
 import ch.pfaditools.accounting.model.filter.PaymentEntityFilter;
@@ -114,6 +115,16 @@ public class EditPaymentView extends AbstractEditEntityView<PaymentEntity, Payme
             showMessagesFromResponse(response);
         }
         return !response.hasErrorMessages();
+    }
+
+    @Override
+    protected boolean beforeSave() {
+        GroupEntity group = SecurityUtils.getAuthenticatedUserGroup();
+        if (group != null) {
+            newEntity.setGroup(group);
+        }
+
+        return true;
     }
 
     @Override
